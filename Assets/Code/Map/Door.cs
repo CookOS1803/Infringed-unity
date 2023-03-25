@@ -26,7 +26,7 @@ public class Door : MonoBehaviour, IInteractable
         obstacle = GetComponent<NavMeshObstacle>();
     }
 
-    public virtual void Use(Transform user)
+    public virtual void Interact(PlayerController user)
     {
         if (isClosed)
         {

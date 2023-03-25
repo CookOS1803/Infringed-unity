@@ -4,12 +4,11 @@ public class LockedDoor : Door
 {
     [SerializeField] private ItemData key;
 
-    public override void Use(Transform user)
+    public override void Interact(PlayerController user)
     {
         if (isClosed)
         {
-            var player = user.GetComponent<PlayerController>();
-            var inventory = player?.inventory;
+            var inventory = user?.inventory;
 
             if (inventory != null)
             {

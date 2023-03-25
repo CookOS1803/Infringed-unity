@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    void Use(Transform user);
+    void Interact(PlayerController user);
 }
