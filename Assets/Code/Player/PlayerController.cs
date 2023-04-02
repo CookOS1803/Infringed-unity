@@ -233,6 +233,6 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         onDeath?.Invoke();
 
         input.actions.Disable();
-        Destroy(this);
+        enabled = false;
     }
 }

@@ -58,7 +58,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
 
     void ResetNoticeClock()
     {
-        _noticeClock = 0f;
+        noticeClock = 0f;
 
         onNoticeClockReset?.Invoke();
     }
@@ -88,6 +88,22 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         AttackPlayer();
         Move();
         UnhidePlayer();
+
+        if (aiManager.alarm && player != null)
+        {
+            if (forgetClock < forgetTime)
+                forgetClock += Time.deltaTime;
+            else
+            {
+                if (player != null)
+                {
+                    playerRef.onHide -= OnPlayerHide;
+                    playerRef.onExitHideout -= OnPlayerExitHideout;
+                }
+                player = null;
+                isSeeingPlayer = false;
+            }
+        }
     }
 
     private void UnhidePlayer()
@@ -95,12 +111,12 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         if (hasSeenPlayerHiding)
         {
             var cols = Physics.OverlapSphere(transform.position, attackRange, hideoutLayer.value);
-
+            
             if (cols.Length != 0)
             {
                 foreach (var h in cols)
                 {
-                    if (h.transform == playerRef.currentHideout)
+                    if (h.GetComponent<Hideout>() == playerRef.currentHideout)
                     {
                         playerRef.ExitHideout();
                         hasSeenPlayerHiding = false;
@@ -130,22 +146,11 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         if (angle > fieldOfView * 0.5f)
             return;
 
-        if (CanSeePlayer(cols[0]))
-            return;
+        bool seen = CanSeePlayer(cols[0]);
+        if (seen)
+            return;        
 
-        if (aiManager.alarm && player != null && forgetClock < forgetTime)
-        {
-            forgetClock += Time.deltaTime;
-            return;
-        }
-
-        if (player != null)
-        {
-            playerRef.onHide -= OnPlayerHide;
-            playerRef.onExitHideout -= OnPlayerExitHideout;
-        }
-        player = null;
-        isSeeingPlayer = false;
+        
     }
 
     private bool CanSeePlayer(Collider col)
@@ -153,7 +158,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         RaycastHit hit;
         Physics.Linecast(transform.position + Vector3.up, col.transform.position + Vector3.up, out hit);
 
-        if (hit.collider != null && hit.collider.GetComponent<PlayerController>())
+        if (hit.collider != null && hit.collider.GetComponent<PlayerController>() != null)
         {
             if (aiManager.alarm || noticeClock >= noticeTime)
             {
@@ -168,14 +173,15 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
             }
             else
             {
-                isSeeingPlayer = true;
                 transform.LookAt(col.transform);
 
                 noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, col.transform.position));
             }
+            isSeeingPlayer = true;
 
             return true;
         }
+        isSeeingPlayer = false;
 
         return false;
     }
