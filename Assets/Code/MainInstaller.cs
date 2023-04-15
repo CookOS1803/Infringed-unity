@@ -7,6 +7,10 @@ public class MainInstaller : MonoInstaller
     [SerializeField] private AIManager aiManager;
     [SerializeField] private PlayerController player;
     [SerializeField] private new CameraController camera;
+    [Space]
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask floorLayer;
+    [SerializeField] private LayerMask interactableLayer;
 
     public override void InstallBindings()
     {
@@ -16,5 +20,9 @@ public class MainInstaller : MonoInstaller
         Container.BindInstance(camera).AsSingle();
         Container.BindInstance(uiInventory).AsSingle();
         Container.BindInstance(aiManager).AsSingle();
+        
+        Container.BindInstance(playerLayer).WithId(CustomLayer.Player);
+        Container.BindInstance(floorLayer).WithId(CustomLayer.Floor);
+        Container.BindInstance(interactableLayer).WithId(CustomLayer.Interactable);
     }
 }

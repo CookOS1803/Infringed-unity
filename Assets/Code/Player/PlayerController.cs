@@ -11,11 +11,9 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     public event Action onDeath;
 
     [SerializeField] private float speed = 5f;
-    [SerializeField] private LayerMask floorMask;
-    [SerializeField] private LayerMask itemMask;
-    [SerializeField] private LayerMask hideoutMask;
-    [SerializeField] private LayerMask interactableMask;
     [SerializeField] private float itemPickupRadius = 5f;
+    [Inject(Id = CustomLayer.Floor)] private LayerMask floorMask;
+    [Inject(Id = CustomLayer.Interactable)] private LayerMask interactableMask;
     private PlayerAnimator playerAnimator;
     private CharacterController characterController;
     private PlayerInput input;

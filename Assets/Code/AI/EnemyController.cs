@@ -12,8 +12,6 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     [SerializeField, Min(0f)] private float attackRange = 1f;
     [SerializeField, Min(0f)] private float _distanceOfView = 10f;
     [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;
-    [SerializeField] private LayerMask playerLayer;
-    [SerializeField] private LayerMask hideoutLayer;
     [SerializeField, Min(0f)] private float noticeTime = 2f;
     [SerializeField, Min(0f)] private float unseeFactor = 0.5f;
     [SerializeField, Min(0f)] private float waitTime = 2f;
@@ -22,6 +20,8 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     [SerializeField, Min(0f)] private float findingRadius = 6f;
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private ItemData droppedItem;
+    [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
+    [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
     [Inject] private AIManager aiManager;
     [Inject] private PlayerController playerRef;
     private NavMeshAgent agent;
@@ -84,7 +84,8 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         if (isStunned || isDying)
             return;
 
-        NoticePlayer();
+        isSeeingPlayer = NoticePlayer();
+
         AttackPlayer();
         Move();
         UnhidePlayer();
@@ -134,22 +135,21 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         animator.SetBool("isMoving", agent.velocity != Vector3.zero);
     }
 
-    private void NoticePlayer()
+    private bool NoticePlayer()
     {
         var cols = Physics.OverlapSphere(transform.position, distanceOfView, playerLayer.value);
 
+        // Player is too far
         if (cols.Length == 0)
-            return;
+            return false;
 
         float angle = Vector3.Angle(transform.forward, cols[0].transform.position - transform.position);
 
+        // Player is not in field of view
         if (angle > fieldOfView * 0.5f)
-            return;
+            return false;
 
-        bool seen = CanSeePlayer(cols[0]);
-        if (seen)
-            return;        
-
+        return CanSeePlayer(cols[0]);              
         
     }
 
@@ -158,9 +158,16 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         RaycastHit hit;
         Physics.Linecast(transform.position + Vector3.up, col.transform.position + Vector3.up, out hit);
 
+        // Can see player clearly
         if (hit.collider != null && hit.collider.GetComponent<PlayerController>() != null)
         {
-            if (aiManager.alarm || noticeClock >= noticeTime)
+            if (!aiManager.alarm && noticeClock < noticeTime)
+            {
+                transform.LookAt(col.transform);
+
+                noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, col.transform.position));
+            }
+            else
             {
                 if (player == null)
                 {
@@ -171,19 +178,10 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                 forgetClock = 0f;
                 aiManager.SoundTheAlarm();
             }
-            else
-            {
-                transform.LookAt(col.transform);
-
-                noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, col.transform.position));
-            }
-            isSeeingPlayer = true;
-
             return true;
         }
-        isSeeingPlayer = false;
-
-        return false;
+        else
+            return false;
     }
 
     private void OnPlayerHide()
@@ -272,7 +270,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                 agent.isStopped = true;
 
                 yield return new WaitUntil(() => !isSeeingPlayer || aiManager.alarm || isStunned);
-
+                
                 while (noticeClock > 0f && !aiManager.alarm)
                 {
                     noticeClock -= Time.deltaTime * unseeFactor;
@@ -295,7 +293,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                 () => Vector3.Distance(agent.destination, transform.position) <= agent.stoppingDistance || aiManager.alarm || isSeeingPlayer
             );
 
-            StartCoroutine(RotatingTowards(patrolPoints[currentPoint].rotation));
+            yield return RotatingTowards(patrolPoints[currentPoint].rotation);
 
             if (!isSeeingPlayer)
                 currentPoint = (currentPoint + 1) % patrolPoints.Length;
@@ -315,7 +313,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
             }
         }
     }
-
+    
     private IEnumerator RotatingTowards(Quaternion desiredRotation)
     {
         while (transform.rotation != desiredRotation && !isSeeingPlayer && !aiManager.alarm && !isDying && !isStunned)
