@@ -12,13 +12,11 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     [SerializeField, Min(0f)] private float _distanceOfView = 10f;
     [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;
     [SerializeField, Min(0f)] private float noticeTime = 2f;
-    [SerializeField, Min(0f)] private float unseeFactor = 0.5f;
-    [SerializeField, Min(0f)] private float waitTime = 2f;
     [SerializeField, Min(0f)] private float forgetTime = 0.5f;
     [SerializeField, Min(0f)] private float stunTime = 2f;
-    [SerializeField, Min(0f)] private float findingRadius = 6f;
-    [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private ItemData droppedItem;
+    [SerializeField] private Patroler patroler;
+    [SerializeField] private PlayerSeeker playerSeeker;
     [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
     [Inject] private AIManager aiManager;
@@ -27,9 +25,8 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     private Animator animator;
     private Health health;
     private Weapon weapon;
-    private int currentPoint;
     private float _noticeClock = 0f;
-    private float noticeClock
+    public float noticeClock
     {
         get => _noticeClock;
         set
@@ -41,7 +38,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     }
     private float forgetClock = 0f;
     private float stunClock = 0f;
-    private bool isSeeingPlayer = false;
+    private bool _isSeeingPlayer = false;
     private bool isDying = false;
     private bool hasSeenPlayerHiding = false;
     
@@ -51,26 +48,32 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
     public float normalizedNoticeClock => noticeClock / noticeTime;
     public float distanceOfView => _distanceOfView;
     public float fieldOfView => _fieldOfView;
+    public bool isSeeingPlayer => _isSeeingPlayer;
 
     public event Action onNoticeClockChange;
     public event Action onNoticeClockReset;
 
-    void ResetNoticeClock()
+    public void ResetNoticeClock()
     {
         noticeClock = 0f;
 
         onNoticeClockReset?.Invoke();
     }
 
-    void Start()
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         health = GetComponent<Health>();
         weapon = GetComponentInChildren<Weapon>();
+        patroler.Initialize(this);
+        playerSeeker.Initialize(this, aiManager);
 
         health.onDeath += Die;
+    }
 
+    void Start()
+    {
         aiManager.enemies.Add(this);
 
         agent.speed = calmSpeed;
@@ -83,7 +86,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         if (isStunned || isDying)
             return;
 
-        isSeeingPlayer = NoticePlayer();
+        _isSeeingPlayer = NoticePlayer();
 
         AttackPlayer();
         Move();
@@ -101,7 +104,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                     playerRef.onExitHideout -= OnPlayerExitHideout;
                 }
                 player = null;
-                isSeeingPlayer = false;
+                _isSeeingPlayer = false;
             }
         }
     }
@@ -202,138 +205,23 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         }
     }
 
+    private Coroutine findingPlayerRoutine;
     public void FindPlayer()
     {
         if (findingPlayerRoutine != null)
             StopCoroutine(findingPlayerRoutine);
 
-        findingPlayerRoutine = StartCoroutine(FindingPlayer());
+        findingPlayerRoutine = StartCoroutine(playerSeeker.FindingPlayer());
     }
 
-    private Coroutine findingPlayerRoutine;
-    private IEnumerator FindingPlayer()
-    {
-        float seekClock = 0f;
-
-        while (true)
-        {
-            if (agent.velocity.sqrMagnitude < 0.01f)
-            {
-                while (seekClock < waitTime)
-                {
-                    seekClock += Time.deltaTime;
-
-                    yield return new WaitForEndOfFrame();
-                }
-
-                seekClock = 0f;
-
-                if (aiManager.player == null)
-                {
-                    GoToRandomPoint();
-
-                    yield return new WaitUntil (() => agent.velocity.sqrMagnitude < 0.01f);
-                }
-            }
-            else
-                yield return new WaitForEndOfFrame();
-        }
-    }
-
-    private void GoToRandomPoint()
-    {
-        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * findingRadius;
-        randomDirection += aiManager.playerLastKnownPosition;
-
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, agent.height * 2, 1);
-        Vector3 finalPosition = hit.position;
-
-        agent.SetDestination(finalPosition);
-    }
-
+    private Coroutine patrolingRoutine;
     public void Patrol()
     {
         if (patrolingRoutine != null)
             StopCoroutine(patrolingRoutine);
 
-        patrolingRoutine = StartCoroutine(Patroling());
-    }
-
-    private Coroutine patrolingRoutine;
-    private IEnumerator Patroling()
-    {
-        float waitClock = 0f;
-
-        while (true)
-        {
-            if (isSeeingPlayer)
-            {
-                yield return LookingAtPlayer();
-
-                continue;
-            }
-
-            yield return GoingToPatrolPoint();
-
-            if (!isSeeingPlayer)
-                currentPoint = (currentPoint + 1) % patrolPoints.Length;
-
-            if (patrolPoints.Length == 1)
-                yield return new WaitForEndOfFrame();
-            else
-            {
-                while (waitClock < waitTime && !isSeeingPlayer)
-                {
-                    waitClock += Time.deltaTime;
-
-                    yield return new WaitForEndOfFrame();
-                }
-
-                waitClock = 0f;
-            }
-        }
-    }
-
-    private IEnumerator LookingAtPlayer()
-    {
-        agent.isStopped = true;
-
-        yield return new WaitUntil(() => !isSeeingPlayer);
-
-        while (noticeClock > 0f)
-        {
-            noticeClock -= Time.deltaTime * unseeFactor;
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        ResetNoticeClock();
-
-        agent.isStopped = false;
-    }
-
-    private IEnumerator GoingToPatrolPoint()
-    {
-        agent.SetDestination(patrolPoints[currentPoint].position);
-
-        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
-        yield return new WaitUntil(
-            () => Vector3.Distance(agent.destination, transform.position) <= agent.stoppingDistance || isSeeingPlayer
-        );
-
-        yield return RotatingTowards(patrolPoints[currentPoint].rotation);
-    }
-
-    private IEnumerator RotatingTowards(Quaternion desiredRotation)
-    {
-        while (transform.rotation != desiredRotation && !isSeeingPlayer && !aiManager.alarm && !isDying && !isStunned)
-        {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, agent.angularSpeed * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
+        patrolingRoutine = StartCoroutine(patroler.Patroling());
+    }    
 
     public void SetAlarmedState()
     {

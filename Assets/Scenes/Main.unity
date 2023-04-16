@@ -356,8 +356,8 @@ Transform:
   m_Children:
   - {fileID: 2030747699}
   - {fileID: 334504454}
-  - {fileID: 1217202781}
   - {fileID: 1246422882}
+  - {fileID: 1217202781}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -576,6 +576,18 @@ PrefabInstance:
       objectReference: {fileID: 2030747699}
     - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: patrolPoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 334504454}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 2030747699}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.data[1]
       value: 
       objectReference: {fileID: 334504454}
     - target: {fileID: 1022148595836406, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
@@ -925,6 +937,18 @@ PrefabInstance:
       propertyPath: patrolPoints.Array.data[1]
       value: 
       objectReference: {fileID: 1246422882}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 1246422882}
+    - target: {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: patroler.patrolPoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 1217202781}
     - target: {fileID: 1022148595836406, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: m_Name
       value: Meshtint Free Knight (1)
@@ -1102,7 +1126,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 596876133}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -100.23, z: 0}
 --- !u!114 &1217202782
 MonoBehaviour:
@@ -1146,7 +1170,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 596876133}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 92.85, z: 0}
 --- !u!114 &1246422883
 MonoBehaviour:

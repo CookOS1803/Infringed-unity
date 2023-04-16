@@ -554,22 +554,16 @@ MonoBehaviour:
   attackRange: 0.83
   _distanceOfView: 10
   _fieldOfView: 90
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  hideoutLayer:
-    serializedVersion: 2
-    m_Bits: 1024
   noticeTime: 2
-  unseeFactor: 0.3
   waitTime: 2
   forgetTime: 1
   stunTime: 2
   findingRadius: 6
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
   droppedItem: {fileID: 11400000, guid: 75423a964cf36e54e8b27900b1ee9108, type: 2}
+  patroler:
+    waitTime: 2
+    unseeFactor: 0.5
+    patrolPoints: []
 --- !u!195 &384520037
 NavMeshAgent:
   m_ObjectHideFlags: 0
