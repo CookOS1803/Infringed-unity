@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
@@ -205,18 +204,22 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
 
     public void FindPlayer()
     {
-        StartCoroutine(FindingPlayer());
+        if (findingPlayerRoutine != null)
+            StopCoroutine(findingPlayerRoutine);
+
+        findingPlayerRoutine = StartCoroutine(FindingPlayer());
     }
 
-    IEnumerator FindingPlayer()
+    private Coroutine findingPlayerRoutine;
+    private IEnumerator FindingPlayer()
     {
         float seekClock = 0f;
 
-        while (aiManager.lookingForPlayer)
+        while (true)
         {
             if (agent.velocity.sqrMagnitude < 0.01f)
             {
-                while (seekClock < waitTime && aiManager.lookingForPlayer)
+                while (seekClock < waitTime)
                 {
                     seekClock += Time.deltaTime;
 
@@ -229,17 +232,12 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                 {
                     GoToRandomPoint();
 
-                    yield return new WaitUntil (
-                        () => agent.velocity.sqrMagnitude < 0.01f || !aiManager.lookingForPlayer
-                    );
+                    yield return new WaitUntil (() => agent.velocity.sqrMagnitude < 0.01f);
                 }
             }
             else
                 yield return new WaitForEndOfFrame();
         }
-
-        if (!aiManager.alarm)
-            agent.SetDestination(patrolPoints[currentPoint].position);
     }
 
     private void GoToRandomPoint()
@@ -256,44 +254,27 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
 
     public void Patrol()
     {
-        StartCoroutine(Patroling());
+        if (patrolingRoutine != null)
+            StopCoroutine(patrolingRoutine);
+
+        patrolingRoutine = StartCoroutine(Patroling());
     }
 
-    IEnumerator Patroling()
+    private Coroutine patrolingRoutine;
+    private IEnumerator Patroling()
     {
         float waitClock = 0f;
 
-        while (!aiManager.alarm)
+        while (true)
         {
             if (isSeeingPlayer)
             {
-                agent.isStopped = true;
-
-                yield return new WaitUntil(() => !isSeeingPlayer || aiManager.alarm || isStunned);
-                
-                while (noticeClock > 0f && !aiManager.alarm)
-                {
-                    noticeClock -= Time.deltaTime * unseeFactor;
-
-                    yield return new WaitForEndOfFrame();
-                }
-
-                ResetNoticeClock();
-
-                if (!isStunned)
-                    agent.isStopped = false;
+                yield return LookingAtPlayer();
 
                 continue;
             }
 
-            agent.SetDestination(patrolPoints[currentPoint].position);
-
-            yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
-            yield return new WaitUntil(
-                () => Vector3.Distance(agent.destination, transform.position) <= agent.stoppingDistance || aiManager.alarm || isSeeingPlayer
-            );
-
-            yield return RotatingTowards(patrolPoints[currentPoint].rotation);
+            yield return GoingToPatrolPoint();
 
             if (!isSeeingPlayer)
                 currentPoint = (currentPoint + 1) % patrolPoints.Length;
@@ -302,7 +283,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
                 yield return new WaitForEndOfFrame();
             else
             {
-                while (waitClock < waitTime && !aiManager.alarm && !isSeeingPlayer)
+                while (waitClock < waitTime && !isSeeingPlayer)
                 {
                     waitClock += Time.deltaTime;
 
@@ -313,7 +294,37 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
             }
         }
     }
-    
+
+    private IEnumerator LookingAtPlayer()
+    {
+        agent.isStopped = true;
+
+        yield return new WaitUntil(() => !isSeeingPlayer);
+
+        while (noticeClock > 0f)
+        {
+            noticeClock -= Time.deltaTime * unseeFactor;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        ResetNoticeClock();
+
+        agent.isStopped = false;
+    }
+
+    private IEnumerator GoingToPatrolPoint()
+    {
+        agent.SetDestination(patrolPoints[currentPoint].position);
+
+        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
+        yield return new WaitUntil(
+            () => Vector3.Distance(agent.destination, transform.position) <= agent.stoppingDistance || isSeeingPlayer
+        );
+
+        yield return RotatingTowards(patrolPoints[currentPoint].rotation);
+    }
+
     private IEnumerator RotatingTowards(Quaternion desiredRotation)
     {
         while (transform.rotation != desiredRotation && !isSeeingPlayer && !aiManager.alarm && !isDying && !isStunned)
@@ -326,12 +337,23 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
 
     public void SetAlarmedState()
     {
+        if (patrolingRoutine != null)
+            StopCoroutine(patrolingRoutine);
+
+        ResetNoticeClock();
+
+        if (!isStunned && !isDying)
+            agent.isStopped = false;
+
         agent.speed = alarmedSpeed;
         animator.SetBool("isAlarmed", true);
     }
 
     public void UnsetAlarmedState()
     {
+        if (findingPlayerRoutine != null)
+            StopCoroutine(findingPlayerRoutine);
+
         agent.speed = calmSpeed;
         animator.SetBool("isAlarmed", false);
     }
@@ -354,6 +376,8 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         canMove = false;
         isDying = true;
 
+        StopAllCoroutines();
+
         animator.SetTrigger("death");
     }
 
@@ -363,18 +387,21 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
             stunClock = 0f;
         else
         {
-            StartCoroutine(StunRoutine());         
+            StopAllCoroutines();
+
+            stunRoutine = StartCoroutine(StunRoutine());         
         }
     }
 
-    IEnumerator StunRoutine()
+    private Coroutine stunRoutine;
+    private IEnumerator StunRoutine()
     {
         isStunned = true;
         canMove = false;
 
         animator.SetBool("isStunned", true);
 
-        while (stunClock < stunTime && !isDying)
+        while (stunClock < stunTime)
         {
             stunClock += Time.deltaTime;
 
@@ -383,20 +410,18 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         
         animator.SetBool("isStunned", false);
 
-        if (!isDying)
-        {
-            stunClock = 0f;
+        stunClock = 0f;
 
-            canMove = true;
-            isStunned = false;
+        canMove = true;
+        isStunned = false;
 
-            Alert();
-        }
+        Alert();
     }
 
     public void Alert()
     {
         player = playerRef.transform;
+        forgetClock = 0f;
         aiManager.SoundTheAlarm();
     }
 
