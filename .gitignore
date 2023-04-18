@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/[Uu]ser[Ss]ettings/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
@@ -21,6 +22,9 @@
 
 # Visual Studio cache directory
 .vs/
+
+# Visual Studio cache directory
+.vscode/
 
 # Gradle cache directory
 .gradle/
@@ -54,6 +58,22 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.app
+*.aab
+
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# JetBrains Rider generated directory
+.idea/
+
+# Packed Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Unity Recorder directory
+Recordings/
+
+# Temporary auto-generated Android Assets
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
