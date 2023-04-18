@@ -2078,6 +2078,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 996994502}
     - target: {fileID: 1617750610187076824, guid: ff0a490190b309d45af2fae894f36c10, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617750610187076824, guid: ff0a490190b309d45af2fae894f36c10, type: 3}
       propertyPath: floorLayer.m_Bits
       value: 128
       objectReference: {fileID: 0}

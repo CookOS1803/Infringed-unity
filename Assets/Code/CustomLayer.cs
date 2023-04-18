@@ -1,4 +1,4 @@
 public enum CustomLayer
 {
-    Player, Floor, Interactable
+    Player, Floor, Interactable, Enemy
 }

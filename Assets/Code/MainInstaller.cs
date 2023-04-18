@@ -11,6 +11,7 @@ public class MainInstaller : MonoInstaller
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask floorLayer;
     [SerializeField] private LayerMask interactableLayer;
+    [SerializeField] private LayerMask enemyLayer;
 
     public override void InstallBindings()
     {
@@ -24,5 +25,6 @@ public class MainInstaller : MonoInstaller
         Container.BindInstance(playerLayer).WithId(CustomLayer.Player);
         Container.BindInstance(floorLayer).WithId(CustomLayer.Floor);
         Container.BindInstance(interactableLayer).WithId(CustomLayer.Interactable);
+        Container.BindInstance(enemyLayer).WithId(CustomLayer.Enemy);
     }
 }

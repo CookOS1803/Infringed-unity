@@ -11,9 +11,12 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     public event Action onDeath;
 
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float crouchingSpeedFactor = 0.3f;
     [SerializeField] private float itemPickupRadius = 5f;
+    [SerializeField] private float soundRadius = 6f;
     [Inject(Id = CustomLayer.Floor)] private LayerMask floorMask;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask interactableMask;
+    [Inject(Id = CustomLayer.Enemy)] private LayerMask enemyMask;
     private PlayerAnimator playerAnimator;
     private CharacterController characterController;
     private PlayerInput input;
@@ -22,6 +25,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     private Vector3 moveDirection;
     private float verticalAcceleration = 0f;
     private bool isDying = false;
+    private bool isCrouching = false;
     public Hideout currentHideout { get; private set; }
     public bool canMove { get; set; } = true;
 
@@ -63,6 +67,9 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
                 inventory.selectedSlot = (inventory.size + inventory.selectedSlot - 1) % inventory.size;
             }
         };
+
+        input.actions["Crouch"].performed += obj => isCrouching = true;
+        input.actions["Crouch"].canceled += obj => isCrouching = false;
     }
 
     private void OnAttack(InputAction.CallbackContext obj)
@@ -115,10 +122,22 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
     private void Move()
     {
-        var movement = input.actions["Move"].ReadValue<Vector2>();
-        moveDirection = new Vector3(movement.x, 0f, movement.y);
+        var inputValue = input.actions["Move"].ReadValue<Vector2>();
+        moveDirection = new Vector3(inputValue.x, 0f, inputValue.y);
 
-        characterController.Move(moveDirection * speed * Time.deltaTime);
+        var movement = moveDirection * speed * Time.deltaTime;
+        
+        if (isCrouching)
+        {
+            movement *= crouchingSpeedFactor;
+            moveDirection *= crouchingSpeedFactor;
+        }
+        else
+        {
+            SoundUtil.SpawnSound(transform.position, soundRadius);
+        }
+
+        characterController.Move(movement);
         
         playerAnimator.AnimateMovement(moveDirection);
     }
@@ -171,19 +190,28 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
     private void Interact()
     {
-        if (Physics.OverlapSphere(transform.position, itemPickupRadius, interactableMask.value).Length != 0)
-        {
-            Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        var colliders = Physics.OverlapSphere(transform.position, itemPickupRadius, interactableMask.value);
 
-            if (Physics.Raycast(camRay, out hit, Mathf.Infinity, interactableMask.value))
+        if (colliders.Length == 0)
+            return;
+        
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+        if (!Physics.Raycast(camRay, out var hit, Mathf.Infinity, interactableMask.value))
+            return;
+
+        foreach (var col in colliders)
+        {
+            if (col == hit.collider)
             {
                 if (!Physics.Linecast(transform.position + Vector3.up, hit.point, ~interactableMask))
                 {
                     hit.transform.GetComponent<IInteractable>().Interact(this);
                 }
+
+                break;
             }
-        }
+        }        
     }
 
     private void CalculateGravity()
@@ -220,10 +248,11 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-
         Gizmos.DrawRay(transform.position, moveDirection);
-
         Gizmos.DrawWireSphere(transform.position, itemPickupRadius);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, soundRadius);
     }
 
     public void OnDeath()

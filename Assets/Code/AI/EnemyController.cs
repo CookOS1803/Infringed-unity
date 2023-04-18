@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-public class EnemyController : MonoBehaviour, IMoveable, IMortal
+public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 {
     [SerializeField, Min(0f)] private float calmSpeed = 1.5f;
     [SerializeField, Min(0f)] private float alarmedSpeed = 3.5f;
@@ -311,6 +311,11 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal
         player = playerRef.transform;
         forgetClock = 0f;
         aiManager.SoundTheAlarm();
+    }
+
+    public void ReactToSound()
+    {
+        Debug.Log(name + " heard player");
     }
 
     void OnDestroy()
