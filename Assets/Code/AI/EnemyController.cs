@@ -313,9 +313,13 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         aiManager.SoundTheAlarm();
     }
 
-    public void ReactToSound()
+    public void ReactToSound(Vector3 source)
     {
-        Debug.Log(name + " heard player");
+        if (!aiManager.alarm)
+        {
+            patroler.soundSource = source;
+            patroler.heardSound = true;            
+        }
     }
 
     void OnDestroy()

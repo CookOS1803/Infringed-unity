@@ -11,6 +11,10 @@ public class Patroler
     private int currentPoint;
     private EnemyController enemy;
     private NavMeshAgent agent;
+    private float waitClock = 0f;
+
+    public Vector3 soundSource { get; set; }
+    public bool heardSound { get; set; } = false;
 
     public void Initialize(EnemyController enemy)
     {
@@ -20,10 +24,17 @@ public class Patroler
 
     public IEnumerator Patroling()
     {
-        float waitClock = 0f;
+        waitClock = 0f;
 
         while (true)
         {
+            if (heardSound)
+            {
+                yield return ReactingToSound();
+
+                heardSound = false;
+            }
+
             if (enemy.isSeeingPlayer)
             {
                 yield return LookingAtPlayer();
@@ -40,7 +51,7 @@ public class Patroler
                 yield return new WaitForEndOfFrame();
             else
             {
-                while (waitClock < waitTime && !enemy.isSeeingPlayer)
+                while (waitClock < waitTime && !enemy.isSeeingPlayer && !heardSound)
                 {
                     waitClock += Time.deltaTime;
 
@@ -72,23 +83,50 @@ public class Patroler
 
     private IEnumerator GoingToPatrolPoint()
     {
-        agent.SetDestination(patrolPoints[currentPoint].position);
-
-        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
-        yield return new WaitUntil(
-            () => Vector3.Distance(agent.destination, enemy.transform.position) <= agent.stoppingDistance || enemy.isSeeingPlayer
-        );
+        yield return GoingToPoint(patrolPoints[currentPoint].position);
 
         yield return RotatingTowards(patrolPoints[currentPoint].rotation);
     }
 
+    private IEnumerator GoingToPoint(Vector3 destination)
+    {
+        agent.SetDestination(destination);
+
+        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
+        yield return new WaitUntil(
+            () => Vector3.Distance(agent.destination, enemy.transform.position) <= agent.stoppingDistance || enemy.isSeeingPlayer || heardSound
+        );
+    }
+
     private IEnumerator RotatingTowards(Quaternion desiredRotation)
     {
-        while (enemy.transform.rotation != desiredRotation && !enemy.isSeeingPlayer)
+        while (enemy.transform.rotation != desiredRotation && !enemy.isSeeingPlayer && !heardSound)
         {
             enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, desiredRotation, agent.angularSpeed * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    private IEnumerator ReactingToSound()
+    {
+        agent.SetDestination(soundSource);
+
+        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
+
+        while (Vector3.Distance(soundSource, enemy.transform.position) > agent.stoppingDistance)
+        {
+            if (enemy.isSeeingPlayer)
+            {
+                yield return LookingAtPlayer();
+
+                continue;
+            }
+
+            agent.SetDestination(soundSource);
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSeconds(3f);
     }
 }

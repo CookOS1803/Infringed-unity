@@ -8,7 +8,7 @@ public static class SoundUtil
 
         foreach (var listener in listeners)
         {
-            listener.GetComponent<ISoundListener>()?.ReactToSound();
+            listener.GetComponent<ISoundListener>()?.ReactToSound(soundSource);
         }
     }
 }
