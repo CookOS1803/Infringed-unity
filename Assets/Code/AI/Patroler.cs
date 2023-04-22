@@ -35,7 +35,7 @@ public class Patroler
                 heardSound = false;
             }
 
-            if (enemy.isSeeingPlayer)
+            if (enemy.visionController.isSeeingPlayer)
             {
                 yield return LookingAtPlayer();
 
@@ -44,14 +44,14 @@ public class Patroler
 
             yield return GoingToPatrolPoint();
 
-            if (!enemy.isSeeingPlayer)
+            if (!enemy.visionController.isSeeingPlayer)
                 currentPoint = (currentPoint + 1) % patrolPoints.Length;
 
             if (patrolPoints.Length == 1)
                 yield return new WaitForEndOfFrame();
             else
             {
-                while (waitClock < waitTime && !enemy.isSeeingPlayer && !heardSound)
+                while (waitClock < waitTime && !enemy.visionController.isSeeingPlayer && !heardSound)
                 {
                     waitClock += Time.deltaTime;
 
@@ -67,16 +67,16 @@ public class Patroler
     {
         enemy.canMove = false;
 
-        yield return new WaitUntil(() => !enemy.isSeeingPlayer);
+        yield return new WaitUntil(() => !enemy.visionController.isSeeingPlayer);
 
-        while (enemy.noticeClock > 0f)
+        while (enemy.visionController.noticeClock > 0f)
         {
-            enemy.noticeClock -= Time.deltaTime * unseeFactor;
+            enemy.visionController.noticeClock -= Time.deltaTime * unseeFactor;
 
             yield return new WaitForEndOfFrame();
         }
 
-        enemy.ResetNoticeClock();
+        enemy.visionController.ResetNoticeClock();
 
         enemy.canMove = true;
     }
@@ -94,13 +94,13 @@ public class Patroler
 
         yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
         yield return new WaitUntil(
-            () => Vector3.Distance(agent.destination, enemy.transform.position) <= agent.stoppingDistance || enemy.isSeeingPlayer || heardSound
+            () => Vector3.Distance(agent.destination, enemy.transform.position) <= agent.stoppingDistance || enemy.visionController.isSeeingPlayer || heardSound
         );
     }
 
     private IEnumerator RotatingTowards(Quaternion desiredRotation)
     {
-        while (enemy.transform.rotation != desiredRotation && !enemy.isSeeingPlayer && !heardSound)
+        while (enemy.transform.rotation != desiredRotation && !enemy.visionController.isSeeingPlayer && !heardSound)
         {
             enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, desiredRotation, agent.angularSpeed * Time.deltaTime);
 
@@ -116,7 +116,7 @@ public class Patroler
 
         while (Vector3.Distance(soundSource, enemy.transform.position) > agent.stoppingDistance)
         {
-            if (enemy.isSeeingPlayer)
+            if (enemy.visionController.isSeeingPlayer)
             {
                 yield return LookingAtPlayer();
 

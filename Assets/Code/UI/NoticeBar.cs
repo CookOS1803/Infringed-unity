@@ -6,13 +6,13 @@ public class NoticeBar : MonoBehaviour
 {
     private SpriteRenderer sprite;
     private SpriteRenderer parentSprite;
-    private EnemyController enemy;
+    private VisionController enemy;
 
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
         parentSprite = transform.parent.GetComponent<SpriteRenderer>();
-        enemy = GetComponentInParent<EnemyController>();
+        enemy = GetComponentInParent<VisionController>();
 
         enemy.onNoticeClockChange += UpdateBar;
         enemy.onNoticeClockReset += HideBar;

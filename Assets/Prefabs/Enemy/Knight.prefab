@@ -470,8 +470,10 @@ GameObject:
   - component: {fileID: 4079118292684216}
   - component: {fileID: 95382778294392932}
   - component: {fileID: 384520035}
-  - component: {fileID: 384520036}
   - component: {fileID: 384520037}
+  - component: {fileID: 384520036}
+  - component: {fileID: 719338382334657635}
+  - component: {fileID: 7524925564644468887}
   - component: {fileID: 384520038}
   - component: {fileID: 1224092975}
   - component: {fileID: 1224092974}
@@ -537,33 +539,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.2119792, y: 1.7595922, z: 0.35649776}
   m_Center: {x: -0.00000029802322, y: 0.9202039, z: -0.01324892}
---- !u!114 &384520036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022148595836406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b4dc56e850bc464da2029308751227f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  calmSpeed: 1.5
-  alarmedSpeed: 3.5
-  attackRange: 0.83
-  _distanceOfView: 10
-  _fieldOfView: 90
-  noticeTime: 2
-  waitTime: 2
-  forgetTime: 1
-  stunTime: 2
-  findingRadius: 6
-  droppedItem: {fileID: 11400000, guid: 75423a964cf36e54e8b27900b1ee9108, type: 2}
-  patroler:
-    waitTime: 2
-    unseeFactor: 0.5
-    patrolPoints: []
 --- !u!195 &384520037
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -586,6 +561,57 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &384520036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022148595836406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b4dc56e850bc464da2029308751227f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calmSpeed: 1.5
+  alarmedSpeed: 3.5
+  attackRange: 0.83
+  droppedItem: {fileID: 11400000, guid: 75423a964cf36e54e8b27900b1ee9108, type: 2}
+  patroler:
+    waitTime: 2
+    unseeFactor: 0.5
+    patrolPoints: []
+  playerSeeker:
+    waitTime: 2
+    findingRadius: 6
+--- !u!114 &719338382334657635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022148595836406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b096944f43aff4e9ebf0f3eebed07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _distanceOfView: 10
+  _fieldOfView: 90
+  noticeTime: 2
+  forgetTime: 1
+--- !u!114 &7524925564644468887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022148595836406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faa1ecf698a1bdf4187d08b8e2b7976b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &384520038
 MonoBehaviour:
   m_ObjectHideFlags: 0

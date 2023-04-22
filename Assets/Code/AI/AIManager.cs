@@ -40,9 +40,9 @@ public class AIManager : MonoBehaviour
     {        
         foreach (var e in enemies)
         {
-            if (e.player != null)
+            if (e.visionController.player != null)
             {
-                SetPlayer(e.player);
+                SetPlayer(e.visionController.player);
                 return;
             }
         }                

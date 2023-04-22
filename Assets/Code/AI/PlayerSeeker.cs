@@ -2,22 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Zenject;
 
 [System.Serializable]
 public class PlayerSeeker
 {
     [SerializeField, Min(0f)] private float waitTime = 2f;
     [SerializeField, Min(0f)] private float findingRadius = 6f;
+    [Inject] private AIManager aiManager;
     private EnemyController enemy;
     private NavMeshAgent agent;
-    private AIManager aiManager;
 
-    public void Initialize(EnemyController enemy, AIManager aiManager)
+    public void Initialize(EnemyController enemy)
     {
         this.enemy = enemy;
         agent = enemy.GetComponent<NavMeshAgent>();     
-
-        this.aiManager = aiManager;   
     }
 
     public IEnumerator FindingPlayer()

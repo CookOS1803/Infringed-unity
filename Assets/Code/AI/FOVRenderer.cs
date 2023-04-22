@@ -6,7 +6,7 @@ public class FOVRenderer : MonoBehaviour
 {
     [SerializeField, Min(2)] private int rayCount = 2;
     private Mesh mesh;
-    private EnemyController enemy;
+    private VisionController enemy;
     private float angleInc => enemy.fieldOfView / rayCount;
     private float scaleFactor => 1f / transform.parent.localScale.z;
 
@@ -15,7 +15,7 @@ public class FOVRenderer : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        enemy = GetComponentInParent<EnemyController>();
+        enemy = GetComponentInParent<VisionController>();
     }
 
     void Update()

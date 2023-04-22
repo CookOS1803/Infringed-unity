@@ -19,7 +19,7 @@ public class PlayerWeapon : Weapon
 
         if (enemy != null)
         {
-            if (enemy.isStunned || aiManager.player == null &&
+            if (enemy.stunController.isStunned || aiManager.player == null &&
                 Vector3.Dot(enemy.transform.forward, enemy.transform.position - player.position) >= backstabDot)
             {
                 enemy.Die();

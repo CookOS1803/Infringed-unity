@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private int damage = 50;
     [SerializeField] private float speed = 4f;
     [SerializeField, Min(0f)] private float lifeTime = 5f;
+    [SerializeField, Min(0f)] private float stunTime = 2f;
     private float lifeClock = 0f;
 
     void Update()
@@ -23,8 +24,8 @@ public class Projectile : MonoBehaviour
         var health = other.GetComponent<Health>();
         health?.TakeDamage(damage);
 
-        var enemy = other.GetComponent<EnemyController>();
-        enemy?.Stun();
+        var stunner = other.GetComponent<StunController>();
+        stunner?.Stun(stunTime);
 
         var particles = other.GetComponent<ParticleSystem>();
         if (particles != null)
