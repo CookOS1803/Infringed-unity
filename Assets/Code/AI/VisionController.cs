@@ -10,9 +10,11 @@ public class VisionController : MonoBehaviour
     [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;    
     [SerializeField, Min(0f)] private float noticeTime = 2f;
     [SerializeField, Min(0f)] private float forgetTime = 1f;
+    [SerializeField, Min(0f)] private float unseeFactor = 0.5f;
     [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
     [Inject] private AIManager aiManager;
     [Inject] private PlayerController playerRef;
+    private EnemyController enemyController;
     private float _noticeClock = 0f;
     private bool _isSeeingPlayer = false;
     public float noticeClock
@@ -36,6 +38,11 @@ public class VisionController : MonoBehaviour
 
     public event Action onNoticeClockChange;
     public event Action onNoticeClockReset;
+
+    private void Awake()
+    {
+        enemyController = GetComponent<EnemyController>();
+    }
 
     private void Update()
     {
@@ -84,47 +91,75 @@ public class VisionController : MonoBehaviour
         return hit.collider != null && hit.collider.GetComponent<PlayerController>() != null;
     }
 
-    public void StartLooking()
+    public void StartWatching()
     {
         StopAllCoroutines();
-        StartCoroutine(LookingAtPlayer());
+        StartCoroutine(Watching());
     }
 
-    public void StopLooking()
+    public void StopWatching()
     {
         StopAllCoroutines();
     }
 
-    private IEnumerator LookingAtPlayer()
+    private IEnumerator Watching()
     {
         while (true)
         {
             yield return new WaitUntil(() => isSeeingPlayer);
 
-            while (isSeeingPlayer)
-            {
-                if (!aiManager.alarm && noticeClock < noticeTime)
-                {
-                    transform.LookAt(playerRef.transform);
+            enemyController.StopBehavior();
 
-                    noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, playerRef.transform.position));
-                }
-                else
+            yield return LookingAtPlayer();
+            yield return UnseeingPlayer();    
+
+            enemyController.ResumeBehavior();
+        }
+    }
+
+    private IEnumerator LookingAtPlayer()
+    {
+        while (isSeeingPlayer)
+        {
+            if (!aiManager.alarm && noticeClock < noticeTime)
+            {
+                enemyController.canMove = false;
+                transform.LookAt(playerRef.transform);
+
+                noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, playerRef.transform.position));
+            }
+            else
+            {
+                if (player == null)
                 {
-                    if (player == null)
-                    {
-                        playerRef.onHide += OnPlayerHide;
-                        playerRef.onExitHideout += OnPlayerExitHideout;
-                    }
-                    player = playerRef.transform;
-                    forgetClock = 0f;
-                    aiManager.SoundTheAlarm();
+                    playerRef.onHide += OnPlayerHide;
+                    playerRef.onExitHideout += OnPlayerExitHideout;
                 }
+                player = playerRef.transform;
+                forgetClock = 0f;
+                aiManager.SoundTheAlarm();
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    private IEnumerator UnseeingPlayer()
+    {
+        if (!aiManager.alarm)
+        {
+            while (noticeClock > 0f)
+            {
+                noticeClock -= Time.deltaTime * unseeFactor;
 
                 yield return new WaitForEndOfFrame();
             }
+
+            ResetNoticeClock();
+
+            enemyController.canMove = true;
         }
-    }    
+    }
 
     private void OnPlayerHide()
     {

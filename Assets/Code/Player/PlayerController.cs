@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
             movement *= crouchingSpeedFactor;
             moveDirection *= crouchingSpeedFactor;
         }
-        else
+        else if (movement != Vector3.zero)
         {
             SoundUtil.SpawnSound(transform.position, soundRadius);
         }

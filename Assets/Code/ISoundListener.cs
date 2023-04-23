@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface ISoundListener
 {
-    public void ReactToSound(Vector3 source);
+    public void RespondToSound(Vector3 source);
 }

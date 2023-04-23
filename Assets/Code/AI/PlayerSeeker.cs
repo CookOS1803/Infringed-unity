@@ -9,7 +9,6 @@ public class PlayerSeeker
 {
     [SerializeField, Min(0f)] private float waitTime = 2f;
     [SerializeField, Min(0f)] private float findingRadius = 6f;
-    [Inject] private AIManager aiManager;
     private EnemyController enemy;
     private NavMeshAgent agent;
 
@@ -47,12 +46,11 @@ public class PlayerSeeker
 
     private void GoToRandomPoint()
     {
-        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * findingRadius;
-        randomDirection += aiManager.playerLastKnownPosition;
+        var randomDirection = UnityEngine.Random.insideUnitSphere * findingRadius;
+        randomDirection += enemy.aiManager.playerLastKnownPosition;
 
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, agent.height * 2, 1);
-        Vector3 finalPosition = hit.position;
+        NavMesh.SamplePosition(randomDirection, out var hit, agent.height * 2, 1);
+        var finalPosition = hit.position;
 
         agent.SetDestination(finalPosition);
     }

@@ -13,9 +13,9 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     [SerializeField] private ItemData droppedItem;
     [SerializeField] private Patroler patroler;
     [SerializeField] private PlayerSeeker playerSeeker;
+    [SerializeField] private SoundResponder soundResponder;
     [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
-    [Inject] private AIManager aiManager;
     [Inject] private PlayerController playerRef;
     private NavMeshAgent agent;
     private Animator animator;
@@ -23,6 +23,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     private Weapon weapon;
     private bool isDying = false;
     
+    [Inject] public AIManager aiManager { get; private set; }
     public StunController stunController { get; private set; }
     public VisionController visionController { get; private set; }
     public bool canMove { get => !agent.isStopped; set => agent.isStopped = !value; }
@@ -38,19 +39,20 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         stunController.onStunStart += () => {
             canMove = false;
             animator.SetBool("isStunned", true);
-            StopAllCoroutines();
-            visionController.StopLooking();
+            StopBehavior();
+            visionController.StopWatching();
         };
         stunController.onStunEnd += () => {
             canMove = true;
             animator.SetBool("isStunned", false);
-            visionController.StartLooking();
+            visionController.StartWatching();
             Alert();
         };
 
         weapon = GetComponentInChildren<Weapon>();
         patroler.Initialize(this);
         playerSeeker.Initialize(this);
+        soundResponder.Initialize(this);
 
         health.onDeath += Die;
     }
@@ -61,7 +63,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
         agent.speed = calmSpeed;
 
-        visionController.StartLooking();
+        visionController.StartWatching();
 
         Patrol();
     }
@@ -133,8 +135,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void SetAlarmedState()
     {
-        if (patrolingRoutine != null)
-            StopCoroutine(patrolingRoutine);
+        StopBehavior();
 
         visionController.ResetNoticeClock();
 
@@ -147,8 +148,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void UnsetAlarmedState()
     {
-        if (findingPlayerRoutine != null)
-            StopCoroutine(findingPlayerRoutine);
+        StopBehavior();
 
         agent.speed = calmSpeed;
         animator.SetBool("isAlarmed", false);
@@ -172,7 +172,8 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         canMove = false;
         isDying = true;
 
-        StopAllCoroutines();
+        StopBehavior();
+        visionController.StopWatching();
 
         animator.SetTrigger("death");
     }
@@ -184,12 +185,35 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         aiManager.SoundTheAlarm();
     }
 
-    public void ReactToSound(Vector3 source)
+    public void RespondToSound(Vector3 source)
     {
         if (!aiManager.alarm)
         {
-            patroler.soundSource = source;
-            patroler.heardSound = true;            
+            StopBehavior();
+
+            soundResponder.soundSource = source;
+            StartCoroutine(soundResponder.RespondingToSound());
+        }
+        else if (aiManager.lookingForPlayer)
+        {
+            agent.SetDestination(source);
+        }
+    }
+
+    public void StopBehavior()
+    {
+        StopAllCoroutines();
+    }
+
+    public void ResumeBehavior()
+    {
+        if (!aiManager.alarm)
+        {
+            Patrol();
+        }
+        else if (aiManager.lookingForPlayer)
+        {
+            FindPlayer();
         }
     }
 
@@ -207,7 +231,6 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     void OnDrawGizmos()
     {
-
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(transform.position, attackRange);
