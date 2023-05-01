@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
     [SerializeField] private float speed = 5f;
     [SerializeField] private float crouchingSpeedFactor = 0.3f;
-    [SerializeField] private float itemPickupRadius = 5f;
-    [SerializeField] private float soundRadius = 6f;
+    [SerializeField, Min(0f)] private float itemPickupRadius = 5f;
+    [SerializeField, Min(0f)] private float soundRadius = 6f;
     [Inject(Id = CustomLayer.Floor)] private LayerMask floorMask;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask interactableMask;
     [Inject(Id = CustomLayer.Enemy)] private LayerMask enemyMask;

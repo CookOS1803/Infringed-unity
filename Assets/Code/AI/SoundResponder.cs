@@ -7,7 +7,9 @@ using UnityEngine.AI;
 public class SoundResponder
 {
     [SerializeField] private float waitTime = 2f;
+    [SerializeField] private float hearingTime = 2f;
     private float waitClock = 0f;
+    private float hearClock = 0f;
     private EnemyController enemy;
     private NavMeshAgent agent;
     public Vector3 soundSource { get; set; }
@@ -16,6 +18,27 @@ public class SoundResponder
     {
         this.enemy = enemy;
         agent = enemy.GetComponent<NavMeshAgent>();
+    }
+
+    public IEnumerator HearingSound(System.Action callback)
+    {
+        hearClock = 0f;
+
+        enemy.canMove = false;
+
+        while (hearClock < hearingTime)
+        {
+            hearClock += Time.deltaTime;
+
+            var desiredRotation = Quaternion.FromToRotation(Vector3.forward, (soundSource - enemy.transform.position).normalized);
+            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, desiredRotation, agent.angularSpeed * Time.deltaTime); 
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        enemy.canMove = true;
+
+        callback?.Invoke();
     }
 
     public IEnumerator RespondingToSound()

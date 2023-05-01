@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float speed = 4f;
     [SerializeField, Min(0f)] private float lifeTime = 5f;
     [SerializeField, Min(0f)] private float stunTime = 2f;
+    [SerializeField, Min(0f)] private float soundRadius = 6f;
     private float lifeClock = 0f;
 
     void Update()
@@ -32,6 +33,8 @@ public class Projectile : MonoBehaviour
         {
             particles.Emit(6);
         }
+
+        SoundUtil.SpawnSound(transform.position, soundRadius);
 
         Destroy(gameObject);
     }

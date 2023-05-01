@@ -63,17 +63,17 @@ public class AIManager : MonoBehaviour
 
     public void SoundTheAlarm()
     {
+        foreach (var e in enemies)
+        {
+            e.SetAlarmedState();
+        }
+
         if (!alarm)
         {
             EnableAlarm();
             
             StartCoroutine(ManagingAlarm());
             StartCoroutine(ExecutingFind());
-
-            foreach (var e in enemies)
-            {
-                e.SetAlarmedState();
-            }
         }
     }
 
@@ -128,7 +128,7 @@ public class AIManager : MonoBehaviour
 
                 foreach (var e in enemies)
                 {
-                    e.FindPlayer();
+                    e.SeekPlayer();
                 }
             }
             else

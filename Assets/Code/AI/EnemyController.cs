@@ -1,8 +1,12 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
+
+[System.Serializable]
+public enum EnemyState
+{
+    Patroling, HearingSound, RespondingToSound, ChasingPlayer, SeekingPlayer
+}
 
 [RequireComponent(typeof(Health), typeof(StunController), typeof(VisionController))]
 public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
@@ -17,6 +21,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
     [Inject] private PlayerController playerRef;
+    private EnemyState _enemyState;
     private NavMeshAgent agent;
     private Animator animator;
     private Health health;
@@ -24,9 +29,21 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     private bool isDying = false;
     
     [Inject] public AIManager aiManager { get; private set; }
+    public EnemyState enemyState
+    {
+        get => _enemyState;
+        private set
+        {
+            _enemyState = value;
+
+            onStateChange?.Invoke();
+        }
+    }
     public StunController stunController { get; private set; }
     public VisionController visionController { get; private set; }
     public bool canMove { get => !agent.isStopped; set => agent.isStopped = !value; }
+
+    public event System.Action onStateChange;
 
     void Awake()
     {
@@ -115,35 +132,36 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         }
     }
 
-    private Coroutine findingPlayerRoutine;
-    public void FindPlayer()
+    public void SeekPlayer()
     {
-        if (findingPlayerRoutine != null)
-            StopCoroutine(findingPlayerRoutine);
-
-        findingPlayerRoutine = StartCoroutine(playerSeeker.FindingPlayer());
+        StopBehavior();
+        StartCoroutine(playerSeeker.FindingPlayer());
+        enemyState = EnemyState.SeekingPlayer;
     }
 
-    private Coroutine patrolingRoutine;
     public void Patrol()
     {
-        if (patrolingRoutine != null)
-            StopCoroutine(patrolingRoutine);
-
-        patrolingRoutine = StartCoroutine(patroler.Patroling());
+        StopBehavior();
+        StartCoroutine(patroler.Patroling());
+        enemyState = EnemyState.Patroling;
     }    
 
     public void SetAlarmedState()
     {
-        StopBehavior();
+        if (!aiManager.alarm)
+        {
+            StopBehavior();
 
-        visionController.ResetNoticeClock();
+            visionController.ResetNoticeClock();
 
-        if (!stunController.isStunned && !isDying)
-            agent.isStopped = false;
+            if (!stunController.isStunned && !isDying)
+                agent.isStopped = false;
 
-        agent.speed = alarmedSpeed;
-        animator.SetBool("isAlarmed", true);
+            agent.speed = alarmedSpeed;
+            animator.SetBool("isAlarmed", true);
+        }
+
+        enemyState = EnemyState.ChasingPlayer;
     }
 
     public void UnsetAlarmedState()
@@ -187,12 +205,29 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void RespondToSound(Vector3 source)
     {
+        soundResponder.soundSource = source;
+
         if (!aiManager.alarm)
         {
-            StopBehavior();
+            if (enemyState != EnemyState.HearingSound &&
+                enemyState != EnemyState.RespondingToSound)
+            {
+                StopBehavior();
 
-            soundResponder.soundSource = source;
-            StartCoroutine(soundResponder.RespondingToSound());
+                StartCoroutine(soundResponder.HearingSound(() => {
+                    StopBehavior();
+
+                    StartCoroutine(soundResponder.RespondingToSound());
+                    enemyState = EnemyState.RespondingToSound;
+                }));
+                enemyState = EnemyState.HearingSound;
+            }
+            else if (enemyState == EnemyState.RespondingToSound)
+            {
+                StopBehavior();
+
+                StartCoroutine(soundResponder.RespondingToSound());
+            }
         }
         else if (aiManager.lookingForPlayer)
         {
@@ -213,7 +248,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         }
         else if (aiManager.lookingForPlayer)
         {
-            FindPlayer();
+            SeekPlayer();
         }
     }
 
