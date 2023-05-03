@@ -6,9 +6,19 @@ public static class SoundUtil
     {        
         var listeners = Physics.OverlapSphere(soundSource, radius);
 
-        foreach (var listener in listeners)
+        foreach (var collider in listeners)
         {
-            listener.GetComponent<ISoundListener>()?.RespondToSound(soundSource);
+            var listener = collider.GetComponent<ISoundListener>();
+            if (listener == null)
+                continue;
+            
+            if (Physics.Linecast(soundSource, collider.transform.position, out var hit) && hit.collider != collider)           
+            {
+                if (Vector3.Distance(soundSource, collider.transform.position) < radius * 0.5f)
+                    listener.RespondToSound(soundSource);
+            }
+            else
+                listener.RespondToSound(soundSource);
         }
     }
 }
