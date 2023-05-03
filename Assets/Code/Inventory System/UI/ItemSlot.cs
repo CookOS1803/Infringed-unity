@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
-public class ItemSlot : MonoBehaviour, IDropHandler
+public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     [Inject] private UIInventory uiInventory;
     private UIItem child;
@@ -33,5 +33,10 @@ public class ItemSlot : MonoBehaviour, IDropHandler
 
         item.transform.SetParent(item.parent);
         uiInventory.inventory.SwapSlots(index, item.index);
+    }    
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        uiInventory.inventory.selectedSlot = index;
     }
 }

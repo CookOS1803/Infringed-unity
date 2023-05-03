@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8c1b9b3016ece40969f597adea480a, type: 3}
   m_Name: Key
   m_EditorClassIdentifier: 
-  _name: Key
-  _sprite: {fileID: 21300000, guid: c6edb678edf3c1f43a0eb5a5a01d93b5, type: 3}
-  _prefab: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
-  _action: {fileID: 0}
+  <name>k__BackingField: Key
+  <description>k__BackingField: Allows to open certaion locked door
+  <sprite>k__BackingField: {fileID: 21300000, guid: c6edb678edf3c1f43a0eb5a5a01d93b5, type: 3}
+  <prefab>k__BackingField: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
+  <action>k__BackingField: {fileID: 0}

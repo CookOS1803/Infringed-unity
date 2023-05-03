@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
 
-public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private ItemData item;
     private Canvas canvas;
@@ -15,6 +15,7 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
     private Image image;
     private Vector2 initialPosition;
     private ItemSlot slot;
+    private ItemDescription itemDescription;
     public Transform parent => slot.transform;
     public int index => slot.index;
     public Inventory inventory { get; set; }
@@ -32,6 +33,8 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         canvasGroup = GetComponent<CanvasGroup>();
         image = GetComponent<Image>();
         slot = GetComponentInParent<ItemSlot>();
+        itemDescription = GetComponentInChildren<ItemDescription>();
+        itemDescription.gameObject.SetActive(false);
 
         initialPosition = rectTransform.anchoredPosition;
     }
@@ -41,6 +44,8 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         item = data;
         image.enabled = true;
         image.sprite = data.sprite;
+
+        itemDescription.UpdateInfo(data.name, data.description);
     }
 
     public void UnsetItem()
@@ -86,5 +91,15 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
         Instantiate(item.prefab, spawnPosition, Quaternion.identity);
         inventory[index] = null;
 
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        itemDescription.gameObject.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        itemDescription.gameObject.SetActive(false);
     }
 }
