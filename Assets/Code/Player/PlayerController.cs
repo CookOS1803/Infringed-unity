@@ -45,37 +45,23 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         input = GetComponent<PlayerInput>();
 
         input.actions["Fire"].performed += OnAttack;
-        input.actions["UseItem"].performed += obj => inventory.UseItem();
+        input.actions["UseItem"].performed += OnUseItem;
         input.actions["Interact"].performed += OnInteract;
-
-        input.actions["SelectItem"].performed += obj => {
-            int value = (int)obj.ReadValue<float>();
-
-            if (value != 0)            
-                inventory.selectedSlot = value - 1;
-            
-        };
-        input.actions["SwitchItem"].performed += obj => {
-            int value = (int)obj.ReadValue<float>();
-
-            if (value > 0)
-            {
-                inventory.selectedSlot = (inventory.selectedSlot + 1) % inventory.size;
-            }
-            else
-            {
-                inventory.selectedSlot = (inventory.size + inventory.selectedSlot - 1) % inventory.size;
-            }
-        };
-
-        input.actions["Crouch"].performed += obj => isCrouching = true;
-        input.actions["Crouch"].canceled += obj => isCrouching = false;
+        input.actions["SelectItem"].performed += OnSelectItem;
+        input.actions["SwitchItem"].performed += OnSwitchItem;
+        input.actions["Crouch"].performed += OnCrouchPerformed;
+        input.actions["Crouch"].canceled += OnCrouchCanceled;
     }
 
     private void OnAttack(InputAction.CallbackContext obj)
     {
         if (canMove && !isDying)
             Attack();
+    }
+
+    private void OnUseItem(InputAction.CallbackContext obj)
+    {
+        inventory.UseItem();
     }
 
     private void OnExitHideout(InputAction.CallbackContext obj)
@@ -86,6 +72,38 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     private void OnInteract(InputAction.CallbackContext obj)
     {
         Interact();
+    }
+
+    private void OnSelectItem(InputAction.CallbackContext obj)
+    {
+        int value = (int)obj.ReadValue<float>();
+
+        if (value != 0)            
+            inventory.selectedSlot = value - 1;            
+    }
+
+    private void OnSwitchItem(InputAction.CallbackContext obj)
+    {
+        int value = (int)obj.ReadValue<float>();
+
+        if (value > 0)
+        {
+            inventory.selectedSlot = (inventory.selectedSlot + 1) % inventory.size;
+        }
+        else
+        {
+            inventory.selectedSlot = (inventory.size + inventory.selectedSlot - 1) % inventory.size;
+        }
+    }
+
+    private void OnCrouchPerformed(InputAction.CallbackContext obj)
+    {
+        isCrouching = true;
+    }
+
+    private void OnCrouchCanceled(InputAction.CallbackContext obj)
+    {
+        isCrouching = false;
     }
 
     public void ExitHideout()
@@ -259,7 +277,14 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     {   
         onDeath?.Invoke();
 
-        input.actions.Disable();
+        input.actions["Fire"].performed -= OnAttack;
+        input.actions["UseItem"].performed -= OnUseItem;
+        input.actions["Interact"].performed -= OnInteract;
+        input.actions["SelectItem"].performed -= OnSelectItem;
+        input.actions["SwitchItem"].performed -= OnSwitchItem;
+        input.actions["Crouch"].performed -= OnCrouchPerformed;
+        input.actions["Crouch"].canceled -= OnCrouchCanceled;
+
         enabled = false;
     }
 }

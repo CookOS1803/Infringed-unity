@@ -124,6 +124,7 @@ public class VisionController : MonoBehaviour
             if (!aiManager.alarm && noticeClock < noticeTime)
             {
                 enemyController.canMove = false;
+                enemyController.enemyState = EnemyState.LookingAtPlayer;
                 transform.LookAt(playerRef.transform);
 
                 noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, playerRef.transform.position));
@@ -148,16 +149,18 @@ public class VisionController : MonoBehaviour
     {
         if (!aiManager.alarm)
         {
-            while (noticeClock > 0f)
+            while (noticeClock > 0f && !isSeeingPlayer)
             {
                 noticeClock -= Time.deltaTime * unseeFactor;
 
                 yield return new WaitForEndOfFrame();
             }
 
-            ResetNoticeClock();
-
-            enemyController.canMove = true;
+            if (!isSeeingPlayer)
+            {
+                ResetNoticeClock();
+                enemyController.canMove = true;
+            }
         }
     }
 

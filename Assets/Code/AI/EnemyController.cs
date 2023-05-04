@@ -5,7 +5,7 @@ using Zenject;
 [System.Serializable]
 public enum EnemyState
 {
-    Patroling, HearingSound, RespondingToSound, ChasingPlayer, SeekingPlayer
+    Patroling, LookingAtPlayer, HearingSound, RespondingToSound, ChasingPlayer, SeekingPlayer
 }
 
 [RequireComponent(typeof(Health), typeof(StunController), typeof(VisionController))]
@@ -32,7 +32,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     public EnemyState enemyState
     {
         get => _enemyState;
-        private set
+        set
         {
             _enemyState = value;
 
@@ -198,6 +198,9 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void Alert()
     {
+        if (isDying)
+            return;
+
         visionController.player = playerRef.transform;
         visionController.forgetClock = 0f;
         aiManager.SoundTheAlarm();
@@ -205,11 +208,15 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void RespondToSound(Vector3 source)
     {
+        if (isDying)
+            return;
+
         soundResponder.soundSource = source;
 
         if (!aiManager.alarm)
         {
-            if (enemyState != EnemyState.HearingSound &&
+            if (enemyState != EnemyState.LookingAtPlayer &&
+                enemyState != EnemyState.HearingSound &&
                 enemyState != EnemyState.RespondingToSound)
             {
                 StopBehavior();
