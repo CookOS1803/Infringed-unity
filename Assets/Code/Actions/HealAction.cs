@@ -4,9 +4,11 @@ using UnityEngine;
 public class HealAction : ItemAction
 {
     [SerializeField] private int amount = 20;
+    [SerializeField] private AudioClip audioClip;
 
-    override public void Use(Transform actor)
+    override public void Use(Context context)
     {
-        actor.GetComponent<Health>().TakeHealing(amount);
+        context.actor.GetComponent<Health>().TakeHealing(amount);
+        AudioSource.PlayClipAtPoint(audioClip, context.actor.position);
     }
 }

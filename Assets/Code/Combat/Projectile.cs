@@ -2,23 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public abstract class Projectile : MonoBehaviour
 {
-    [SerializeField] private int damage = 50;
-    [SerializeField] private float speed = 4f;
-    [SerializeField, Min(0f)] private float lifeTime = 5f;
-    [SerializeField, Min(0f)] private float stunTime = 2f;
-    [SerializeField, Min(0f)] private float soundRadius = 6f;
-    private float lifeClock = 0f;
+    [SerializeField] protected int damage = 50;
+    [SerializeField] protected float speed = 4f;
+    [SerializeField, Min(0f)] protected float lifeTime = 5f;
+    [SerializeField, Min(0f)] protected float stunTime = 2f;
+    [SerializeField, Min(0f)] protected float soundRadius = 6f;
+    [SerializeField, Min(0f)] protected Vector3 spinningVelocity;
+    protected float lifeClock = 0f;
+
+    public Vector3 target { get; set; }
 
     void Update()
     {
-        transform.Translate(0f, 0f, speed * Time.deltaTime);
+        Move();
+
+        transform.Rotate(spinningVelocity * Time.deltaTime);
 
         lifeClock += Time.deltaTime;
         if (lifeClock > lifeTime)
             Destroy(gameObject);
     }
+
+    protected abstract void Move();
 
     protected virtual void OnTriggerEnter(Collider other)
     {

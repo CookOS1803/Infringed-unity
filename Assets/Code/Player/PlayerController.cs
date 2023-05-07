@@ -40,8 +40,6 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
         health.onDeath += Die;
 
-        inventory.owner = transform;
-
         input = GetComponent<PlayerInput>();
 
         input.actions["Fire"].performed += OnAttack;
@@ -61,7 +59,10 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
     private void OnUseItem(InputAction.CallbackContext obj)
     {
-        inventory.UseItem();
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, floorMask.value);
+
+        inventory.UseItem(new(transform, floorHit.point));
     }
 
     private void OnExitHideout(InputAction.CallbackContext obj)

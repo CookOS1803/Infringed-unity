@@ -10,7 +10,6 @@ public class Inventory : IEnumerable
     public event Action onChange;
     public event Action onSlotSelection;
     
-    public Transform owner { get; set; }
     public int size => items.Length;
     public int selectedSlot
     {
@@ -85,7 +84,7 @@ public class Inventory : IEnumerable
         return i >= 0 && i < items.Length;
     }
 
-    public void UseItem()
+    public void UseItem(ItemAction.Context context)
     {
         if (items[selectedSlot] == null)
             return;
@@ -94,7 +93,7 @@ public class Inventory : IEnumerable
 
         if (action != null)
         {
-            action.Use(owner);
+            action.Use(context);
             items[selectedSlot] = null;
 
             onChange?.Invoke();

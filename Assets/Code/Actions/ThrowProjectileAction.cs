@@ -7,8 +7,11 @@ public class ThrowProjectileAction : ItemAction
 {
     [SerializeField] private GameObject projectilePrefab;
 
-    public override void Use(Transform actor)
+    public override void Use(Context context)
     {
-        Instantiate(projectilePrefab, actor.position + Vector3.up + actor.forward * 0.5f, actor.rotation);
+        var projectile = Instantiate(projectilePrefab, context.actor.position + Vector3.up + context.actor.forward * 0.5f, context.actor.rotation)
+                        .GetComponent<Projectile>();
+        
+        projectile.target = context.target;
     }
 }
