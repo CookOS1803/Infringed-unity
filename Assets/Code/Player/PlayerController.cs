@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     [SerializeField] private float crouchingSpeedFactor = 0.3f;
     [SerializeField, Min(0f)] private float itemPickupRadius = 5f;
     [SerializeField, Min(0f)] private float soundRadius = 6f;
+    [Inject] private CustomAudio customAudio;
     [Inject(Id = CustomLayer.Floor)] private LayerMask floorMask;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask interactableMask;
     [Inject(Id = CustomLayer.Enemy)] private LayerMask enemyMask;
@@ -246,6 +247,11 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         }
     }
 
+    public void OnSwingEvent()
+    {
+        AudioSource.PlayClipAtPoint(customAudio.weaponSwing, transform.position);
+    }
+
     public void OnAttackStartEvent()
     {
         weapon.StartDamaging();
@@ -287,5 +293,11 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         input.actions["Crouch"].canceled -= OnCrouchCanceled;
 
         enabled = false;
+    }
+
+    public void OnStep(AnimationEvent animationEvent) 
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+            AudioSource.PlayClipAtPoint(customAudio.GetRandomStep(), transform.position);
     }
 }

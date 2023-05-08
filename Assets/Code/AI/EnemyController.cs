@@ -21,6 +21,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
     [Inject] private PlayerController playerRef;
+    [Inject] private CustomAudio customAudio;
     private EnemyState _enemyState;
     private NavMeshAgent agent;
     private Animator animator;
@@ -172,6 +173,11 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         animator.SetBool("isAlarmed", false);
     }
 
+    public void OnSwingEvent()
+    {
+        AudioSource.PlayClipAtPoint(customAudio.weaponSwing, transform.position);
+    }
+
     public void OnAttackStartEvent()
     {
         weapon.StartDamaging();
@@ -283,5 +289,10 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         if (droppedItem != null)
             Instantiate(droppedItem.prefab, transform.position + Vector3.up, Quaternion.identity);
         Destroy(gameObject);
+    }
+
+    public void OnStep()
+    {
+        AudioSource.PlayClipAtPoint(customAudio.GetRandomStep(), transform.position);
     }
 }

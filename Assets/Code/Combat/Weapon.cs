@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float damageRadius = 0.5f;
     [SerializeField] private Vector3 secondPoint;
     [SerializeField] private LayerMask reactingLayer;
+    [Zenject.Inject] private CustomAudio customAudio;
     private bool isDamaging = false;
 
     public void StartDamaging()
@@ -37,8 +38,11 @@ public class Weapon : MonoBehaviour
 
     protected virtual void OnHit(Collider collider)
     {
-        var health = collider.GetComponent<Health>();
-        health?.TakeDamage(damage);
+        if (collider.TryGetComponent<Health>(out var health))
+        {
+            AudioSource.PlayClipAtPoint(customAudio.weaponHit, transform.position);
+            health.TakeDamage(damage);
+        }
 
         var particles = collider.GetComponent<ParticleSystem>();
 

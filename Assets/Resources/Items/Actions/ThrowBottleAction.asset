@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f2a519485067144c9607a0eab571c23, type: 3}
-  m_Name: ThrowKnifeAction
+  m_Name: ThrowBottleAction
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 6902241515958572956, guid: 99412bc79a25d6d40bec31ff898147d3, type: 3}
+  projectilePrefab: {fileID: 6902241515958572956, guid: d3158e0001028914d88d9ebcbfaefd49, type: 3}
+  audioClip: {fileID: 8300000, guid: 1120847b688d0614f9268772b0bd4cf1, type: 3}

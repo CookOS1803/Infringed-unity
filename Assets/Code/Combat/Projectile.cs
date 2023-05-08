@@ -10,6 +10,7 @@ public abstract class Projectile : MonoBehaviour
     [SerializeField, Min(0f)] protected float stunTime = 2f;
     [SerializeField, Min(0f)] protected float soundRadius = 6f;
     [SerializeField, Min(0f)] protected Vector3 spinningVelocity;
+    [Zenject.Inject] protected CustomAudio customAudio;
     protected float lifeClock = 0f;
 
     public Vector3 target { get; set; }
@@ -29,17 +30,17 @@ public abstract class Projectile : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        var health = other.GetComponent<Health>();
-        health?.TakeDamage(damage);
-
-        var stunner = other.GetComponent<StunController>();
-        stunner?.Stun(stunTime);
-
-        var particles = other.GetComponent<ParticleSystem>();
-        if (particles != null)
+        if (other.TryGetComponent<Health>(out var health))
         {
-            particles.Emit(6);
+            AudioSource.PlayClipAtPoint(customAudio.weaponHit, transform.position);
+            health.TakeDamage(damage);
         }
+
+        if (other.TryGetComponent<StunController>(out var stunner))
+            stunner.Stun(stunTime);
+
+        if (other.TryGetComponent<ParticleSystem>(out var particles))
+            particles.Emit(6);
 
         SoundUtil.SpawnSound(transform.position, soundRadius);
 
