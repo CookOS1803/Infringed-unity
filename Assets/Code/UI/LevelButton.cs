@@ -9,6 +9,7 @@ public class LevelButton : MonoBehaviour
     [SerializeField] private string sceneName;
     [SerializeField] private Transform loading;
     private Button button;
+    private bool isLoading = false;
 
     private void Awake()
     {
@@ -22,6 +23,14 @@ public class LevelButton : MonoBehaviour
         StartCoroutine(LoadingScene());
     }
 
+    private void Update()
+    {
+        if (!isLoading)
+            return;
+
+        loading.eulerAngles += Vector3.forward * 360 * Time.deltaTime;
+    }
+
     private IEnumerator LoadingScene()
     {
         loading.gameObject.SetActive(true);
@@ -32,15 +41,12 @@ public class LevelButton : MonoBehaviour
                 button.enabled = false;
         }
 
-        yield return new WaitForEndOfFrame();
-
         var task = SceneManager.LoadSceneAsync(sceneName);
+        isLoading = true;
 
         while (!task.isDone)
         {
-            loading.eulerAngles += Vector3.forward * 360 * Time.deltaTime;
-
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
     }
