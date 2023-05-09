@@ -14,7 +14,7 @@ public static class SoundUtil
             
             if (Physics.Linecast(soundSource, collider.transform.position, out var hit) && hit.collider != collider)           
             {
-                if (Vector3.Distance(soundSource, collider.transform.position) < radius * 0.5f)
+                if (Vector3.Distance(soundSource, collider.transform.position) < radius * 0.7f)
                     listener.RespondToSound(soundSource);
             }
             else

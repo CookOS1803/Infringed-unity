@@ -1,29 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Zenject;
 
 public class RestartButton : MonoBehaviour
 {
-    [Inject] private PlayerController player;
-    private GameObject restartButton;
-
-    void Start()
+    private void Awake()
     {
-        restartButton = GetComponentInChildren<Button>().gameObject;
-        player.onDeath += ActivateRestartButton;
-
-        restartButton.SetActive(false);
+        GetComponent<Button>().onClick.AddListener(RestartGame);
     }
 
-    void ActivateRestartButton()
-    {
-        restartButton.SetActive(true);
-    }
-
-    public void RestartGame()
+    private void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

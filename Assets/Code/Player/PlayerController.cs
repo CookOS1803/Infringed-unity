@@ -14,10 +14,10 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     [SerializeField] private float crouchingSpeedFactor = 0.3f;
     [SerializeField, Min(0f)] private float itemPickupRadius = 5f;
     [SerializeField, Min(0f)] private float soundRadius = 6f;
+    [SerializeField] private OnPlayerDeathActivator menu;
     [Inject] private CustomAudio customAudio;
     [Inject(Id = CustomLayer.Floor)] private LayerMask floorMask;
     [Inject(Id = CustomLayer.Interactable)] private LayerMask interactableMask;
-    [Inject(Id = CustomLayer.Enemy)] private LayerMask enemyMask;
     private PlayerAnimator playerAnimator;
     private CharacterController characterController;
     private PlayerInput input;
@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         input.actions["SwitchItem"].performed += OnSwitchItem;
         input.actions["Crouch"].performed += OnCrouchPerformed;
         input.actions["Crouch"].canceled += OnCrouchCanceled;
+        input.actions["Menu"].performed += OnMenu;
     }
 
     private void OnAttack(InputAction.CallbackContext obj)
@@ -106,6 +107,11 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     private void OnCrouchCanceled(InputAction.CallbackContext obj)
     {
         isCrouching = false;
+    }
+
+    private void OnMenu(InputAction.CallbackContext obj)
+    {
+        menu.SwitchStatus();
     }
 
     public void ExitHideout()
