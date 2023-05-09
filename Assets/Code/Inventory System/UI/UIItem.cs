@@ -75,6 +75,8 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
             rectTransform.anchoredPosition = initialPosition;
             return;
         }
+        rectTransform.anchoredPosition = initialPosition;
+        canvasGroup.blocksRaycasts = true;
         
         RaycastHit hit;
         Vector3 spawnPosition;

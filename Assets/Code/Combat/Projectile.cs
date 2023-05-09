@@ -11,6 +11,7 @@ public abstract class Projectile : MonoBehaviour
     [SerializeField, Min(0f)] protected float soundRadius = 6f;
     [SerializeField, Min(0f)] protected Vector3 spinningVelocity;
     [Zenject.Inject] protected CustomAudio customAudio;
+    [SerializeField] protected AudioClip hitClip;
     protected float lifeClock = 0f;
 
     public Vector3 target { get; set; }
@@ -30,6 +31,9 @@ public abstract class Projectile : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
+        if (hitClip != null)
+            AudioSource.PlayClipAtPoint(hitClip, transform.position);
+
         if (other.TryGetComponent<Health>(out var health))
         {
             AudioSource.PlayClipAtPoint(customAudio.weaponHit, transform.position);

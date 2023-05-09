@@ -11,7 +11,12 @@ public class OnPlayerDeathActivator : MonoBehaviour
     {
         SetStatus(false);
 
-        player.onDeath += () => SetStatus(true); 
+        player.onDeath += OnActivate; 
+    }
+
+    private void OnActivate()
+    {
+        SetStatus(true);
     }
 
     private void SetStatus(bool status)
@@ -26,5 +31,10 @@ public class OnPlayerDeathActivator : MonoBehaviour
     {
         currentStatus = !currentStatus;
         SetStatus(currentStatus);
+    }
+
+    private void OnDestroy()
+    {
+        player.onDeath -= OnActivate;
     }
 }
