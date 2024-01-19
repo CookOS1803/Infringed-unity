@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-[System.Serializable]
+[System.Serializable, System.Obsolete]
 public class Patroler
 {
     [SerializeField, Min(0f)] private float waitTime = 2f;

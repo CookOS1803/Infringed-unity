@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
+[Obsolete]
 public class VisionController : MonoBehaviour
 {
     [SerializeField, Min(0f)] private float _distanceOfView = 10f;
-    [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;    
+    [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;
     [SerializeField, Min(0f)] private float noticeTime = 2f;
     [SerializeField, Min(0f)] private float forgetTime = 1f;
     [SerializeField, Min(0f)] private float unseeFactor = 0.5f;
@@ -123,7 +124,7 @@ public class VisionController : MonoBehaviour
         {
             if (!aiManager.alarm && noticeClock < noticeTime)
             {
-                enemyController.canMove = false;
+                enemyController.CanMove = false;
                 enemyController.enemyState = EnemyState.LookingAtPlayer;
                 transform.LookAt(playerRef.transform);
 
@@ -159,7 +160,7 @@ public class VisionController : MonoBehaviour
             if (!isSeeingPlayer)
             {
                 ResetNoticeClock();
-                enemyController.canMove = true;
+                enemyController.CanMove = true;
             }
         }
     }

@@ -8,6 +8,7 @@ public enum EnemyState
     Patroling, LookingAtPlayer, HearingSound, RespondingToSound, ChasingPlayer, SeekingPlayer
 }
 
+[System.Obsolete]
 [RequireComponent(typeof(Health), typeof(StunController), typeof(VisionController))]
 public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 {
@@ -42,7 +43,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     }
     public StunController stunController { get; private set; }
     public VisionController visionController { get; private set; }
-    public bool canMove { get => !agent.isStopped; set => agent.isStopped = !value; }
+    public bool CanMove { get => !agent.isStopped; set => agent.isStopped = !value; }
 
     public event System.Action onStateChange;
 
@@ -55,13 +56,13 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
         stunController = GetComponent<StunController>();
         stunController.onStunStart += () => {
-            canMove = false;
+            CanMove = false;
             animator.SetBool("isStunned", true);
             StopBehavior();
             visionController.StopWatching();
         };
         stunController.onStunEnd += () => {
-            canMove = true;
+            CanMove = true;
             animator.SetBool("isStunned", false);
             visionController.StartWatching();
             Alert();
@@ -126,7 +127,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
     
     private void AttackPlayer()
     {
-        if (aiManager.player != null && canMove && Physics.OverlapSphere(transform.position, attackRange, playerLayer.value).Length != 0)
+        if (aiManager.player != null && CanMove && Physics.OverlapSphere(transform.position, attackRange, playerLayer.value).Length != 0)
         {
             transform.LookAt(aiManager.player);
             animator.SetTrigger("attack");
@@ -193,7 +194,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
         if (isDying)
             return;
 
-        canMove = false;
+        CanMove = false;
         isDying = true;
 
         StopBehavior();

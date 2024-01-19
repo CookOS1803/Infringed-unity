@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     private bool isDying = false;
     private bool isCrouching = false;
     public Hideout currentHideout { get; private set; }
-    public bool canMove { get; set; } = true;
+    public bool CanMove { get; set; } = true;
 
     [Inject] public Inventory inventory { get; private set; }
 
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
 
     private void OnAttack(InputAction.CallbackContext obj)
     {
-        if (canMove && !isDying)
+        if (CanMove && !isDying)
             Attack();
     }
 
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
         {
             CalculateGravity();
             
-            if (canMove && !isDying)
+            if (CanMove && !isDying)
             {
                 Move();
                 Turn();
@@ -272,7 +272,7 @@ public class PlayerController : MonoBehaviour, IMoveable, IMortal
     {
         gameObject.layer = 0;
         isDying = true;
-        canMove = false;
+        CanMove = false;
         playerAnimator.Die();
     }
 

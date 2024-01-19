@@ -24,7 +24,7 @@ public class SoundResponder
     {
         hearClock = 0f;
 
-        enemy.canMove = false;
+        enemy.CanMove = false;
 
         while (hearClock < hearingTime)
         {
@@ -36,7 +36,7 @@ public class SoundResponder
             yield return new WaitForEndOfFrame();
         }
 
-        enemy.canMove = true;
+        enemy.CanMove = true;
 
         callback?.Invoke();
     }

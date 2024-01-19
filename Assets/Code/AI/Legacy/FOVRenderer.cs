@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Obsolete]
 public class FOVRenderer : MonoBehaviour
 {
     [SerializeField, Min(2)] private int rayCount = 2;

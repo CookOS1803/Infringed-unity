@@ -2454,6 +2454,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b2b2b2813d5e44b8a3637c3c9780a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &464240349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464240327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3217ed4719ed62f47b8781a6fee45798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DistanceOfView>k__BackingField: 10
+  <FieldOfView>k__BackingField: 90
 --- !u!1 &479996392
 GameObject:
   m_ObjectHideFlags: 0
@@ -5041,7 +5055,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 821602370, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 821602372, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: m_Enabled
@@ -5115,7 +5129,26 @@ PrefabInstance:
     - {fileID: 384520036, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
     - {fileID: 719338382334657635, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
     - {fileID: 7524925564644468887, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+    - {fileID: 821602372, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+--- !u!1 &951012390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 821602370, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+  m_PrefabInstance: {fileID: 951012389}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &951012391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951012390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16d7e99526d30d94dbd6d5385e839c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rayCount: 50
 --- !u!1 &957651479
 GameObject:
   m_ObjectHideFlags: 0

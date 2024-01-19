@@ -1,4 +1,4 @@
 public interface IMoveable
 {
-    bool canMove { get; set; }
+    bool CanMove { get; set; }
 }
