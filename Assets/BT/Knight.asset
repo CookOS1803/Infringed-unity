@@ -1,43 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8000122465398253859
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b5e4c7bb706ee14eae9c07a7644a37a, type: 3}
-  m_Name: Repeater
-  m_EditorClassIdentifier: 
-  preOrderIndex: 7
-  title: 
-  comment: 
-  bonsaiNodePosition: {x: 130.5, y: 310.5}
-  child: {fileID: 9066856482127856454}
-  loopCount: 1
-  infiniteLoop: 1
---- !u!114 &-7876127015809636936
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23dc799858adc6f4cb56e9baf9090dc8, type: 3}
-  m_Name: Interruptor
-  m_EditorClassIdentifier: 
-  preOrderIndex: 9
-  title: 
-  comment: 
-  bonsaiNodePosition: {x: 124, y: 646.5}
-  returnSuccess: 0
-  linkedInterruptables:
-  - {fileID: -2941678015607061723}
 --- !u!114 &-7807803445675756090
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -109,25 +71,6 @@ MonoBehaviour:
   comment: 
   bonsaiNodePosition: {x: -52, y: -1.5}
   children: []
---- !u!114 &-3055346557127088637
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6290070e5b743314084c4bf4d7201fe5, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: 
-  preOrderIndex: 6
-  title: 
-  comment: 
-  bonsaiNodePosition: {x: -52.5, y: 610.5}
-  timer:
-    interval: 3
-    deviation: 0
 --- !u!114 &-3042088016451530791
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -198,14 +141,11 @@ MonoBehaviour:
   - {fileID: 714900877246390125}
   - {fileID: 843680348370867283}
   - {fileID: 2729724083958982081}
-  - {fileID: -3055346557127088637}
-  - {fileID: -8000122465398253859}
-  - {fileID: 9066856482127856454}
-  - {fileID: -7876127015809636936}
+  - {fileID: 4910760501915636940}
   blackboard: {fileID: 5418526189785433030}
   actor: {fileID: 0}
-  panPosition: {x: -20, y: -358}
-  zoomPosition: {x: 1.9110302, y: 1.9110302}
+  panPosition: {x: -4, y: -358}
+  zoomPosition: {x: 1.8698429, y: 1.8698429}
   unusedNodes: []
 --- !u!114 &714900877246390125
 MonoBehaviour:
@@ -226,7 +166,7 @@ MonoBehaviour:
   children:
   - {fileID: 843680348370867283}
   - {fileID: 2729724083958982081}
-  - {fileID: -3055346557127088637}
+  - {fileID: 4910760501915636940}
 --- !u!114 &843680348370867283
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -262,7 +202,6 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -101, y: 130.5}
   children:
   - {fileID: -2941678015607061723}
-  - {fileID: -8000122465398253859}
 --- !u!114 &2729724083958982081
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -298,6 +237,25 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -191, y: -205.5}
   children:
   - {fileID: 0}
+--- !u!114 &4910760501915636940
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6290070e5b743314084c4bf4d7201fe5, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: 
+  preOrderIndex: 6
+  title: 
+  comment: 
+  bonsaiNodePosition: {x: 19.5, y: 610.5}
+  timer:
+    interval: 3
+    deviation: 0
 --- !u!114 &5418526189785433030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -346,22 +304,3 @@ MonoBehaviour:
   title: 
   comment: 
   bonsaiNodePosition: {x: -42, y: 46.5}
---- !u!114 &9066856482127856454
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dffab47ead4072c4caa8cb221cb4f5b9, type: 3}
-  m_Name: SeePlayerCondition
-  m_EditorClassIdentifier: 
-  preOrderIndex: 8
-  title: 
-  comment: 
-  bonsaiNodePosition: {x: 87.5, y: 454.5}
-  child: {fileID: -7876127015809636936}
-  abortType: 2
-  _invert: 0
