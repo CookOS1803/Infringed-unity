@@ -8,18 +8,22 @@ using UnityEngine;
 namespace Infringed.AI
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class RotatePatrolerTask : Task
+    public class RotatePatroler : Task
     {
-        [SerializeField] private bool _changePoint = true;
         private Patroler _patroler;
+        private VisionController _visionController;
 
         public override void OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
+            _visionController = Actor.GetComponent<VisionController>();
         }
 
         public override Status Run()
         {
+            if (_visionController.IsPlayerInView)
+                return Status.Failure;
+
             var desiredRotation = _patroler.CurrentPatrolPoint.rotation;
 
             if (_patroler.transform.rotation != desiredRotation)
@@ -29,8 +33,7 @@ namespace Infringed.AI
                 return Status.Running;
             }
 
-            if (_changePoint)
-                _patroler.ChangePoint();
+            _patroler.ChangePoint();
 
             return Status.Success;
         }
@@ -38,9 +41,6 @@ namespace Infringed.AI
         public override void Description(StringBuilder builder)
         {
             builder.Append("Rotate along patrol point");
-
-            if (_changePoint)
-                builder.Append(", then change it");
         }
     }
 }

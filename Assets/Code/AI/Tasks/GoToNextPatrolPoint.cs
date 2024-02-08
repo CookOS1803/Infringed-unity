@@ -8,14 +8,15 @@ using UnityEngine;
 namespace Infringed.AI
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class PatrolTask : Task
+    public class GoToNextPatrolPoint : Task
     {
-        [SerializeField] private bool _changePoint = false;
         private Patroler _patroler;
+        private VisionController _visionController;
 
         public override void OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
+            _visionController = Actor.GetComponent<VisionController>();
         }
 
         public override void OnEnter()
@@ -25,21 +26,13 @@ namespace Infringed.AI
 
         public override Status Run()
         {
+            if (_visionController.IsPlayerInView)
+                return Status.Failure;
+
             if (_patroler.IsOnTheWay)
-                return Status.Running;            
-
-            if (_changePoint)
-                _patroler.ChangePoint();
-
+                return Status.Running;
+            
             return Status.Success;
-        }
-    
-        public override void Description(StringBuilder builder)
-        {
-            builder.Append("Go to next patrol point");
-
-            if (_changePoint)
-                builder.Append(", then change it");
         }
     }
 }
