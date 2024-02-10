@@ -11,22 +11,22 @@ namespace Infringed.AI
     public class RotatePatroler : Task
     {
         private Patroler _patroler;
-        private VisionController _visionController;
+        private VisionController _vision;
 
         public override void OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
-            _visionController = Actor.GetComponent<VisionController>();
+            _vision = Actor.GetComponent<VisionController>();
         }
 
         public override Status Run()
         {
-            if (_visionController.IsPlayerInView)
+            if (_vision.IsPlayerInView)
                 return Status.Failure;
 
             var desiredRotation = _patroler.CurrentPatrolPoint.rotation;
 
-            if (_patroler.transform.rotation != desiredRotation)
+            if (_vision.NoticeClock > _vision.SuspicionTime)
             {
                 _patroler.transform.rotation = Quaternion.RotateTowards(_patroler.transform.rotation, desiredRotation, _patroler.AngularSpeed * Time.deltaTime);
 

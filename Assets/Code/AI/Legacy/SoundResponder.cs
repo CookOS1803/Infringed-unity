@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[System.Serializable]
+[System.Serializable, System.Obsolete]
 public class SoundResponder
 {
     [SerializeField] private float waitTime = 2f;

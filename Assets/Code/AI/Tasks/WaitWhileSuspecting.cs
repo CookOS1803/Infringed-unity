@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+using UnityEngine;
 using Bonsai;
 using Bonsai.Core;
-using Bonsai.Standard;
-using UnityEngine;
 
 namespace Infringed.AI
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class PatrolWait : Wait
+    public class WaitWhileSuspecting : Task
     {
         private VisionController _vision;
 
@@ -20,10 +16,13 @@ namespace Infringed.AI
 
         public override Status Run()
         {
-            if (_vision.NoticeClock > _vision.SuspicionTime)
-                return Status.Failure;
+            if (_vision.NoticeClock > 0)
+                return Status.Success;
+            
+            Blackboard.Set("Is Suspecting", false);
 
-            return base.Run();
+            return Status.Failure;
         }
+        
     }
 }

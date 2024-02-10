@@ -1,6 +1,7 @@
 using UnityEngine;
 using Zenject;
 
+[System.Obsolete]
 public class PlayerWeapon : Weapon
 {
     [SerializeField] private float backstabDot = 0.5f;

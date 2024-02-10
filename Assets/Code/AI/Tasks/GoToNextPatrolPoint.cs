@@ -11,12 +11,12 @@ namespace Infringed.AI
     public class GoToNextPatrolPoint : Task
     {
         private Patroler _patroler;
-        private VisionController _visionController;
+        private VisionController _vision;
 
         public override void OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
-            _visionController = Actor.GetComponent<VisionController>();
+            _vision = Actor.GetComponent<VisionController>();
         }
 
         public override void OnEnter()
@@ -26,7 +26,7 @@ namespace Infringed.AI
 
         public override Status Run()
         {
-            if (_visionController.IsPlayerInView)
+            if (_vision.NoticeClock > _vision.SuspicionTime)
                 return Status.Failure;
 
             if (_patroler.IsOnTheWay)

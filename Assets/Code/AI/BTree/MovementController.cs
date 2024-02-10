@@ -21,6 +21,7 @@ namespace Infringed.AI
         public void SetDestination(Vector3 destination)
         {
             _agent.SetDestination(destination);
+            
         }
     }
 }

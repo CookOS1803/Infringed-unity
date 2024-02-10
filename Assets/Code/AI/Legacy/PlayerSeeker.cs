@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-[System.Serializable]
+[System.Serializable, System.Obsolete]
 public class PlayerSeeker
 {
     [SerializeField, Min(0f)] private float waitTime = 2f;

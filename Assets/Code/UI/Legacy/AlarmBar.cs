@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Zenject;
 
+[System.Obsolete]
 public class AlarmBar : MonoBehaviour
 {
     [Inject] private AIManager aiManager;

@@ -2,37 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoticeBar : MonoBehaviour
+namespace Infringed.AI
 {
-    private SpriteRenderer sprite;
-    private SpriteRenderer parentSprite;
-    private VisionController enemy;
-
-    void Start()
+    public class NoticeBar : MonoBehaviour
     {
-        sprite = GetComponent<SpriteRenderer>();
-        parentSprite = transform.parent.GetComponent<SpriteRenderer>();
-        enemy = GetComponentInParent<VisionController>();
+        [SerializeField] private SpriteRenderer _fillerSprite;
+        [SerializeField] private SpriteRenderer _backgroundSprite;
+        [SerializeField] private VisionController _vision;
 
-        enemy.onNoticeClockChange += UpdateBar;
-        enemy.onNoticeClockReset += HideBar;
-    }
+        private void Update()
+        {
+            if (_vision.NoticeClock > 0f)
+                _UpdateBar();
+            else
+                _HideBar();
+        }
 
-    void Update()
-    {
-        
-    }
+        private void _UpdateBar()
+        {
+            _fillerSprite.enabled = true;
+            _backgroundSprite.enabled = true;
+            _fillerSprite.size = new Vector2(_vision.NoticeClock / _vision.NoticeTime, _fillerSprite.size.y);
+        }
 
-    void UpdateBar()
-    {
-        sprite.enabled = true;
-        parentSprite.enabled = true;
-        sprite.size = new Vector2(enemy.normalizedNoticeClock, sprite.size.y);
-    }
-
-    void HideBar()
-    {
-        sprite.enabled = false;
-        parentSprite.enabled = false;
+        private void _HideBar()
+        {
+            _fillerSprite.enabled = false;
+            _backgroundSprite.enabled = false;
+        }
     }
 }
