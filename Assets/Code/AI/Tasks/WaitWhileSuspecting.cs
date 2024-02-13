@@ -10,15 +10,21 @@ namespace Infringed.AI
     {
         [SerializeField] private float _time = 3f;
         private SuspicionController _suspicion;
+        private VisionController _vision;
 
         public override void OnStart()
         {
             Blackboard.Set("Suspicion Clock", 0f);
             _suspicion = Actor.GetComponent<SuspicionController>();
+            _vision = Actor.GetComponent<VisionController>();
         }
 
         public override Status Run()
         {
+            if (_vision.IsPlayerInView)
+                return Status.Failure;
+
+
             var clock = Blackboard.Get<float>("Suspicion Clock");
             if (clock < _time)
             {
@@ -30,7 +36,7 @@ namespace Infringed.AI
             Blackboard.Set("Suspicion Clock", 0f);
             _suspicion.IsSuspecting = false;
 
-            return Status.Failure;
+            return Status.Success;
         }
         
     }
