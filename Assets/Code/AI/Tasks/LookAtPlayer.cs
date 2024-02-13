@@ -22,11 +22,11 @@ namespace Infringed.AI
             {
                 Actor.transform.LookAt(_vision.LastNoticedPlayer.transform);
                 _movement.CanMove = false;
+                Blackboard.Set("Suspicion Clock", 0f);
 
-                return Status.Success;
+                return Status.Running;
             }
 
-            
             _movement.CanMove = true;
 
             return Status.Failure;

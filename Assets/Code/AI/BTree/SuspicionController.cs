@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Infringed.AI
+{
+    [RequireComponent(typeof(VisionController))]
+    public class SuspicionController : MonoBehaviour
+    {
+        [field: SerializeField, Min(0f)] public float NoticeTime { get; private set; } = 2f;
+        [field: SerializeField, Min(0f)] public float SuspicionTime { get; private set; } = 1f;
+        [SerializeField, Min(0f)] private float _unseeFactor = 0.5f;
+        private VisionController _vision;
+
+        public float NoticeClock { get; private set; }
+        public bool IsSuspecting { get; set; }
+
+        private void Awake()
+        {
+            _vision = GetComponent<VisionController>();
+        }
+
+        private void Update()
+        {
+            if (_vision.IsPlayerInView)
+            {
+                var delta = Time.deltaTime * (_vision.DistanceOfView / Vector3.Distance(transform.position, _vision.LastNoticedPlayer.transform.position));
+                NoticeClock = Mathf.MoveTowards(NoticeClock, NoticeTime, delta);
+
+                if (NoticeClock >= SuspicionTime)
+                    IsSuspecting = true;
+            }
+            else if (!IsSuspecting)
+            {
+                NoticeClock = Mathf.MoveTowards(NoticeClock, 0, Time.deltaTime * _unseeFactor);
+            }
+        }
+
+        public void Suspect()
+        {
+            IsSuspecting = true;
+            NoticeClock = SuspicionTime;
+        }
+    }
+}

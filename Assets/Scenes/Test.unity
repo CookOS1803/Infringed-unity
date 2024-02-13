@@ -2468,6 +2468,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DistanceOfView>k__BackingField: 10
   <FieldOfView>k__BackingField: 90
+--- !u!114 &464240357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464240327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583297b1c4010894d806317db3a298b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   <NoticeTime>k__BackingField: 2
   <SuspicionTime>k__BackingField: 1
   _unseeFactor: 0.5
@@ -7826,7 +7838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fillerSprite: {fileID: 1635594867}
   _backgroundSprite: {fileID: 1780513414}
-  _vision: {fileID: 464240349}
+  _suspicion: {fileID: 464240357}
 --- !u!212 &1635594867 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 1618771204, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}

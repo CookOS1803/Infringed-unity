@@ -11,16 +11,16 @@ namespace Infringed.AI
     [BonsaiNode("Tasks/Knight/")]
     public class PatrolWait : Wait
     {
-        private VisionController _vision;
+        private SuspicionController _suspicion;
 
         public override void OnStart()
         {
-            _vision = Actor.GetComponent<VisionController>();
+            _suspicion = Actor.GetComponent<SuspicionController>();
         }
 
         public override Status Run()
         {
-            if (_vision.NoticeClock > _vision.SuspicionTime)
+            if (_suspicion.IsSuspecting)
                 return Status.Failure;
 
             return base.Run();

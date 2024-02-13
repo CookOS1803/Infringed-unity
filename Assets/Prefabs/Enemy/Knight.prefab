@@ -586,6 +586,7 @@ MonoBehaviour:
     findingRadius: 6
   soundResponder:
     waitTime: 2
+    hearingTime: 2
 --- !u!114 &719338382334657635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6586,7 +6587,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8281471688400267955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39b1f68802833194faf947615510c1a6, type: 3}
+  m_Script: {fileID: 11500000, guid: dd1e2ca63f548cd4eafaa71a8a058ea2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &341302502081947972

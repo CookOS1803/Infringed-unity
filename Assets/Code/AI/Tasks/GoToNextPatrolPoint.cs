@@ -11,22 +11,23 @@ namespace Infringed.AI
     public class GoToNextPatrolPoint : Task
     {
         private Patroler _patroler;
-        private VisionController _vision;
+        private SuspicionController _suspicion;
 
         public override void OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
-            _vision = Actor.GetComponent<VisionController>();
+            _suspicion = Actor.GetComponent<SuspicionController>();
         }
 
         public override void OnEnter()
         {
-            _patroler.GoToNextPoint();
+            if (!_suspicion.IsSuspecting)
+                _patroler.GoToNextPoint();
         }
 
         public override Status Run()
         {
-            if (_vision.NoticeClock > _vision.SuspicionTime)
+            if (_suspicion.IsSuspecting)
                 return Status.Failure;
 
             if (_patroler.IsOnTheWay)

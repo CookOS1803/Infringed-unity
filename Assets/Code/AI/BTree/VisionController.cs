@@ -9,12 +9,8 @@ namespace Infringed.AI
     {
         [field: SerializeField, Min(0f)] public float DistanceOfView { get; private set; } = 10f;
         [field: SerializeField, Range(0f, 360f)] public float FieldOfView { get; private set; } = 90f;
-        [field: SerializeField, Min(0f)] public float NoticeTime { get; private set; } = 2f;
-        [field: SerializeField, Min(0f)] public float SuspicionTime { get; private set; } = 1f;
-        [SerializeField, Min(0f)] private float _unseeFactor = 0.5f;
         [Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
         
-        public float NoticeClock { get; private set; }
         public bool IsPlayerInView { get; private set; }
         public Transform LastNoticedPlayer { get; private set; }
 
@@ -25,14 +21,7 @@ namespace Infringed.AI
 
             if (IsPlayerInView)
             {
-                LastNoticedPlayer = noticedPlayer;
-                
-                var delta = Time.deltaTime * (DistanceOfView / Vector3.Distance(transform.position, LastNoticedPlayer.transform.position));
-                NoticeClock = Mathf.MoveTowards(NoticeClock, NoticeTime, delta);
-            }
-            else
-            {
-                NoticeClock = Mathf.MoveTowards(NoticeClock, 0, Time.deltaTime * _unseeFactor);
+                LastNoticedPlayer = noticedPlayer;              
             }
         }
 

@@ -8,11 +8,11 @@ namespace Infringed.AI
     {
         [SerializeField] private SpriteRenderer _fillerSprite;
         [SerializeField] private SpriteRenderer _backgroundSprite;
-        [SerializeField] private VisionController _vision;
+        [SerializeField] private SuspicionController _suspicion;
 
         private void Update()
         {
-            if (_vision.NoticeClock > 0f)
+            if (_suspicion.NoticeClock > 0f)
                 _UpdateBar();
             else
                 _HideBar();
@@ -22,7 +22,7 @@ namespace Infringed.AI
         {
             _fillerSprite.enabled = true;
             _backgroundSprite.enabled = true;
-            _fillerSprite.size = new Vector2(_vision.NoticeClock / _vision.NoticeTime, _fillerSprite.size.y);
+            _fillerSprite.size = new Vector2(_suspicion.NoticeClock / _suspicion.NoticeTime, _fillerSprite.size.y);
         }
 
         private void _HideBar()
