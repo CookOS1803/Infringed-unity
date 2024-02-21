@@ -21,7 +21,7 @@ namespace Infringed.Editor
 
         private static void CreateNode(string name, string defaultFileName, string className)
         {
-            Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate(name, defaultFileName,
+            global::Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate(name, defaultFileName,
                   "using UnityEngine;"
                 + "\nusing Bonsai;"
                 + "\nusing Bonsai.Core;"

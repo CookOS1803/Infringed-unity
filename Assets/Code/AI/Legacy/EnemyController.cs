@@ -176,7 +176,7 @@ public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
 
     public void OnSwingEvent()
     {
-        AudioSource.PlayClipAtPoint(customAudio.weaponSwing, transform.position);
+        AudioSource.PlayClipAtPoint(customAudio.WeaponSwing, transform.position);
     }
 
     public void OnAttackStartEvent()

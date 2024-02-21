@@ -36,7 +36,7 @@ public abstract class Projectile : MonoBehaviour
 
         if (other.TryGetComponent<Health>(out var health))
         {
-            AudioSource.PlayClipAtPoint(customAudio.weaponHit, transform.position);
+            AudioSource.PlayClipAtPoint(customAudio.WeaponHit, transform.position);
             health.TakeDamage(damage);
         }
 
