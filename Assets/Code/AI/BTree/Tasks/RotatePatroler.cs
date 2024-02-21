@@ -5,7 +5,7 @@ using Bonsai;
 using Bonsai.Core;
 using UnityEngine;
 
-namespace Infringed.AI
+namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
     public class RotatePatroler : Task
@@ -21,7 +21,7 @@ namespace Infringed.AI
 
         public override Status Run()
         {
-            if (_suspicion.IsSuspecting)
+            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
                 return Status.Failure;
 
             var desiredRotation = _patroler.CurrentPatrolPoint.rotation;

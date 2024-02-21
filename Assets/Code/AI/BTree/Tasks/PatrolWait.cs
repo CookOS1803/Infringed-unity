@@ -6,7 +6,7 @@ using Bonsai.Core;
 using Bonsai.Standard;
 using UnityEngine;
 
-namespace Infringed.AI
+namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
     public class PatrolWait : Wait
@@ -20,7 +20,7 @@ namespace Infringed.AI
 
         public override Status Run()
         {
-            if (_suspicion.IsSuspecting)
+            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
                 return Status.Failure;
 
             return base.Run();

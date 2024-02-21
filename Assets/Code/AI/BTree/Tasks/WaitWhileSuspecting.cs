@@ -4,7 +4,7 @@ using Bonsai.Core;
 using Bonsai.Standard;
 using System;
 
-namespace Infringed.AI
+namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
     public class WaitWhileSuspecting : Task
@@ -25,12 +25,12 @@ namespace Infringed.AI
 
         public override void OnEnter()
         {
-            _soundResponder.OnSound += _OnSound;
+            //_soundResponder.OnSound += _OnSound;
         }
 
         public override void OnExit()
         {
-            _soundResponder.OnSound -= _OnSound;            
+            //_soundResponder.OnSound -= _OnSound;            
         }
 
         public override Status Run()

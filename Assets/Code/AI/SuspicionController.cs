@@ -26,12 +26,12 @@ namespace Infringed.AI
 
         private void OnEnable()
         {
-            _soundResponder.OnSound += _OnSound;
+            //_soundResponder.OnSound += _OnSound;
         }
 
         private void OnDisable()
         {
-            _soundResponder.OnSound -= _OnSound;
+            //_soundResponder.OnSound -= _OnSound;
         }
 
         private void Update()
@@ -65,6 +65,15 @@ namespace Infringed.AI
             }
 
             IsSuspecting = true;
+        }
+
+        public void Suspect(Vector3 source)
+        {
+            SuspectPosition = source;
+            IsSuspecting = true;
+            
+            if (NoticeClock < SuspicionTime)
+                NoticeClock = SuspicionTime;
         }
     }
 }

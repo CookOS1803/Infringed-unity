@@ -5,7 +5,7 @@ using Bonsai;
 using Bonsai.Core;
 using UnityEngine;
 
-namespace Infringed.AI
+namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
     public class GoToNextPatrolPoint : Task
@@ -21,13 +21,15 @@ namespace Infringed.AI
 
         public override void OnEnter()
         {
-            if (!_suspicion.IsSuspecting)
-                _patroler.GoToNextPoint();
+            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
+                return;
+
+            _patroler.GoToNextPoint();
         }
 
         public override Status Run()
         {
-            if (_suspicion.IsSuspecting)
+            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
                 return Status.Failure;
 
             if (_patroler.IsOnTheWay)
