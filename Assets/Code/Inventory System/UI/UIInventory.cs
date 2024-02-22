@@ -1,61 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class UIInventory : MonoBehaviour
+namespace Infringed.InventorySystem.UI
 {
-    public Inventory inventory { get; private set; }
-    [SerializeField] private Color defaultSlotColor;
-    [SerializeField] private Color selectedSlotColor;
-    private RawImage selectedSlotImage;
-
-    [Inject]
-    void SetInventory(PlayerController player)
+    public class UIInventory : MonoBehaviour
     {
-        inventory = player.inventory;        
-    }
+        public Inventory Inventory { get; private set; }
+        [SerializeField] private Color _defaultSlotColor;
+        [SerializeField] private Color _selectedSlotColor;
+        private RawImage _selectedSlotImage;
 
-    void Start()
-    {
-        RefreshInventory();
-        inventory.onChange += RefreshInventory;
-        inventory.onSlotSelection += SelectSlot;
-
-        for (int i = 0; i < inventory.size; i++)
+        [Inject]
+        private void _SetInventory(PlayerController player)
         {
-            Transform child = transform.GetChild(i);
-            child.GetComponent<ItemSlot>().index = i;
-            child.GetComponent<RawImage>().color = defaultSlotColor;
+            Inventory = player.Inventory;
         }
 
-        selectedSlotImage = transform.GetChild(inventory.selectedSlot).GetComponent<RawImage>();
-        selectedSlotImage.color = selectedSlotColor;
-    }
-
-    public void RefreshInventory()
-    {
-        for (int i = 0; i < inventory.size; i++)
+        private void Start()
         {
-            ItemSlot slot = transform.GetChild(i).GetComponent<ItemSlot>();
-            
-            if (inventory[i] == null)
+            _RefreshInventory();
+            Inventory.OnChange += _RefreshInventory;
+            Inventory.OnSlotSelection += _SelectSlot;
+
+            for (int i = 0; i < Inventory.Size; i++)
             {
-                slot.UnsetItem();
+                Transform child = transform.GetChild(i);
+                child.GetComponent<ItemSlot>().Index = i;
+                child.GetComponent<RawImage>().color = _defaultSlotColor;
             }
-            else
+
+            _selectedSlotImage = transform.GetChild(Inventory.SelectedSlot).GetComponent<RawImage>();
+            _selectedSlotImage.color = _selectedSlotColor;
+        }
+
+        private void _RefreshInventory()
+        {
+            for (int i = 0; i < Inventory.Size; i++)
             {
-                slot.SetItem(inventory[i].data);
+                ItemSlot slot = transform.GetChild(i).GetComponent<ItemSlot>();
+
+                if (Inventory[i] == null)
+                {
+                    slot.UnsetItem();
+                }
+                else
+                {
+                    slot.SetItem(Inventory[i].Data);
+                }
             }
         }
-    }
 
-    public void SelectSlot()
-    {
-        selectedSlotImage.color = defaultSlotColor;
-        
-        selectedSlotImage = transform.GetChild(inventory.selectedSlot).GetComponent<RawImage>();
-        selectedSlotImage.color = selectedSlotColor;
+        private void _SelectSlot()
+        {
+            _selectedSlotImage.color = _defaultSlotColor;
+
+            _selectedSlotImage = transform.GetChild(Inventory.SelectedSlot).GetComponent<RawImage>();
+            _selectedSlotImage.color = _selectedSlotColor;
+        }
     }
 }

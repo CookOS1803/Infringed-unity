@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Map;
+using Infringed.Player;
 using UnityEngine;
 
-public class ItemPickable : MonoBehaviour, IInteractable
+namespace Infringed.InventorySystem
 {
-    [SerializeField] private ItemData data;
-
-    public Item GetItem()
+    public class ItemPickable : MonoBehaviour, IInteractable
     {
-        return new Item(data);
-    }
+        [SerializeField] private ItemData _data;
 
-    public void DestroySelf()
-    {
-        Destroy(gameObject);
-    }
+        public Item GetItem()
+        {
+            return new Item(_data);
+        }
 
-    public void Interact(PlayerController user)
-    {
-        user.PickItem(this);
+        public void DestroySelf()
+        {
+            Destroy(gameObject);
+        }
+
+        public void Interact(PlayerController user)
+        {
+            user.PickItem(this);
+        }
     }
 }

@@ -4,39 +4,42 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
-public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
+namespace Infringed.InventorySystem.UI
 {
-    [Inject] private UIInventory uiInventory;
-    private UIItem child;
-    private Vector2 initialPosition;
-    public int index { get; set; }
-    
-    void Awake()
+    public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
-        child = GetComponentInChildren<UIItem>();
-        child.inventory = uiInventory.inventory;
-    }
+        [Inject] private UIInventory _uiInventory;
+        private UIItem _child;
+        private Vector2 _initialPosition;
+        public int Index { get; set; }
 
-    public void UnsetItem()
-    {
-        child.UnsetItem();
-    }
+        private void Awake()
+        {
+            _child = GetComponentInChildren<UIItem>();
+            _child.Inventory = _uiInventory.Inventory;
+        }
 
-    public void SetItem(ItemData item)
-    {
-        child.SetItem(item);
-    }
+        public void UnsetItem()
+        {
+            _child.UnsetItem();
+        }
 
-    public void OnDrop(PointerEventData eventData)
-    {
-        var item = eventData.pointerDrag.GetComponent<UIItem>();
+        public void SetItem(ItemData item)
+        {
+            _child.SetItem(item);
+        }
 
-        item.transform.SetParent(item.parent);
-        uiInventory.inventory.SwapSlots(index, item.index);
-    }    
+        public void OnDrop(PointerEventData eventData)
+        {
+            var item = eventData.pointerDrag.GetComponent<UIItem>();
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        uiInventory.inventory.selectedSlot = index;
+            item.transform.SetParent(item.Parent);
+            _uiInventory.Inventory.SwapSlots(Index, item.Index);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _uiInventory.Inventory.SelectedSlot = Index;
+        }
     }
 }

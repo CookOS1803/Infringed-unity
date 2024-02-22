@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using Zenject;
 

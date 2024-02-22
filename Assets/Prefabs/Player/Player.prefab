@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4029824391161710}
-  - component: {fileID: 95400535923793886}
-  - component: {fileID: 114028275694766888}
+  - component: {fileID: 2709285960229806747}
+  - component: {fileID: 7247226559215731374}
   m_Layer: 6
   m_Name: WarriorMale
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_Father: {fileID: 4065501370703234}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &95400535923793886
+--- !u!95 &2709285960229806747
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -56,7 +56,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &114028275694766888
+--- !u!114 &7247226559215731374
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2956,10 +2956,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4474688139b9a4640938371f4be0f070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  crouchingSpeedFactor: 0.3
-  itemPickupRadius: 1.68
-  soundRadius: 6
+  _speed: 5
+  _crouchingSpeedFactor: 0.3
+  _itemPickupRadius: 5
+  _soundRadius: 6
+  _menu: {fileID: 0}
 --- !u!114 &383398072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2972,8 +2973,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d624c8a2c9dd564c9c9b2114c510dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
+  _maxHealth: 100
+  _currentHealth: 0
 --- !u!198 &1783959238
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -8710,13 +8711,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 721a1487f23e0614d8171d028f73eda9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 30
-  damageRadius: 0.08
-  secondPoint: {x: 0, y: 0.006, z: 0}
-  reactingLayer:
+  _damage: 30
+  _damageRadius: 0.5
+  _secondPoint: {x: 0, y: 0, z: 0}
+  _reactingLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  backstabDot: 0.3
+    m_Bits: 0
 --- !u!1 &1892690722996672
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,7 @@
-public interface IMoveable
+namespace Infringed
 {
-    bool CanMove { get; set; }
+    public interface IMoveable
+    {
+        bool CanMove { get; set; }
+    }
 }

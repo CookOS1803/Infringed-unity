@@ -1,37 +1,43 @@
 using UnityEngine;
 using Zenject;
+using Infringed.Player;
+using Infringed.AI;
 
-[System.Obsolete]
-public class PlayerWeapon : Weapon
+namespace Infringed.Combat
 {
-    [SerializeField] private float backstabDot = 0.5f;
-    [Inject] private AIManager aiManager;
-    private Transform player;
-
-    [Inject]
-    void SetPlayer(PlayerController controller)
+    public class PlayerWeapon : Weapon
     {
-        player = controller.transform;
-    }
+        //[SerializeField] private float _backstabDot = 0.5f;
+        [Inject] private AIManager _aiManager;
+        private Transform _player;
 
-    protected override void OnHit(Collider collider)
-    {
-        var enemy = collider.GetComponent<EnemyController>();
-
-        if (enemy != null)
+        [Inject]
+        void SetPlayer(PlayerController controller)
         {
-            if (enemy.stunController.isStunned || aiManager.player == null &&
-                Vector3.Dot(enemy.transform.forward, enemy.transform.position - player.position) >= backstabDot)
-            {
-                enemy.Die();
-            }
-            else
-            {
-                enemy.Alert();
-            }
-
+            _player = controller.transform;
         }
-        
-        base.OnHit(collider);
-    }    
+
+        protected override void _OnHit(Collider collider)
+        {
+            /* Legacy code
+            var enemy = collider.GetComponent<Legacy.EnemyController>();
+
+            if (enemy != null)
+            {
+                if (enemy.stunController.isStunned || _aiManager.player == null &&
+                    Vector3.Dot(enemy.transform.forward, enemy.transform.position - player.position) >= _backstabDot)
+                {
+                    enemy.Die();
+                }
+                else
+                {
+                    enemy.Alert();
+                }
+
+            }
+            */
+
+            base._OnHit(collider);
+        }
+    }
 }

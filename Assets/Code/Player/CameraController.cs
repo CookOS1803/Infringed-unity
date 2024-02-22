@@ -3,53 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class CameraController : MonoBehaviour
+namespace Infringed.Player
 {
-    [SerializeField] private float smoothing = 1f;
-    [SerializeField] private float mouseFactor = 1f;
-    [SerializeField] private float additionalMouseFactor = 10f;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private Vector3 winPosition = new Vector3(-13.5f, 6.28f, 2.36f);
-    [SerializeField] private Vector3 winEulerAngles = new Vector3(49.4f, 45f, 0f);
-    private Transform target;
-    private float currentMouseFactor;
-
-    [Inject]
-    void SetTarget(PlayerController player)
+    public class CameraController : MonoBehaviour
     {
-        target = player.transform;
-    }
+        [SerializeField] private float _smoothing = 1f;
+        [SerializeField] private float _mouseFactor = 1f;
+        [SerializeField] private float _additionalMouseFactor = 10f;
+        [SerializeField] private Vector3 _offset;
+        [SerializeField] private Vector3 _winPosition = new Vector3(-13.5f, 6.28f, 2.36f);
+        [SerializeField] private Vector3 _winEulerAngles = new Vector3(49.4f, 45f, 0f);
+        private Transform _target;
+        private float _currentMouseFactor;
 
-    void Start()
-    {
-        currentMouseFactor = mouseFactor;
-    }
+        [Inject]
+        private void _SetTarget(PlayerController player)
+        {
+            _target = player.transform;
+        }
 
-    void Update()
-    {
-        currentMouseFactor = Input.GetButton("View") ? additionalMouseFactor : mouseFactor;
-    }
+        private void Start()
+        {
+            _currentMouseFactor = _mouseFactor;
+        }
 
-    void LateUpdate()
-    {
-        Vector3 mousePosition = Input.mousePosition;
-        mousePosition.x /= Screen.width;
-        mousePosition.y /= Screen.height;
-        mousePosition.z = mousePosition.y;
-        mousePosition.y = 0f;
+        private void Update()
+        {
+            _currentMouseFactor = Input.GetButton("View") ? _additionalMouseFactor : _mouseFactor;
+        }
 
-        mousePosition.x -= 0.5f;
-        mousePosition.z -= 0.5f;
-        
-        Vector3 targetCamPos = target.position + offset + mousePosition * currentMouseFactor;
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
-    }
+        private void LateUpdate()
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.x /= Screen.width;
+            mousePosition.y /= Screen.height;
+            mousePosition.z = mousePosition.y;
+            mousePosition.y = 0f;
 
-    public void OnWin()
-    {
-        transform.position = winPosition;
-        transform.eulerAngles = winEulerAngles;
+            mousePosition.x -= 0.5f;
+            mousePosition.z -= 0.5f;
 
-        Destroy(this);
+            Vector3 targetCamPos = _target.position + _offset + mousePosition * _currentMouseFactor;
+            transform.position = Vector3.Lerp(transform.position, targetCamPos, _smoothing * Time.deltaTime);
+        }
+
+        public void OnWin()
+        {
+            transform.position = _winPosition;
+            transform.eulerAngles = _winEulerAngles;
+
+            Destroy(this);
+        }
     }
 }

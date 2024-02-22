@@ -6,7 +6,7 @@ namespace Infringed.AI
 {
     public class PatrolPoint : MonoBehaviour
     {
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;
 

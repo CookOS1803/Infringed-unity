@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba8f1f9caea6b3e488e311a455b8054b, type: 3}
   m_Name: HealAction
   m_EditorClassIdentifier: 
-  amount: 20
-  audioClip: {fileID: 8300000, guid: 1848e0465113f294088f5120bbfba86a, type: 3}
+  _amount: 20
+  _audioClip: {fileID: 8300000, guid: 1848e0465113f294088f5120bbfba86a, type: 3}

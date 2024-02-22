@@ -1,26 +1,34 @@
+using Infringed.Actions;
+using Infringed.AI;
+using Infringed.InventorySystem;
+using Infringed.InventorySystem.UI;
+using Infringed.Player;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
 
-[System.Serializable]
-public class CustomAudio
+namespace Infringed
 {
-    [field: SerializeField] public AudioClip WeaponSwing { get; private set; }
-    [field: SerializeField] public AudioClip WeaponHit { get; private set; }
-    [field: SerializeField] public AudioClip[] Steps { get; private set; }
-
-    public AudioClip GetRandomStep()
+    [System.Serializable]
+    public class CustomAudio
     {
-        return Steps[Random.Range(0, Steps.Length)];
+        [field: SerializeField] public AudioClip WeaponSwing { get; private set; }
+        [field: SerializeField] public AudioClip WeaponHit { get; private set; }
+        [field: SerializeField] public AudioClip[] Steps { get; private set; }
+
+        public AudioClip GetRandomStep()
+        {
+            return Steps[Random.Range(0, Steps.Length)];
+        }
     }
 }
 
-namespace Infringed.Zenject
+namespace Infringed.Injection
 {
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private UIInventory _uiInventory;
-        [SerializeField] private AI.AIManager _aiManager;
+        [SerializeField] private AIManager _aiManager;
         [SerializeField] private PlayerController _player;
         [SerializeField] private CameraController _camera;
         [Space]

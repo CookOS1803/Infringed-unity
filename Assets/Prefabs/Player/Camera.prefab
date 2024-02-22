@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0.5828324, y: 0, z: 0, w: 0.81259245}
   m_LocalPosition: {x: 0, y: 5.11, z: -1.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -97,12 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824ad22414aa2554fa1c88a2ac050629, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothing: 7.81
-  mouseFactor: 3
-  additionalMouseFactor: 20
-  offset: {x: 0, y: 5.11, z: -1.45}
-  winPosition: {x: -13.5, y: 6.28, z: 2.36}
-  winEulerAngles: {x: 49.4, y: 45, z: 0}
+  _smoothing: 5
+  _mouseFactor: 1
+  _additionalMouseFactor: 10
+  _offset: {x: 0, y: 5.11, z: -1.45}
+  _winPosition: {x: -13.5, y: 6.28, z: 2.36}
+  _winEulerAngles: {x: 49.4, y: 45, z: 0}
 --- !u!114 &947319680
 MonoBehaviour:
   m_ObjectHideFlags: 0

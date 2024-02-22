@@ -53,6 +53,15 @@ namespace Infringed.AI
             }
         }
 
+        public void Suspect(Vector3 source)
+        {
+            SuspectPosition = source;
+            IsSuspecting = true;
+            
+            if (NoticeClock < SuspicionTime)
+                NoticeClock = SuspicionTime;
+        }
+
         private void _OnSound(Vector3 source)
         {
             // drugoe uslovie nado
@@ -65,15 +74,6 @@ namespace Infringed.AI
             }
 
             IsSuspecting = true;
-        }
-
-        public void Suspect(Vector3 source)
-        {
-            SuspectPosition = source;
-            IsSuspecting = true;
-            
-            if (NoticeClock < SuspicionTime)
-                NoticeClock = SuspicionTime;
         }
     }
 }

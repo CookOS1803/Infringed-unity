@@ -1,113 +1,117 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Actions;
 using UnityEngine;
 
-public class Inventory : IEnumerable
+namespace Infringed.InventorySystem
 {
-    private Item[] items;
-    private int _selectedSlot = 0;
-    public event Action onChange;
-    public event Action onSlotSelection;
-    
-    public int size => items.Length;
-    public int selectedSlot
+    public class Inventory : IEnumerable
     {
-        get => _selectedSlot;
-        set
+        private Item[] _items;
+        private int _selectedSlot = 0;
+        public event Action OnChange;
+        public event Action OnSlotSelection;
+
+        public int Size => _items.Length;
+        public int SelectedSlot
         {
-            _selectedSlot = value;
-
-            onSlotSelection?.Invoke();
-        }
-    }
-    public Item this[int i]
-    {
-        get => items[i];
-        set
-        {
-            items[i] = value;
-
-            onChange?.Invoke();
-        }
-    }
-
-    public Inventory()
-    {
-        items = new Item[10];
-    }
-
-    public void Add(Item newItem)
-    {
-        for (int i = 0; i < items.Length; i++)
-        {
-            if (items[i] == null)
+            get => _selectedSlot;
+            set
             {
-                items[i] = newItem;
-                onChange?.Invoke();
+                _selectedSlot = value;
 
-                return;
+                OnSlotSelection?.Invoke();
+            }
+        }
+        public Item this[int i]
+        {
+            get => _items[i];
+            set
+            {
+                _items[i] = value;
+
+                OnChange?.Invoke();
             }
         }
 
-        Debug.LogError("Inventory is full");
-    }
-
-    public void SwapSlots(int first, int second)
-    {
-        if (first == second)
-            return;
-
-        if (!HasIndex(first) || !HasIndex(second))
+        public Inventory()
         {
-            Debug.LogError("Index is out of range");
-            return;
+            _items = new Item[10];
         }
 
-        Item tempItem = items[first];
-        items[first] = items[second];
-        items[second] = tempItem;
-
-        onChange?.Invoke();
-    }
-
-    public IEnumerator GetEnumerator()
-    {
-        foreach (Item i in items)
+        public void Add(Item newItem)
         {
-            yield return i;
-        }
-    }
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] == null)
+                {
+                    _items[i] = newItem;
+                    OnChange?.Invoke();
 
-    public bool HasIndex(int i)
-    {
-        return i >= 0 && i < items.Length;
-    }
+                    return;
+                }
+            }
 
-    public void UseItem(ItemAction.Context context)
-    {
-        if (items[selectedSlot] == null)
-            return;
-
-        ItemAction action = items[selectedSlot].data.action;
-
-        if (action != null)
-        {
-            action.Use(context);
-            items[selectedSlot] = null;
-
-            onChange?.Invoke();
-        }
-    }
-
-    public bool IsFull()
-    {
-        foreach (var i in items)
-        {
-            if (i == null)
-                return false;
+            Debug.LogError("Inventory is full");
         }
 
-        return true;
+        public void SwapSlots(int first, int second)
+        {
+            if (first == second)
+                return;
+
+            if (!HasIndex(first) || !HasIndex(second))
+            {
+                Debug.LogError("Index is out of range");
+                return;
+            }
+
+            Item tempItem = _items[first];
+            _items[first] = _items[second];
+            _items[second] = tempItem;
+
+            OnChange?.Invoke();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            foreach (Item i in _items)
+            {
+                yield return i;
+            }
+        }
+
+        public bool HasIndex(int i)
+        {
+            return i >= 0 && i < _items.Length;
+        }
+
+        public void UseItem(ItemAction.Context context)
+        {
+            if (_items[SelectedSlot] == null)
+                return;
+
+            var action = _items[SelectedSlot].Data.Action;
+
+            if (action != null)
+            {
+                action.Use(context);
+                _items[SelectedSlot] = null;
+
+                OnChange?.Invoke();
+            }
+        }
+
+        public bool IsFull()
+        {
+            foreach (var i in _items)
+            {
+                if (i == null)
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

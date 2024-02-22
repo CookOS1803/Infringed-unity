@@ -3,143 +3,146 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Obsolete]
-public class AIManager : MonoBehaviour
+namespace Infringed.Legacy
 {
-    public event Action onAlarmEnable;
-    public event Action onAlarmDisable;
-    public event Action onAlarmClockChange;
-
-    [SerializeField, Min(0f)] private float alarmTime = 4f;
-    private float _alarmClock = 0f;
-    private bool _alarm = false;
-    private float alarmClock
+    [Obsolete]
+    public class AIManager : MonoBehaviour
     {
-        get => _alarmClock;
-        set
+        public event Action onAlarmEnable;
+        public event Action onAlarmDisable;
+        public event Action onAlarmClockChange;
+
+        [SerializeField, Min(0f)] private float alarmTime = 4f;
+        private float _alarmClock = 0f;
+        private bool _alarm = false;
+        private float alarmClock
         {
-            _alarmClock = value;
-
-            onAlarmClockChange?.Invoke();
-        }
-    }
-
-    public Vector3 playerLastKnownPosition { get; set; }
-    public List<EnemyController> enemies { get; private set; }
-    public Transform player { get; private set; }
-    public bool alarm => _alarm;    
-    public bool lookingForPlayer => alarm && player == null;
-    public float normalizedAlarmClock => alarmClock / alarmTime;
-    
-
-    void Awake()
-    {
-        enemies = new List<EnemyController>();
-    }
-
-    void Update()
-    {        
-        foreach (var e in enemies)
-        {
-            if (e.visionController.player != null)
+            get => _alarmClock;
+            set
             {
-                SetPlayer(e.visionController.player);
-                return;
+                _alarmClock = value;
+
+                onAlarmClockChange?.Invoke();
             }
-        }                
-        
-        UnsetPlayer();
-    }
-
-    private void SetPlayer(Transform p)
-    {
-        player = p;
-        playerLastKnownPosition = player.position;
-    }
-
-    private void UnsetPlayer()
-    {
-        player = null;
-    }
-
-    public void SoundTheAlarm()
-    {
-        foreach (var e in enemies)
-        {
-            e.SetAlarmedState();
         }
 
-        if (!alarm)
+        public Vector3 playerLastKnownPosition { get; set; }
+        public List<EnemyController> enemies { get; private set; }
+        public Transform player { get; private set; }
+        public bool alarm => _alarm;
+        public bool lookingForPlayer => alarm && player == null;
+        public float normalizedAlarmClock => alarmClock / alarmTime;
+
+
+        void Awake()
         {
-            EnableAlarm();
-            
-            StartCoroutine(ManagingAlarm());
-            StartCoroutine(ExecutingFind());
+            enemies = new List<EnemyController>();
         }
-    }
 
-    private void EnableAlarm()
-    {
-        _alarm = true;
-        
-        onAlarmEnable?.Invoke();
-    }
-
-    private void DisableAlarm()
-    {
-        _alarm = false;
-        
-        onAlarmDisable?.Invoke();
-    }
-
-    IEnumerator ManagingAlarm()
-    {
-        while (alarm)
+        void Update()
         {
-            yield return new WaitUntil(() => player == null);
-
-            while (alarmClock < alarmTime)
+            foreach (var e in enemies)
             {
-                if (player == null)
+                if (e.visionController.player != null)
                 {
-                    alarmClock += Time.deltaTime;
-                    yield return new WaitForEndOfFrame();
-                }
-                else
-                {
-                    alarmClock = 0f;
-                    break;
+                    SetPlayer(e.visionController.player);
+                    return;
                 }
             }
 
-            if (player == null)
-                DisableAlarm();
+            UnsetPlayer();
         }
 
-        alarmClock = 0f;
-    }
-
-    IEnumerator ExecutingFind()
-    {
-        while (alarm)
+        private void SetPlayer(Transform p)
         {
-            if (player != null)
+            player = p;
+            playerLastKnownPosition = player.position;
+        }
+
+        private void UnsetPlayer()
+        {
+            player = null;
+        }
+
+        public void SoundTheAlarm()
+        {
+            foreach (var e in enemies)
+            {
+                e.SetAlarmedState();
+            }
+
+            if (!alarm)
+            {
+                EnableAlarm();
+
+                StartCoroutine(ManagingAlarm());
+                StartCoroutine(ExecutingFind());
+            }
+        }
+
+        private void EnableAlarm()
+        {
+            _alarm = true;
+
+            onAlarmEnable?.Invoke();
+        }
+
+        private void DisableAlarm()
+        {
+            _alarm = false;
+
+            onAlarmDisable?.Invoke();
+        }
+
+        IEnumerator ManagingAlarm()
+        {
+            while (alarm)
             {
                 yield return new WaitUntil(() => player == null);
 
-                foreach (var e in enemies)
+                while (alarmClock < alarmTime)
                 {
-                    e.SeekPlayer();
+                    if (player == null)
+                    {
+                        alarmClock += Time.deltaTime;
+                        yield return new WaitForEndOfFrame();
+                    }
+                    else
+                    {
+                        alarmClock = 0f;
+                        break;
+                    }
                 }
+
+                if (player == null)
+                    DisableAlarm();
             }
-            else
-                yield return new WaitForEndOfFrame();
+
+            alarmClock = 0f;
         }
 
-        foreach (var e in enemies)
+        IEnumerator ExecutingFind()
         {
-            e.UnsetAlarmedState();
-            e.Patrol();
+            while (alarm)
+            {
+                if (player != null)
+                {
+                    yield return new WaitUntil(() => player == null);
+
+                    foreach (var e in enemies)
+                    {
+                        e.SeekPlayer();
+                    }
+                }
+                else
+                    yield return new WaitForEndOfFrame();
+            }
+
+            foreach (var e in enemies)
+            {
+                e.UnsetAlarmedState();
+                e.Patrol();
+            }
         }
     }
 }

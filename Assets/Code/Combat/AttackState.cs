@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackState : StateMachineBehaviour
+namespace Infringed.Combat
 {
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class AttackState : StateMachineBehaviour
     {
-        animator.GetComponent<IMoveable>().CanMove = false;
-    }
+        override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            animator.GetComponent<IMoveable>().CanMove = false;
+        }
 
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animator.GetComponent<IMoveable>().CanMove = true;
+        override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            animator.GetComponent<IMoveable>().CanMove = true;
+        }
     }
 }

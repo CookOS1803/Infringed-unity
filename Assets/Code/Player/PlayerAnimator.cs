@@ -2,46 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnimator
+namespace Infringed.Player
 {
-    private Animator animator;
-    private Transform transform;
-    
-    public PlayerAnimator(Transform playerTransform)
+    public class PlayerAnimator
     {
-        transform = playerTransform;
-        animator = transform.GetComponent<Animator>();
-        
-    }
+        private Animator _animator;
+        private Transform _transform;
 
-    public void AnimateMovement(Vector3 moveDirection)
-    {
-        if (moveDirection == Vector3.zero)
+        public PlayerAnimator(Transform playerTransform)
         {
-            animator.SetBool("isMoving", false);
-            return;
+            _transform = playerTransform;
+            _animator = _transform.GetComponent<Animator>();
+
         }
 
-        float angle = Vector3.SignedAngle(Vector3.forward, transform.forward, Vector3.up);
-        moveDirection = Quaternion.Euler(0f, -angle, 0f) * moveDirection;
-        
-        animator.SetBool("isMoving", true);
-        animator.SetFloat("forward", moveDirection.z, 0.1f, Time.deltaTime);
-        animator.SetFloat("right", moveDirection.x, 0.1f, Time.deltaTime);
-    }
+        public void AnimateMovement(Vector3 moveDirection)
+        {
+            if (moveDirection == Vector3.zero)
+            {
+                _animator.SetBool("isMoving", false);
+                return;
+            }
 
-    public void Attack()
-    {
-        animator.SetTrigger("Attack");
-    }
+            float angle = Vector3.SignedAngle(Vector3.forward, _transform.forward, Vector3.up);
+            moveDirection = Quaternion.Euler(0f, -angle, 0f) * moveDirection;
 
-    public void Die()
-    {
-        animator.SetTrigger("death");
-    }
+            _animator.SetBool("isMoving", true);
+            _animator.SetFloat("forward", moveDirection.z, 0.1f, Time.deltaTime);
+            _animator.SetFloat("right", moveDirection.x, 0.1f, Time.deltaTime);
+        }
 
-    public void ResetAnimations()
-    {
-        animator.SetBool("isMoving", false);
+        public void Attack()
+        {
+            _animator.SetTrigger("Attack");
+        }
+
+        public void Die()
+        {
+            _animator.SetTrigger("death");
+        }
+
+        public void ResetAnimations()
+        {
+            _animator.SetBool("isMoving", false);
+        }
     }
 }

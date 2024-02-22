@@ -1,6 +1,10 @@
 using UnityEngine;
+using Infringed.Player;
 
-public interface IInteractable
+namespace Infringed.Map
 {
-    void Interact(PlayerController user);
+    public interface IInteractable
+    {
+        void Interact(PlayerController user);
+    }
 }

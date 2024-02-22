@@ -4,54 +4,57 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-[System.Serializable, System.Obsolete]
-public class PlayerSeeker
+namespace Infringed.Legacy
 {
-    [SerializeField, Min(0f)] private float waitTime = 2f;
-    [SerializeField, Min(0f)] private float findingRadius = 6f;
-    private EnemyController enemy;
-    private NavMeshAgent agent;
-
-    public void Initialize(EnemyController enemy)
+    [System.Serializable, System.Obsolete]
+    public class PlayerSeeker
     {
-        this.enemy = enemy;
-        agent = enemy.GetComponent<NavMeshAgent>();     
-    }
+        [SerializeField, Min(0f)] private float waitTime = 2f;
+        [SerializeField, Min(0f)] private float findingRadius = 6f;
+        private EnemyController enemy;
+        private NavMeshAgent agent;
 
-    public IEnumerator FindingPlayer()
-    {
-        float seekClock = 0f;
-
-        while (true)
+        public void Initialize(EnemyController enemy)
         {
-            if (agent.velocity.sqrMagnitude < 0.01f)
-            {
-                while (seekClock < waitTime)
-                {
-                    seekClock += Time.deltaTime;
-
-                    yield return new WaitForEndOfFrame();
-                }
-
-                seekClock = 0f;
-
-                GoToRandomPoint();
-
-                yield return new WaitUntil (() => agent.velocity.sqrMagnitude < 0.01f);
-            }
-            else
-                yield return new WaitForEndOfFrame();
+            this.enemy = enemy;
+            agent = enemy.GetComponent<NavMeshAgent>();
         }
-    }
 
-    private void GoToRandomPoint()
-    {
-        var randomDirection = UnityEngine.Random.insideUnitSphere * findingRadius;
-        randomDirection += enemy.aiManager.playerLastKnownPosition;
+        public IEnumerator FindingPlayer()
+        {
+            float seekClock = 0f;
 
-        NavMesh.SamplePosition(randomDirection, out var hit, agent.height * 2, 1);
-        var finalPosition = hit.position;
+            while (true)
+            {
+                if (agent.velocity.sqrMagnitude < 0.01f)
+                {
+                    while (seekClock < waitTime)
+                    {
+                        seekClock += Time.deltaTime;
 
-        agent.SetDestination(finalPosition);
+                        yield return new WaitForEndOfFrame();
+                    }
+
+                    seekClock = 0f;
+
+                    GoToRandomPoint();
+
+                    yield return new WaitUntil(() => agent.velocity.sqrMagnitude < 0.01f);
+                }
+                else
+                    yield return new WaitForEndOfFrame();
+            }
+        }
+
+        private void GoToRandomPoint()
+        {
+            var randomDirection = UnityEngine.Random.insideUnitSphere * findingRadius;
+            randomDirection += enemy.aiManager.playerLastKnownPosition;
+
+            NavMesh.SamplePosition(randomDirection, out var hit, agent.height * 2, 1);
+            var finalPosition = hit.position;
+
+            agent.SetDestination(finalPosition);
+        }
     }
 }

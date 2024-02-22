@@ -8,20 +8,20 @@ namespace Infringed.Editor
     public static class UserMenuItems
     {
         [MenuItem("Assets/Create/Bonsai/Task", false, 1)]
-        public static void CreateTask()
+        public static void _CreateTask()
         {
-            CreateNode("a Task", "NewTask", "Task");
+            _CreateNode("a Task", "NewTask", "Task");
         }
 
         [MenuItem("Assets/Create/Bonsai/Decorator", false, 1)]
-        public static void CreateDecorator()
+        public static void _CreateDecorator()
         {
-            CreateNode("a Decorator", "NewDecorator", "Decorator");
+            _CreateNode("a Decorator", "NewDecorator", "Decorator");
         }
 
-        private static void CreateNode(string name, string defaultFileName, string className)
+        private static void _CreateNode(string name, string defaultFileName, string className)
         {
-            global::Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate(name, defaultFileName,
+            Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate(name, defaultFileName,
                   "using UnityEngine;"
                 + "\nusing Bonsai;"
                 + "\nusing Bonsai.Core;"

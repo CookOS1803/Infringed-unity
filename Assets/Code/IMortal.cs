@@ -1,4 +1,7 @@
-public interface IMortal
+namespace Infringed
 {
-    void OnDeath();
+    public interface IMortal
+    {
+        void OnDeath();
+    }
 }

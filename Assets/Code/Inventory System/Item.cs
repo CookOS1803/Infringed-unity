@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item
+namespace Infringed.InventorySystem
 {
-    public ItemData data { get; private set; }
-
-    public Item(ItemData newData)
+    public class Item
     {
-        data = newData;
+        public ItemData Data { get; private set; }
+
+        public Item(ItemData newData)
+        {
+            Data = newData;
+        }
     }
 }

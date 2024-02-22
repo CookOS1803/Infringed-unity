@@ -1,26 +1,30 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Combat;
+using Infringed.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class HealthBar : MonoBehaviour
+namespace Infringed.UI
 {
-    [SerializeField] private Image bar;
-    private Health playerHealth;
-
-    [Inject]
-    void SetHealth(PlayerController player)
+    public class HealthBar : MonoBehaviour
     {
-        playerHealth = player.GetComponent<Health>();
+        [SerializeField] private Image _bar;
+        private Health _playerHealth;
 
-        playerHealth.onChange += UpdateBar;
+        [Inject]
+        private void _SetHealth(PlayerController player)
+        {
+            _playerHealth = player.GetComponent<Health>();
 
-    }
+            _playerHealth.OnChange += _UpdateBar;
 
-    void UpdateBar()
-    {
-        bar.fillAmount = playerHealth.normalizedHealth;
+        }
+
+        private void _UpdateBar()
+        {
+            _bar.fillAmount = _playerHealth.NormalizedHealth;
+        }
     }
 }

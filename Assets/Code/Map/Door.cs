@@ -1,78 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Door : MonoBehaviour, IInteractable
+namespace Infringed.Map
 {
-    [SerializeField] protected float openTime = 2f;
-    protected NavMeshObstacle obstacle;
-    protected bool _isClosed = true;
-    protected bool isClosed
+    public class Door : MonoBehaviour, IInteractable
     {
-        get => _isClosed;
-        set
+        [SerializeField] protected float _openTime = 2f;
+        protected NavMeshObstacle _obstacle;
+        private bool _isClosed = true;
+        protected bool IsClosed
         {
-            _isClosed = value;
+            get => _isClosed;
+            set
+            {
+                _isClosed = value;
 
-            obstacle.enabled = !value;
+                _obstacle.enabled = !value;
+            }
         }
-    }
-    protected readonly Quaternion openingRotation = Quaternion.Euler(0f, 90f, 0f);
-    protected readonly Quaternion closingRotation = Quaternion.Euler(0f, -90f, 0f);
+        protected readonly Quaternion _openingRotation = Quaternion.Euler(0f, 90f, 0f);
+        protected readonly Quaternion _closingRotation = Quaternion.Euler(0f, -90f, 0f);
 
-    void Start()
-    {
-        obstacle = GetComponent<NavMeshObstacle>();
-    }
-
-    public virtual void Interact(PlayerController user)
-    {
-        if (isClosed)
+        private void Start()
         {
-            Open();
-        }
-        else
-        {
-            Close();
-        }
-    }
-
-    protected void Open()
-    {
-        transform.forward = openingRotation * transform.forward;
-        isClosed = false;
-    }
-
-    protected void Close()
-    {
-        transform.forward = closingRotation * transform.forward;
-        isClosed = true;
-    }
-
-    public void OpenTemporarily()
-    {
-        if (isClosed)
-        {
-            Open();
-            StartCoroutine(StayingOpen());
-        }
-    }
-
-    IEnumerator StayingOpen()
-    {
-        float clock = 0f;
-
-        while (clock < openTime && !isClosed)
-        {
-            clock += Time.deltaTime;
-
-            yield return new WaitForEndOfFrame();
+            _obstacle = GetComponent<NavMeshObstacle>();
         }
 
-        if (!isClosed)
+        public virtual void Interact(PlayerController user)
         {
-            Close();
+            if (IsClosed)
+            {
+                _Open();
+            }
+            else
+            {
+                _Close();
+            }
+        }
+
+        protected void _Open()
+        {
+            transform.forward = _openingRotation * transform.forward;
+            IsClosed = false;
+        }
+
+        protected void _Close()
+        {
+            transform.forward = _closingRotation * transform.forward;
+            IsClosed = true;
+        }
+
+        public void OpenTemporarily()
+        {
+            if (IsClosed)
+            {
+                _Open();
+                StartCoroutine(_StayingOpen());
+            }
+        }
+
+        private IEnumerator _StayingOpen()
+        {
+            float clock = 0f;
+
+            while (clock < _openTime && !IsClosed)
+            {
+                clock += Time.deltaTime;
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (!IsClosed)
+            {
+                _Close();
+            }
         }
     }
 }

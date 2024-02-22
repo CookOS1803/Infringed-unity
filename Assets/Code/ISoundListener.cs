@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public interface ISoundListener
+namespace Infringed
 {
-    public void RespondToSound(Vector3 source);
+    public interface ISoundListener
+    {
+        public void RespondToSound(Vector3 source);
+    }
 }

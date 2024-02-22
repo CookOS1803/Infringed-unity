@@ -1,107 +1,111 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
 
-public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+namespace Infringed.InventorySystem.UI
 {
-    [SerializeField] private ItemData item;
-    private Canvas canvas;
-    private Transform player;
-    private RectTransform rectTransform;
-    private CanvasGroup canvasGroup;
-    private Image image;
-    private Vector2 initialPosition;
-    private ItemSlot slot;
-    private ItemDescription itemDescription;
-    public Transform parent => slot.transform;
-    public int index => slot.index;
-    public Inventory inventory { get; set; }
-
-    [Inject]
-    void SetPlayer(PlayerController controller)
+    public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        player = controller.transform;
-    }
+        [SerializeField] private ItemData _item;
+        private Canvas _canvas;
+        private Transform _player;
+        private RectTransform _rectTransform;
+        private CanvasGroup _canvasGroup;
+        private Image _image;
+        private Vector2 _initialPosition;
+        private ItemSlot _slot;
+        private ItemDescription _itemDescription;
+        public Transform Parent => _slot.transform;
+        public int Index => _slot.Index;
+        public Inventory Inventory { get; set; }
 
-    void Awake()
-    {
-        canvas = GetComponentInParent<Canvas>();
-        rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
-        image = GetComponent<Image>();
-        slot = GetComponentInParent<ItemSlot>();
-        itemDescription = GetComponentInChildren<ItemDescription>();
-        itemDescription.gameObject.SetActive(false);
-
-        initialPosition = rectTransform.anchoredPosition;
-    }
-
-    public void SetItem(ItemData data)
-    {
-        item = data;
-        image.enabled = true;
-        image.sprite = data.sprite;
-
-        itemDescription.UpdateInfo(data.name, data.description);
-    }
-
-    public void UnsetItem()
-    {
-        item = null;
-        image.enabled = false;
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        transform.SetParent(parent.parent);
-        canvasGroup.blocksRaycasts = false;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        transform.SetParent(parent);
-        
-        if (UserRaycaster.IsBlockedByUI())
-        {            
-            canvasGroup.blocksRaycasts = true;
-            rectTransform.anchoredPosition = initialPosition;
-            return;
-        }
-        rectTransform.anchoredPosition = initialPosition;
-        canvasGroup.blocksRaycasts = true;
-        
-        RaycastHit hit;
-        Vector3 spawnPosition;
-
-        if (Physics.Raycast(player.position + player.up, player.forward + player.up, out hit, 1f))
+        [Inject]
+        private void _SetPlayer(PlayerController controller)
         {
-            spawnPosition = hit.point;
+            _player = controller.transform;
         }
-        else
+
+        private void Awake()
         {
-            spawnPosition = player.position + player.forward + player.up;
+            _canvas = GetComponentInParent<Canvas>();
+            _rectTransform = GetComponent<RectTransform>();
+            _canvasGroup = GetComponent<CanvasGroup>();
+            _image = GetComponent<Image>();
+            _slot = GetComponentInParent<ItemSlot>();
+            _itemDescription = GetComponentInChildren<ItemDescription>();
+            _itemDescription.gameObject.SetActive(false);
+
+            _initialPosition = _rectTransform.anchoredPosition;
         }
 
-        Instantiate(item.prefab, spawnPosition, Quaternion.identity);
-        inventory[index] = null;
+        public void SetItem(ItemData data)
+        {
+            _item = data;
+            _image.enabled = true;
+            _image.sprite = data.Sprite;
 
-    }
+            _itemDescription.UpdateInfo(data.Name, data.Description);
+        }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        itemDescription.gameObject.SetActive(true);
-    }
+        public void UnsetItem()
+        {
+            _item = null;
+            _image.enabled = false;
+        }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        itemDescription.gameObject.SetActive(false);
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            transform.SetParent(Parent.parent);
+            _canvasGroup.blocksRaycasts = false;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            transform.SetParent(Parent);
+
+            if (UserRaycaster.IsBlockedByUI())
+            {
+                _canvasGroup.blocksRaycasts = true;
+                _rectTransform.anchoredPosition = _initialPosition;
+                return;
+            }
+            _rectTransform.anchoredPosition = _initialPosition;
+            _canvasGroup.blocksRaycasts = true;
+
+            RaycastHit hit;
+            Vector3 spawnPosition;
+
+            if (Physics.Raycast(_player.position + _player.up, _player.forward + _player.up, out hit, 1f))
+            {
+                spawnPosition = hit.point;
+            }
+            else
+            {
+                spawnPosition = _player.position + _player.forward + _player.up;
+            }
+
+            Instantiate(_item.Prefab, spawnPosition, Quaternion.identity);
+            Inventory[Index] = null;
+
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _itemDescription.gameObject.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _itemDescription.gameObject.SetActive(false);
+        }
     }
 }

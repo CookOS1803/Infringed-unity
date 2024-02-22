@@ -1,40 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 
-public class OnPlayerDeathActivator : MonoBehaviour
+namespace Infringed
 {
-    [Zenject.Inject] private PlayerController player;
-    private bool currentStatus = false;
-
-    private void Awake()
+    public class OnPlayerDeathActivator : MonoBehaviour
     {
-        SetStatus(false);
+        [Zenject.Inject] private PlayerController _player;
+        private bool _currentStatus = false;
 
-        player.onDeath += OnActivate; 
-    }
-
-    private void OnActivate()
-    {
-        SetStatus(true);
-    }
-
-    private void SetStatus(bool status)
-    {
-        foreach (Transform child in transform)
+        private void Awake()
         {
-            child.gameObject.SetActive(status);
+            _SetStatus(false);
+
+            _player.OnPlayerDeath += _OnActivate;
         }
-    }
 
-    public void SwitchStatus()
-    {
-        currentStatus = !currentStatus;
-        SetStatus(currentStatus);
-    }
+        private void OnDestroy()
+        {
+            _player.OnPlayerDeath -= _OnActivate;
+        }
 
-    private void OnDestroy()
-    {
-        player.onDeath -= OnActivate;
+        private void _OnActivate()
+        {
+            _SetStatus(true);
+        }
+
+        private void _SetStatus(bool status)
+        {
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(status);
+            }
+        }
+
+        public void SwitchStatus()
+        {
+            _currentStatus = !_currentStatus;
+            _SetStatus(_currentStatus);
+        }
     }
 }

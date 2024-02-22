@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.AI;
 using UnityEngine;
 
-namespace Infringed.AI
+namespace Infringed.UI
 {
     public class NoticeBar : MonoBehaviour
     {
