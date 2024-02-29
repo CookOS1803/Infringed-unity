@@ -12,8 +12,7 @@ namespace Infringed.AI
         [field: SerializeField, Min(0f)] public float SuspicionTime { get; private set; } = 1f;
         [SerializeField, Min(0f)] private float _unseeFactor = 0.5f;
         private VisionController _vision;
-        private SoundResponder _soundResponder;
-
+        
         public float NoticeClock { get; private set; }
         public bool IsSuspecting { get; set; }
         public Vector3 SuspectPosition { get; private set; }
@@ -21,17 +20,6 @@ namespace Infringed.AI
         private void Awake()
         {
             _vision = GetComponent<VisionController>();
-            _soundResponder = GetComponent<SoundResponder>();
-        }
-
-        private void OnEnable()
-        {
-            //_soundResponder.OnSound += _OnSound;
-        }
-
-        private void OnDisable()
-        {
-            //_soundResponder.OnSound -= _OnSound;
         }
 
         private void Update()
@@ -60,20 +48,6 @@ namespace Infringed.AI
             
             if (NoticeClock < SuspicionTime)
                 NoticeClock = SuspicionTime;
-        }
-
-        private void _OnSound(Vector3 source)
-        {
-            // drugoe uslovie nado
-            if (!IsSuspecting)
-            {
-                SuspectPosition = source;
-
-                if (NoticeClock < SuspicionTime)
-                    NoticeClock = SuspicionTime;
-            }
-
-            IsSuspecting = true;
         }
     }
 }

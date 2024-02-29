@@ -1,17 +1,17 @@
 using UnityEngine;
 using Bonsai;
-using Bonsai.Core;
+using Bonsai.Core.User;
 
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class GoToSuspect : Task
+    public class GoToSuspect : FailableTask
     {
         private SuspicionController _suspicion;
         private VisionController _vision;
         private MovementController _movement;
 
-        public override void OnStart()
+        protected override void _OnStart()
         {
             _suspicion = Actor.GetComponent<SuspicionController>();
             _vision = Actor.GetComponent<VisionController>();
@@ -23,11 +23,8 @@ namespace Infringed.AI.BTree
             _movement.SetDestination(_suspicion.SuspectPosition);
         }
 
-        public override Status Run()
+        protected override Status _FailableRun()
         {
-            if (_vision.IsPlayerInView)
-                return Status.Failure;
-
             if (_movement.IsMoving)
                 return Status.Running;
 

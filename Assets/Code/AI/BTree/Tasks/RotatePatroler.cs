@@ -2,28 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Bonsai;
-using Bonsai.Core;
+using Bonsai.Core.User;
 using UnityEngine;
 
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class RotatePatroler : Task
+    public class RotatePatroler : FailableTask
     {
         private Patroler _patroler;
-        private SuspicionController _suspicion;
 
-        public override void OnStart()
+        protected override void _OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
-            _suspicion = Actor.GetComponent<SuspicionController>();
         }
 
-        public override Status Run()
+        protected override Status _FailableRun()
         {
-            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
-                return Status.Failure;
-
             var desiredRotation = _patroler.CurrentPatrolPoint.rotation;
 
             if (_patroler.transform.rotation != desiredRotation)

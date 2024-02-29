@@ -5,11 +5,11 @@ using Bonsai.Core.User;
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Conditional/Knight/")]
-    public class IsSuspecting : InvertableConditional
+    public class IsSuspecting : ConditionalForFailables
     {
         private SuspicionController _suspicion;
 
-        public override void OnStart()
+        protected override void _OnStart()
         {
             _suspicion = Actor.GetComponent<SuspicionController>();
         }
@@ -18,5 +18,6 @@ namespace Infringed.AI.BTree
         {
             return _suspicion.IsSuspecting;
         }
+
     }
 }

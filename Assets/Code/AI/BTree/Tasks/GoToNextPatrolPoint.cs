@@ -3,35 +3,28 @@ using System.Collections.Generic;
 using System.Text;
 using Bonsai;
 using Bonsai.Core;
+using Bonsai.Core.User;
 using UnityEngine;
 
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class GoToNextPatrolPoint : Task
+    public class GoToNextPatrolPoint : FailableTask
     {
         private Patroler _patroler;
-        private SuspicionController _suspicion;
 
-        public override void OnStart()
+        protected override void _OnStart()
         {
             _patroler = Actor.GetComponent<Patroler>();
-            _suspicion = Actor.GetComponent<SuspicionController>();
         }
 
         public override void OnEnter()
         {
-            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
-                return;
-
             _patroler.GoToNextPoint();
         }
 
-        public override Status Run()
+        protected override Status _FailableRun()
         {
-            if (_suspicion.IsSuspecting || Blackboard.IsSet("Sound Source"))
-                return Status.Failure;
-
             if (_patroler.IsOnTheWay)
                 return Status.Running;
             

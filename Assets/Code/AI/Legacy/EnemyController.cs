@@ -101,6 +101,25 @@ namespace Infringed.Legacy
             UnhidePlayer();
         }
 
+        void OnDestroy()
+        {
+            aiManager.enemies.Remove(this);
+        }
+
+        void OnTriggerEnter(Collider collider)
+        {
+            var door = collider.GetComponent<Map.Door>();
+
+            door?.OpenTemporarily();
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawWireSphere(transform.position, attackRange);
+        }
+
         private void UnhidePlayer()
         {
             if (visionController.hasSeenPlayerHiding)
@@ -271,26 +290,7 @@ namespace Infringed.Legacy
             }
         }
 
-        void OnDestroy()
-        {
-            aiManager.enemies.Remove(this);
-        }
-
-        void OnTriggerEnter(Collider collider)
-        {
-            var door = collider.GetComponent<Map.Door>();
-
-            door?.OpenTemporarily();
-        }
-
-        void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-
-            Gizmos.DrawWireSphere(transform.position, attackRange);
-        }
-
-        public void OnDeath()
+        public void OnDeathEnd()
         {
             if (droppedItem != null)
                 Instantiate(droppedItem.Prefab, transform.position + Vector3.up, Quaternion.identity);

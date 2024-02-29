@@ -18,8 +18,8 @@ namespace Bonsai.Core.User
 
         public override void Description(StringBuilder builder)
         {
+            builder.AppendFormat("Fails if condition is {0}\n", _inverted);
             base.Description(builder);
-            builder.AppendFormat(", if condition is {0}", !_inverted);
         }
     }
 }

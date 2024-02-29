@@ -75,15 +75,36 @@ namespace Infringed.Player
             }
         }
 
+#if UNITY_EDITOR
+        [Header("Debug info")]
+        [SerializeField] private bool _showMoveDirection;
+        [SerializeField] private Color _moveDirectionColor = Color.blue;
+        [SerializeField] private bool _showItemPickupRadius;
+        [SerializeField] private Color _itemPickupRadiusColor = Color.blue;
+        [SerializeField] private bool _showSoundRadius;
+        [SerializeField] private Color _soundRadiusColor = Color.magenta;
+
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position, _moveDirection);
-            Gizmos.DrawWireSphere(transform.position, _itemPickupRadius);
+            if (_showMoveDirection)
+            {
+                Gizmos.color = _moveDirectionColor;
+                Gizmos.DrawRay(transform.position, _moveDirection);
+            }
 
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, _soundRadius);
+            if (_showItemPickupRadius)
+            {
+                Gizmos.color = _itemPickupRadiusColor;
+                Gizmos.DrawWireSphere(transform.position, _itemPickupRadius);
+            }
+
+            if (_showSoundRadius)
+            {
+                Gizmos.color = _soundRadiusColor;
+                Gizmos.DrawWireSphere(transform.position, _soundRadius);
+            }
         }
+#endif
 
         public void ExitHideout()
         {
@@ -103,7 +124,7 @@ namespace Infringed.Player
             OnExitHideout?.Invoke();
         }
 
-        public void OnDeath()
+        public void OnDeathEnd()
         {
             OnPlayerDeath?.Invoke();
 

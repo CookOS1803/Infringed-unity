@@ -1,11 +1,12 @@
 using UnityEngine;
 using Bonsai;
 using Bonsai.Core;
+using Bonsai.Core.User;
 
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class RotateToSoundSource : Task
+    public class RotateToSoundSource : FailableTask
     {
         [SerializeField] private float _hearTime = 2f;
         private MovementController _movement;
@@ -13,7 +14,7 @@ namespace Infringed.AI.BTree
         private VisionController _vision;
         private float _hearClock;
 
-        public override void OnStart()
+        protected override void _OnStart()
         {
             _movement = Actor.GetComponent<MovementController>();
             _suspicion = Actor.GetComponent<SuspicionController>();
@@ -36,7 +37,7 @@ namespace Infringed.AI.BTree
             Blackboard.Unset("Sound Source");
         }
 
-        public override Status Run()
+        protected override Status _FailableRun()
         {
             if (_vision.IsPlayerInView || Blackboard.IsUnset("Sound Source"))
                 return Status.Failure;
