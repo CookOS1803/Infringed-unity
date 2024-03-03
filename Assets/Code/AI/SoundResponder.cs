@@ -6,7 +6,7 @@ namespace Infringed.AI
 {
     public class SoundResponder : MonoBehaviour, ISoundListener
     {
-        public Vector3 LastHeardSound { get; set; }
+        public Vector3 LastHeardSound { get; private set; }
 
         public System.Action<Vector3> OnSound;
 

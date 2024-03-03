@@ -12,7 +12,8 @@ namespace Infringed.AI
         [field: SerializeField, Min(0f)] public float SuspicionTime { get; private set; } = 1f;
         [SerializeField, Min(0f)] private float _unseeFactor = 0.5f;
         private VisionController _vision;
-        
+        private EnemyController _enemy;
+
         public float NoticeClock { get; private set; }
         public bool IsSuspecting { get; set; }
         public Vector3 SuspectPosition { get; private set; }
@@ -20,13 +21,20 @@ namespace Infringed.AI
         private void Awake()
         {
             _vision = GetComponent<VisionController>();
+            _enemy = GetComponent<EnemyController>();
         }
 
         private void Update()
         {
+            if (_enemy.IsAlarmed)
+            {
+                NoticeClock = 0f;
+                return;
+            }
+
             if (_vision.IsPlayerInView)
             {
-                var delta = Time.deltaTime * (_vision.DistanceOfView / Vector3.Distance(transform.position, _vision.LastNoticedPlayer.transform.position));
+                var delta = Time.deltaTime * (_vision.DistanceOfView / Vector3.Distance(transform.position, _vision.LastNoticedPlayer.position));
                 NoticeClock = Mathf.MoveTowards(NoticeClock, NoticeTime, delta);
 
                 if (NoticeClock >= SuspicionTime)
@@ -45,7 +53,7 @@ namespace Infringed.AI
         {
             SuspectPosition = source;
             IsSuspecting = true;
-            
+
             if (NoticeClock < SuspicionTime)
                 NoticeClock = SuspicionTime;
         }

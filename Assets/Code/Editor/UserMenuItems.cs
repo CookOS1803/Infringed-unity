@@ -10,7 +10,24 @@ namespace Infringed.Editor
         [MenuItem("Assets/Create/Bonsai/Task", false, 1)]
         private static void _CreateTask()
         {
-            _CreateNode("a Task", "NewTask", "FailableTask");
+            Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate("a Task", "NewTask",
+                  "using UnityEngine;"
+                + "\nusing Bonsai;"
+                + "\nusing Bonsai.Core.User;"
+                + "\n"
+                + "\nnamespace Infringed.AI.BTree"
+                + "\n{"
+                + "\n    [BonsaiNode(\"Tasks/\")]"
+                + "\n    public class CLASS_NAME : FailableTask"
+                + "\n    {"
+                + "\n        protected override Status _FailableRun()"
+                + "\n        {"
+                + "\n            return Status.Success;"
+                + "\n        }"
+                + "\n        "
+                + "\n    }"
+                + "\n}"
+                + "\n");
         }
 
         [MenuItem("Assets/Create/Bonsai/Decorator", false, 1)]
