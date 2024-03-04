@@ -22,12 +22,14 @@ namespace Infringed.AI
         {
             _enemy.OnAlarm += _OnAlarm;
             _enemy.OnUnalarm += _OnUnalarm;
+            _enemy.OnAttackStart += _OnAttackStart;
         }
 
         private void OnDisable()
         {
             _enemy.OnAlarm -= _OnAlarm;
             _enemy.OnUnalarm -= _OnUnalarm;
+            _enemy.OnAttackStart -= _OnAttackStart;
         }
 
         private void Update()
@@ -43,6 +45,11 @@ namespace Infringed.AI
         private void _OnUnalarm(EnemyController sender)
         {
             _animator.SetBool("isAlarmed", false);
+        }
+
+        private void _OnAttackStart(EnemyController controller)
+        {
+            _animator.SetTrigger("attack");
         }
     }
 }

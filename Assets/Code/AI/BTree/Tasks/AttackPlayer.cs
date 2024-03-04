@@ -5,7 +5,7 @@ using Bonsai.Core.User;
 namespace Infringed.AI.BTree
 {
     [BonsaiNode("Tasks/Knight/")]
-    public class ChasePlayer : FailableTask
+    public class AttackPlayer : FailableTask
     {
         private MovementController _movement;
         private EnemyController _enemy;
@@ -16,21 +16,25 @@ namespace Infringed.AI.BTree
             _enemy = Actor.GetComponent<EnemyController>();
         }
 
+        public override void OnEnter()
+        {
+            _movement.CanMove = false;
+            _enemy.transform.LookAt(_enemy.LastKnownPlayerPosition);
+            _enemy.Attack();
+        }
+
+        public override void OnExit()
+        {
+            _movement.CanMove = true;
+        }
+
         protected override Status _FailableRun()
         {
-            _movement.SetDestination(_enemy.LastKnownPlayerPosition);
-
-            if (_enemy.IsPlayerInAttackRange())
-            {
-                return Status.Success;
-            }
-
-            if (_movement.IsMoving)
-            {
+            if (_enemy.IsAttacking)
                 return Status.Running;
-            }
 
-            return Status.Failure;
+            return Status.Success;
         }
+        
     }
 }

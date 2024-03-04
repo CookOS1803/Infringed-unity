@@ -9,9 +9,9 @@ namespace Infringed.AI
     public class AIManager : MonoBehaviour
     {
         public bool Alarm { get; private set; }
-        [SerializeField, Min(0f)] private float _alarmTime = 10f;
+        public float AlarmClock { get; private set; }
+        [field: SerializeField, Min(0f)] public float AlarmTime { get; private set; } = 10f;
         private HashSet<EnemyController> _enemies;
-        private float _alarmClock;
 
         private void Awake()
         {
@@ -39,9 +39,9 @@ namespace Infringed.AI
             if (!Alarm)
                 return;
             
-            _alarmClock += Time.deltaTime;
+            AlarmClock += Time.deltaTime;
 
-            if (_alarmClock >= _alarmTime)
+            if (AlarmClock >= AlarmTime)
             {
                 _Unalarm();
             }
@@ -81,18 +81,19 @@ namespace Infringed.AI
 
         private void _OnPlayerSpotted(EnemyController sender, Vector3 vector)
         {
-            _alarmClock = 0f;
+            AlarmClock = 0f;
 
             foreach (var enemy in _enemies)
             {
                 enemy.LastKnownPlayerPosition = vector;
+                enemy.SpottedPlayer = true;
             }
         }
 
         private void _Unalarm()
         {
             Alarm = false;
-            _alarmClock = 0f;
+            AlarmClock = 0f;
 
             foreach (var enemy in _enemies)
             {

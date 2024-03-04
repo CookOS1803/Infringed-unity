@@ -12,7 +12,7 @@ namespace Infringed.Legacy
 
     [System.Obsolete]
     [RequireComponent(typeof(Combat.Health), typeof(Combat.StunController), typeof(VisionController))]
-    public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
+    public class EnemyController : MonoBehaviour, IAttacker, IMortal, ISoundListener
     {
         [SerializeField, Min(0f)] private float calmSpeed = 1.5f;
         [SerializeField, Min(0f)] private float alarmedSpeed = 3.5f;
@@ -155,6 +155,16 @@ namespace Infringed.Legacy
                 transform.LookAt(aiManager.player);
                 animator.SetTrigger("attack");
             }
+        }
+
+        public void AttackStarted()
+        {
+            CanMove = false;
+        }
+
+        public void AttackEnded()
+        {
+            CanMove = true;
         }
 
         public void SeekPlayer()

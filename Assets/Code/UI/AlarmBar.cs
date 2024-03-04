@@ -10,37 +10,22 @@ namespace Infringed.UI
 {
     public class AlarmBar : MonoBehaviour
     {
-        [Inject] private AIManager _aiManager;
+        [SerializeField] private AIManager _aiManager;
         private TMP_Text _text;
         private Image _image;
 
-        private void Start()
+        private void Awake()
         {
             _text = GetComponent<TMP_Text>();
             _image = GetComponentInChildren<Image>();
-
-            _DisableBar();
-
-            //aiManager.onAlarmEnable += EnableBar;
-            //aiManager.onAlarmDisable += DisableBar;
-            //aiManager.onAlarmClockChange += UpdateBar;
         }
 
-        private void _EnableBar()
+        private void Update()
         {
-            _text.enabled = true;
-            _image.enabled = true;
-        }
+            _text.enabled = _aiManager.Alarm;
+            _image.enabled = _aiManager.Alarm;
 
-        private void _DisableBar()
-        {
-            _text.enabled = false;
-            _image.enabled = false;
-        }
-
-        private void _UpdateBar()
-        {
-            //image.fillAmount = aiManager.normalizedAlarmClock;
+            _image.fillAmount = _aiManager.AlarmClock / _aiManager.AlarmTime;
         }
     }
 }

@@ -5403,6 +5403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b2b2b2813d5e44b8a3637c3c9780a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _calmSpeed: 1.5
+  _alarmedSpeed: 3.5
 --- !u!114 &5004157682458856151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5494,6 +5496,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0865344d5a65ee4f85d27e53c7d478f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weapon: {fileID: 5952814861960332777}
+  _attackRange: 1
+  _showAttackRange: 0
+  _attackRangeColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1087546517206048
 GameObject:
   m_ObjectHideFlags: 0

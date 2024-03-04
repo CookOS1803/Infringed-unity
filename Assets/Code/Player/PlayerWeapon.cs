@@ -8,7 +8,6 @@ namespace Infringed.Combat
     public class PlayerWeapon : Weapon
     {
         //[SerializeField] private float _backstabDot = 0.5f;
-        [Inject] private AIManager _aiManager;
         private Transform _player;
 
         [Inject]

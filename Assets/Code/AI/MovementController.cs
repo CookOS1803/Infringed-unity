@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 namespace Infringed.AI
 {
-    public class MovementController : MonoBehaviour, IMoveable
+    public class MovementController : MonoBehaviour
     {
         [SerializeField, Min(0f)] private float _calmSpeed = 1.5f;
         [SerializeField, Min(0f)] private float _alarmedSpeed = 3.5f;

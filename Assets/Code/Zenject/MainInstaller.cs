@@ -28,7 +28,6 @@ namespace Infringed.Injection
     public class MainInstaller : MonoInstaller
     {
         [SerializeField] private UIInventory _uiInventory;
-        [SerializeField] private AIManager _aiManager;
         [SerializeField] private PlayerController _player;
         [SerializeField] private CameraController _camera;
         [Space]
@@ -53,7 +52,6 @@ namespace Infringed.Injection
             Container.BindInstance(_player).AsSingle();
             Container.BindInstance(_camera).AsSingle();
             Container.BindInstance(_uiInventory).AsSingle();
-            Container.BindInstance(_aiManager).AsSingle();
 
             Container.BindInstance(_playerLayer).WithId(CustomLayer.Player);
             Container.BindInstance(_floorLayer).WithId(CustomLayer.Floor);

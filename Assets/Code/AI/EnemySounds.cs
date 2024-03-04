@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Combat;
@@ -36,6 +37,11 @@ namespace Infringed.AI
         public void OnStepEvent()
         {
             _audio.Play(_customAudio.GetRandomStep());
+        }
+
+        public void OnSwingEvent()
+        {
+            _audio.Play(_customAudio.WeaponSwing);
         }
     }
 }

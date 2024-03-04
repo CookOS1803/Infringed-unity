@@ -36,6 +36,6 @@ namespace Bonsai.Core.User
                 Blackboard.Get<ConditionalList>(FailableTask.BLACKBOARD_NAME).Remove(this);
         }
 
-        protected abstract void _OnStart();
+        protected virtual void _OnStart() {}
     }
 }

@@ -9,7 +9,7 @@ using Infringed.InventorySystem;
 namespace Infringed.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MonoBehaviour, IMoveable, IMortal
+    public class PlayerController : MonoBehaviour, IAttacker, IMortal
     {
         public event Action OnHide;
         public event Action OnExitHideout;
@@ -163,6 +163,16 @@ namespace Infringed.Player
             transform.position = CurrentHideout.transform.position;
 
             OnHide?.Invoke();
+        }
+
+        public void AttackStarted()
+        {
+            CanMove = false;
+        }
+
+        public void AttackEnded()
+        {
+            CanMove = true;
         }
 
         private void _OnAttack(InputAction.CallbackContext obj)

@@ -761,6 +761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6418b52683a3d843939f39c7ed9bab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <AlarmTime>k__BackingField: 10
 --- !u!4 &75698119
 Transform:
   m_ObjectHideFlags: 0
@@ -4897,6 +4898,14 @@ PrefabInstance:
       propertyPath: _patrolPoints.Array.data[1]
       value: 
       objectReference: {fileID: 227239939}
+    - target: {fileID: 8068100594877465602, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: _showAttackRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8068100594877465602, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: _attackRangeColor.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8281471688400267955, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -8933,6 +8942,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1776400448017597310, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1776400449043857334, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -9021,6 +9034,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3607862635625271725, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
+      propertyPath: _aiManager
+      value: 
+      objectReference: {fileID: 75698118}
     - target: {fileID: 6920575602579689070, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
