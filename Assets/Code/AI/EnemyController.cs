@@ -6,11 +6,12 @@ using UnityEngine;
 
 namespace Infringed.AI
 {
-    public class EnemyController : MonoBehaviour, IMortal, IAttacker
+    public class EnemyController : MonoBehaviour, IMortal, IAttacker, IDisposable
     {
         public event Action<EnemyController> OnAlarm;
         public event Action<EnemyController> OnUnalarm;
-        public event Action<EnemyController> OnDeath;
+        public event Action<EnemyController> OnDeathStarted;
+        public event Action<EnemyController> OnDeathEnded;
         public event Action<EnemyController, Vector3> OnPlayerSpotted;
         public event Action<EnemyController> OnAttackStart;
 
@@ -18,32 +19,38 @@ namespace Infringed.AI
         [SerializeField, Min(0f)] private float _attackRange = 1f;
         public Vector3 LastKnownPlayerPosition { get; set; }
         public bool SpottedPlayer { get; set; }
+        public bool SpottedPlayerThisFrame { get; set; }
         public bool IsAlarmed { get; private set; }
         public bool IsAttacking { get; private set; }
+        public bool IsDying { get; private set; }
         [Zenject.Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
         private VisionController _vision;
         private SoundResponder _soundResponder;
+        private Health _health;
         private bool _spotBySound;
 
         private void Awake()
         {
             _vision = GetComponent<VisionController>();
             _soundResponder = GetComponent<SoundResponder>();
+            _health = GetComponent<Health>();
         }
 
         private void OnEnable()
         {
             _soundResponder.OnSound += _OnSound;
+            _health.OnNegativeHealth += _Die;
         }
 
         private void OnDisable()
         {
             _soundResponder.OnSound -= _OnSound;
+            _health.OnNegativeHealth -= _Die;
         }
 
         private void Update()
         {
-            if (!IsAlarmed)
+            if (!IsAlarmed || IsDying)
             {
                 SpottedPlayer = false;
                 return;
@@ -56,7 +63,11 @@ namespace Infringed.AI
             }
             else
             {
-                SpottedPlayer = false;
+                if (SpottedPlayerThisFrame)
+                    SpottedPlayerThisFrame = false;
+                else
+                    SpottedPlayer = false;
+
                 _spotBySound = true;
             }
         }
@@ -92,6 +103,13 @@ namespace Infringed.AI
             OnAlarm?.Invoke(this);
         }
 
+        public void Alarm(Vector3 playerPosition)
+        {
+            Alarm();
+
+            OnPlayerSpotted?.Invoke(this, playerPosition);
+        }
+
         public void Unalarm()
         {
             if (!IsAlarmed)
@@ -103,7 +121,7 @@ namespace Infringed.AI
 
         public void OnDeathEnd()
         {
-
+            OnDeathEnded?.Invoke(this);
         }
 
         public void AttackStarted()
@@ -127,12 +145,26 @@ namespace Infringed.AI
             return Physics.OverlapSphere(transform.position, _attackRange, _playerLayer.value).Length != 0;
         }
 
+        public void Dispose()
+        {
+            Destroy(gameObject);
+        }
+
         private void _OnSound(Vector3 vector)
         {
             if (!IsAlarmed && _spotBySound)
                 return;
 
             OnPlayerSpotted?.Invoke(this, vector);
+        }
+
+        private void _Die()
+        {
+            if (IsDying)
+                return;
+            
+            IsDying = true;
+            OnDeathStarted?.Invoke(this);
         }
 
         public void OnAttackStartEvent()

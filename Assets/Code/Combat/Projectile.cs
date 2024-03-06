@@ -15,8 +15,9 @@ namespace Infringed.Combat
         [Zenject.Inject] protected CustomAudio _customAudio;
         [SerializeField] protected AudioClip _hitClip;
         protected float _lifeClock = 0f;
+        protected Vector3 _target;
 
-        public Vector3 Target { get; set; }
+        public Vector3 Target => _target;
 
         private void Update()
         {
@@ -36,12 +37,11 @@ namespace Infringed.Combat
 
             if (other.TryGetComponent<Health>(out var health))
             {
-                AudioSource.PlayClipAtPoint(_customAudio.WeaponHit, transform.position);
                 health.TakeDamage(_damage);
             }
 
             if (other.TryGetComponent<StunController>(out var stunner))
-                stunner.Stun(_stunTime);
+                stunner.Stun(_stunTime, transform.position);
 
             if (other.TryGetComponent<ParticleSystem>(out var particles))
                 particles.Emit(6);
@@ -49,6 +49,11 @@ namespace Infringed.Combat
             SoundUtil.SpawnSound(transform.position, _soundRadius);
 
             Destroy(gameObject);
+        }
+
+        public virtual void SetTarget(Vector3 target)
+        {
+            _target = target;
         }
 
         protected abstract void _Move();

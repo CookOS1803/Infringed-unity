@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Combat;
+using ModestTree;
 using UnityEngine;
 
 namespace Infringed.Actions
@@ -17,7 +18,7 @@ namespace Infringed.Actions
             var projectile = _diContainer.InstantiatePrefab(_projectilePrefab, context.actor.position + Vector3.up + context.actor.forward * 0.5f, context.actor.rotation, null)
                             .GetComponent<Projectile>();
 
-            projectile.Target = context.target;
+            projectile.SetTarget(context.target);
 
             AudioSource.PlayClipAtPoint(_audioClip, context.actor.position);
         }

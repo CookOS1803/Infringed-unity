@@ -33,7 +33,24 @@ namespace Infringed.Editor
         [MenuItem("Assets/Create/Bonsai/Decorator", false, 1)]
         private static void _CreateDecorator()
         {
-            _CreateNode("a Decorator", "NewDecorator", "Decorator");
+            Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate("a Decorator", "NewDecorator",
+                  "using UnityEngine;"
+                + "\nusing Bonsai;"
+                + "\nusing Bonsai.Core;"
+                + "\n"
+                + "\nnamespace Infringed.AI.BTree"
+                + "\n{"
+                + "\n    [BonsaiNode(\"Decorators/\")]"
+                + "\n    public class CLASS_NAME : Decorator"
+                + "\n    {"
+                + "\n        public override Status Run()"
+                + "\n        {"
+                + "\n            return Iterator.LastChildExitStatus.GetValueOrDefault(Status.Failure);"
+                + "\n        }"
+                + "\n        "
+                + "\n    }"
+                + "\n}"
+                + "\n");
         }
 
         [MenuItem("Assets/Create/Bonsai/Conditional", false, 1)]
@@ -53,28 +70,6 @@ namespace Infringed.Editor
                 + "\n        protected override bool _InvertableCondition()"
                 + "\n        {"
                 + "\n            return true;"
-                + "\n        }"
-                + "\n        "
-                + "\n    }"
-                + "\n}"
-                + "\n");
-        }
-
-        private static void _CreateNode(string name, string defaultFileName, string className)
-        {
-            Zenject.Internal.ZenMenuItems.AddCSharpClassTemplate(name, defaultFileName,
-                  "using UnityEngine;"
-                + "\nusing Bonsai;"
-                + "\nusing Bonsai.Core;"
-                + "\n"
-                + "\nnamespace Infringed.AI.BTree"
-                + "\n{"
-                + "\n    [BonsaiNode(\"" + className + "s/\")]"
-                + "\n    public class CLASS_NAME : " + className
-                + "\n    {"
-                + "\n        public override Status Run()"
-                + "\n        {"
-                + "\n            return Status.Success;"
                 + "\n        }"
                 + "\n        "
                 + "\n    }"

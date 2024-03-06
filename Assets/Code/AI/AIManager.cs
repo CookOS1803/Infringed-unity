@@ -50,14 +50,14 @@ namespace Infringed.AI
         private void _Subscribe(EnemyController enemy)
         {
             enemy.OnAlarm += _OnAlarm;
-            enemy.OnDeath += _OnEnemyDeath;
+            enemy.OnDeathEnded += _OnEnemyDeath;
             enemy.OnPlayerSpotted += _OnPlayerSpotted;
         }
 
         private void _Unsubscribe(EnemyController enemy)
         {
             enemy.OnAlarm -= _OnAlarm;
-            enemy.OnDeath -= _OnEnemyDeath;
+            enemy.OnDeathEnded -= _OnEnemyDeath;
             enemy.OnPlayerSpotted -= _OnPlayerSpotted;
         }
 
@@ -87,6 +87,7 @@ namespace Infringed.AI
             {
                 enemy.LastKnownPlayerPosition = vector;
                 enemy.SpottedPlayer = true;
+                enemy.SpottedPlayerThisFrame = true;
             }
         }
 

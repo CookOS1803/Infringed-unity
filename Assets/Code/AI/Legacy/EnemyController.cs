@@ -77,7 +77,7 @@ namespace Infringed.Legacy
             playerSeeker.Initialize(this);
             soundResponder.Initialize(this);
 
-            health.OnDeath += Die;
+            health.OnNegativeHealth += Die;
         }
 
         void Start()

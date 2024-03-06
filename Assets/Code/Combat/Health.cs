@@ -8,7 +8,7 @@ namespace Infringed.Combat
     public class Health : MonoBehaviour
     {
         public event Action OnChange;
-        public event Action OnDeath;
+        public event Action OnNegativeHealth;
         public event Action OnDamageTaken;
 
         [SerializeField] private int _maxHealth = 100;
@@ -30,7 +30,7 @@ namespace Infringed.Combat
 
             if (_currentHealth <= 0)
             {
-                OnDeath?.Invoke();
+                OnNegativeHealth?.Invoke();
                 enabled = false;
             }
         }

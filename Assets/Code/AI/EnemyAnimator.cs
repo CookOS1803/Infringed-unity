@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Combat;
 using UnityEngine;
 
 namespace Infringed.AI
@@ -10,46 +11,44 @@ namespace Infringed.AI
         private Animator _animator;
         private MovementController _movement;
         private EnemyController _enemy;
+        private StunController _stunController;
 
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _movement = GetComponent<MovementController>();
             _enemy = GetComponent<EnemyController>();
+            _stunController = GetComponent<StunController>();
         }
 
         private void OnEnable()
         {
-            _enemy.OnAlarm += _OnAlarm;
-            _enemy.OnUnalarm += _OnUnalarm;
             _enemy.OnAttackStart += _OnAttackStart;
+            //_enemy.OnDeathStarted += _OnDeath;
         }
 
         private void OnDisable()
         {
-            _enemy.OnAlarm -= _OnAlarm;
-            _enemy.OnUnalarm -= _OnUnalarm;
             _enemy.OnAttackStart -= _OnAttackStart;
+            //_enemy.OnDeathStarted -= _OnDeath;
         }
 
         private void Update()
         {
             _animator.SetBool("isMoving", _movement.IsMoving);
-        }
-
-        private void _OnAlarm(EnemyController sender)
-        {
-            _animator.SetBool("isAlarmed", true);
-        }
-
-        private void _OnUnalarm(EnemyController sender)
-        {
-            _animator.SetBool("isAlarmed", false);
+            _animator.SetBool("isAlarmed", _enemy.IsAlarmed);
+            _animator.SetBool("isStunned", _stunController.IsStunned);
+            _animator.SetBool("isDying", _enemy.IsDying);
         }
 
         private void _OnAttackStart(EnemyController controller)
         {
             _animator.SetTrigger("attack");
+        }
+
+        private void _OnDeath(EnemyController controller)
+        {
+            _animator.SetTrigger("death");
         }
     }
 }

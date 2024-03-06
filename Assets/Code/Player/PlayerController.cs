@@ -46,7 +46,7 @@ namespace Infringed.Player
             _playerAnimator = new PlayerAnimator(transform);
             _weapon = GetComponentInChildren<Weapon>();
 
-            _health.OnDeath += _Die;
+            _health.OnNegativeHealth += _Die;
 
             _input = GetComponent<PlayerInput>();
 
@@ -325,12 +325,7 @@ namespace Infringed.Player
             CanMove = false;
             _playerAnimator.Die();
         }
-
-        public void OnSwingEvent()
-        {
-            AudioSource.PlayClipAtPoint(_customAudio.WeaponSwing, transform.position);
-        }
-
+        
         public void OnAttackStartEvent()
         {
             _weapon.StartDamaging();
@@ -339,12 +334,6 @@ namespace Infringed.Player
         public void OnAttackEndEvent()
         {
             _weapon.StopDamaging();
-        }
-
-        public void OnStepEvent(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-                AudioSource.PlayClipAtPoint(_customAudio.GetRandomStep(), transform.position);
         }
     }
 }

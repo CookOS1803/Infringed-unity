@@ -5,41 +5,41 @@ using Infringed.Combat;
 using UnityEngine;
 using Zenject;
 
-namespace Infringed.AI
+namespace Infringed
 {
-    public class EnemySounds : MonoBehaviour
+    public class EntitySounds : MonoBehaviour
     {
-        [Inject] private CustomAudio _customAudio;
-        private AudioController _audio;
-        private Health _health;
+        [Inject] protected CustomAudio _customAudio;
+        protected AudioController _audio;
+        protected Health _health;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _audio = GetComponent<AudioController>();
             _health = GetComponent<Health>();
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             _health.OnDamageTaken += _OnDamageTaken;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             _health.OnDamageTaken -= _OnDamageTaken;
         }
 
-        private void _OnDamageTaken()
+        protected virtual void _OnDamageTaken()
         {
             _audio.Play(_customAudio.WeaponHit);
         }
 
-        public void OnStepEvent()
+        public virtual void OnStepEvent(AnimationEvent animationEvent)
         {
             _audio.Play(_customAudio.GetRandomStep());
         }
 
-        public void OnSwingEvent()
+        public virtual void OnSwingEvent()
         {
             _audio.Play(_customAudio.WeaponSwing);
         }

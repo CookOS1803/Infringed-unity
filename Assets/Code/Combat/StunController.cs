@@ -7,43 +7,44 @@ namespace Infringed.Combat
     public class StunController : MonoBehaviour
     {
         public bool IsStunned { get; private set; } = false;
+        public Vector3 StunSourceDirection { get; private set; }
         private float _stunClock = 0f;
         private float _currentStunTime = 0f;
 
         public event Action OnStunStart;
         public event Action OnStunEnd;
 
-        public void Stun(float stunTime)
+        private void Update()
+        {
+            if (!IsStunned)
+                return;
+
+            _stunClock += Time.deltaTime;
+
+            if (_stunClock >= _currentStunTime)
+            {
+                _stunClock = 0f;
+                IsStunned = false;    
+                OnStunEnd?.Invoke();
+            }
+        }
+
+        public void Stun(float stunTime, Vector3 stunSourcePosition)
         {
             if (!IsStunned)
             {
                 _currentStunTime = stunTime;
-                IsStunned = true;
 
-                StartCoroutine(_StunRoutine());
+                IsStunned = true;
+                OnStunStart?.Invoke();
             }
             else if (stunTime >= _currentStunTime - _stunClock)
             {
                 _stunClock = 0f;
                 _currentStunTime = stunTime;
             }
-        }
 
-        private IEnumerator _StunRoutine()
-        {
-            OnStunStart?.Invoke();
-
-            while (_stunClock < _currentStunTime)
-            {
-                _stunClock += Time.deltaTime;
-
-                yield return new WaitForEndOfFrame();
-            }
-
-            _stunClock = 0f;
-            IsStunned = false;
-
-            OnStunEnd?.Invoke();
+            StunSourceDirection = (stunSourcePosition - transform.position).normalized;
         }
     }
 }
