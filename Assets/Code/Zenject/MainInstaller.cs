@@ -47,8 +47,6 @@ namespace Infringed.Injection
                 Container.QueueForInject(item);
             }
 
-            Container.Bind<Inventory>().FromNew().AsTransient();
-
             Container.BindInstance(_player).AsSingle();
             Container.BindInstance(_camera).AsSingle();
             Container.BindInstance(_uiInventory).AsSingle();

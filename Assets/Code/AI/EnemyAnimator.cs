@@ -24,13 +24,11 @@ namespace Infringed.AI
         private void OnEnable()
         {
             _enemy.OnAttackStart += _OnAttackStart;
-            //_enemy.OnDeathStarted += _OnDeath;
         }
 
         private void OnDisable()
         {
             _enemy.OnAttackStart -= _OnAttackStart;
-            //_enemy.OnDeathStarted -= _OnDeath;
         }
 
         private void Update()
@@ -44,11 +42,6 @@ namespace Infringed.AI
         private void _OnAttackStart(EnemyController controller)
         {
             _animator.SetTrigger("attack");
-        }
-
-        private void _OnDeath(EnemyController controller)
-        {
-            _animator.SetTrigger("death");
         }
     }
 }

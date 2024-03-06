@@ -13,7 +13,9 @@ namespace Infringed.Player
     {
         public event Action OnHide;
         public event Action OnExitHideout;
-        public event Action OnPlayerDeath;
+        public event Action OnPlayerDeathStart;
+        public event Action OnPlayerDeathEnd;
+        public event Action OnPlayerAttackStart;
 
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _crouchingSpeedFactor = 0.3f;
@@ -23,34 +25,36 @@ namespace Infringed.Player
         [Inject] private CustomAudio _customAudio;
         [Inject(Id = CustomLayer.Floor)] private LayerMask _floorMask;
         [Inject(Id = CustomLayer.Interactable)] private LayerMask _interactableMask;
-        private PlayerAnimator _playerAnimator;
         private CharacterController _characterController;
         private PlayerInput _input;
         private Health _health;
         private Weapon _weapon;
-        private Vector3 _moveDirection;
         private float _verticalAcceleration = 0f;
         private bool _isDying = false;
         private bool _isCrouching = false;
         public Hideout CurrentHideout { get; private set; }
+        public Inventory Inventory { get; private set; }
+        public Vector3 MoveDirection { get; private set; }
         public bool CanMove { get; set; } = true;
 
-        // a nahuya injectit'
-        [Inject] public Inventory Inventory { get; private set; }
+        public bool IsHiding => CurrentHideout != null;
 
-        // why start
-        private void Start()
+        private void Awake()
         {
-            _characterController = GetComponent<CharacterController>();
-            _health = GetComponent<Health>();
-            _playerAnimator = new PlayerAnimator(transform);
-            _weapon = GetComponentInChildren<Weapon>();
-
-            _health.OnNegativeHealth += _Die;
+            Inventory = new Inventory();
 
             _input = GetComponent<PlayerInput>();
+            _characterController = GetComponent<CharacterController>();
+            _health = GetComponent<Health>();
+            _weapon = GetComponentInChildren<Weapon>();
 
-            // maybe v OnEnable
+            _input.actions["Menu"].performed += _OnMenu;
+        }
+
+        private void OnEnable()
+        {
+            _health.OnNegativeHealth += _Die;
+
             _input.actions["Fire"].performed += _OnAttack;
             _input.actions["UseItem"].performed += _OnUseItem;
             _input.actions["Interact"].performed += _OnInteract;
@@ -58,12 +62,31 @@ namespace Infringed.Player
             _input.actions["SwitchItem"].performed += _OnSwitchItem;
             _input.actions["Crouch"].performed += _OnCrouchPerformed;
             _input.actions["Crouch"].canceled += _OnCrouchCanceled;
-            _input.actions["Menu"].performed += _OnMenu;
+        }
+
+        private void OnDisable()
+        {
+            
+            _health.OnNegativeHealth -= _Die;
+
+            // maybe v OnDisable
+            _input.actions["Fire"].performed -= _OnAttack;
+            _input.actions["UseItem"].performed -= _OnUseItem;
+            _input.actions["Interact"].performed -= _OnInteract;
+            _input.actions["SelectItem"].performed -= _OnSelectItem;
+            _input.actions["SwitchItem"].performed -= _OnSwitchItem;
+            _input.actions["Crouch"].performed -= _OnCrouchPerformed;
+            _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
+        }
+
+        private void OnDestroy()
+        {
+            _input.actions["Menu"].performed -= _OnMenu;
         }
 
         private void Update()
         {
-            if (CurrentHideout == null)
+            if (!IsHiding)
             {
                 _CalculateGravity();
 
@@ -89,7 +112,7 @@ namespace Infringed.Player
             if (_showMoveDirection)
             {
                 Gizmos.color = _moveDirectionColor;
-                Gizmos.DrawRay(transform.position, _moveDirection);
+                Gizmos.DrawRay(transform.position, MoveDirection);
             }
 
             if (_showItemPickupRadius)
@@ -126,22 +149,14 @@ namespace Infringed.Player
 
         public void OnDeathEnd()
         {
-            OnPlayerDeath?.Invoke();
-
-            // maybe v OnDisable
-            _input.actions["Fire"].performed -= _OnAttack;
-            _input.actions["UseItem"].performed -= _OnUseItem;
-            _input.actions["Interact"].performed -= _OnInteract;
-            _input.actions["SelectItem"].performed -= _OnSelectItem;
-            _input.actions["SwitchItem"].performed -= _OnSwitchItem;
-            _input.actions["Crouch"].performed -= _OnCrouchPerformed;
-            _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
+            OnPlayerDeathEnd?.Invoke();
 
             enabled = false;
         }
 
         public void PickItem(ItemPickable pickable)
         {
+            // che eto za pizdec
             Inventory.Add(pickable.GetItem());
             pickable.DestroySelf();
         }
@@ -239,14 +254,14 @@ namespace Infringed.Player
         private void _Move()
         {
             var inputValue = _input.actions["Move"].ReadValue<Vector2>();
-            _moveDirection = new Vector3(inputValue.x, 0f, inputValue.y);
+            MoveDirection = new Vector3(inputValue.x, 0f, inputValue.y);
 
-            var movement = _moveDirection * _speed * Time.deltaTime;
+            var movement = MoveDirection * _speed * Time.deltaTime;
 
             if (_isCrouching)
             {
                 movement *= _crouchingSpeedFactor;
-                _moveDirection *= _crouchingSpeedFactor;
+                MoveDirection *= _crouchingSpeedFactor;
             }
             else if (movement != Vector3.zero)
             {
@@ -254,8 +269,6 @@ namespace Infringed.Player
             }
 
             _characterController.Move(movement);
-
-            _playerAnimator.AnimateMovement(_moveDirection);
         }
 
         private void _Turn()
@@ -275,7 +288,7 @@ namespace Infringed.Player
         {
             if (!UserRaycaster.IsBlockedByUI())
             {
-                _playerAnimator.Attack();
+                OnPlayerAttackStart?.Invoke();
             }
         }
 
@@ -323,9 +336,10 @@ namespace Infringed.Player
             gameObject.layer = 0;
             _isDying = true;
             CanMove = false;
-            _playerAnimator.Die();
+
+            OnPlayerDeathStart?.Invoke();
         }
-        
+
         public void OnAttackStartEvent()
         {
             _weapon.StartDamaging();

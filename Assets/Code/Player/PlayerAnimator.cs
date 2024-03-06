@@ -4,19 +4,51 @@ using UnityEngine;
 
 namespace Infringed.Player
 {
-    public class PlayerAnimator
+    public class PlayerAnimator : MonoBehaviour
     {
         private Animator _animator;
-        private Transform _transform;
+        private PlayerController _player;
 
-        public PlayerAnimator(Transform playerTransform)
+        private void Awake()
         {
-            _transform = playerTransform;
-            _animator = _transform.GetComponent<Animator>();
+            _animator = GetComponent<Animator>();
+            _player = GetComponent<PlayerController>();
 
         }
 
-        public void AnimateMovement(Vector3 moveDirection)
+        private void OnEnable()
+        {
+            _player.OnPlayerAttackStart += _Attack;
+            _player.OnPlayerDeathStart += _Die;
+        }
+
+        private void OnDisable()
+        {
+            _player.OnPlayerAttackStart -= _Attack;
+            _player.OnPlayerDeathStart -= _Die;
+        }
+
+        private void Update()
+        {
+            _animator.enabled = !_player.IsHiding;
+
+            if (_animator.enabled)
+                _AnimateMovement(_player.MoveDirection);
+        }
+
+        private void _Attack()
+        {
+            if (_animator.enabled)
+                _animator.SetTrigger("Attack");
+        }
+
+        private void _Die()
+        {
+            if (_animator.enabled)
+                _animator.SetTrigger("death");
+        }
+
+        private void _AnimateMovement(Vector3 moveDirection)
         {
             if (moveDirection == Vector3.zero)
             {
@@ -24,27 +56,12 @@ namespace Infringed.Player
                 return;
             }
 
-            float angle = Vector3.SignedAngle(Vector3.forward, _transform.forward, Vector3.up);
+            float angle = Vector3.SignedAngle(Vector3.forward, transform.forward, Vector3.up);
             moveDirection = Quaternion.Euler(0f, -angle, 0f) * moveDirection;
 
             _animator.SetBool("isMoving", true);
             _animator.SetFloat("forward", moveDirection.z, 0.1f, Time.deltaTime);
             _animator.SetFloat("right", moveDirection.x, 0.1f, Time.deltaTime);
-        }
-
-        public void Attack()
-        {
-            _animator.SetTrigger("Attack");
-        }
-
-        public void Die()
-        {
-            _animator.SetTrigger("death");
-        }
-
-        public void ResetAnimations()
-        {
-            _animator.SetBool("isMoving", false);
         }
     }
 }

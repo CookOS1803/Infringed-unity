@@ -14,12 +14,12 @@ namespace Infringed
         {
             _SetStatus(false);
 
-            _player.OnPlayerDeath += _OnActivate;
+            _player.OnPlayerDeathEnd += _OnActivate;
         }
 
         private void OnDestroy()
         {
-            _player.OnPlayerDeath -= _OnActivate;
+            _player.OnPlayerDeathEnd -= _OnActivate;
         }
 
         private void _OnActivate()

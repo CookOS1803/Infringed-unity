@@ -9000,6 +9000,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1776400448279617817, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 36098728}
     - target: {fileID: 1776400449043857334, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_Pivot.x
       value: 0

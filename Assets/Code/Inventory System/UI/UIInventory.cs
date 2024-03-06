@@ -9,16 +9,12 @@ namespace Infringed.InventorySystem.UI
 {
     public class UIInventory : MonoBehaviour
     {
-        public Inventory Inventory { get; private set; }
+        [SerializeField] private PlayerController _player;
         [SerializeField] private Color _defaultSlotColor;
         [SerializeField] private Color _selectedSlotColor;
         private RawImage _selectedSlotImage;
 
-        [Inject]
-        private void _SetInventory(PlayerController player)
-        {
-            Inventory = player.Inventory;
-        }
+        public Inventory Inventory => _player.Inventory;
 
         private void Start()
         {

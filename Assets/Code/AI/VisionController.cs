@@ -11,7 +11,7 @@ namespace Infringed.AI
         [field: SerializeField, Min(0f)] public float DistanceOfView { get; private set; } = 10f;
         [field: SerializeField, Range(0f, 360f)] public float FieldOfView { get; private set; } = 90f;
         [Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
-        
+
         public bool IsPlayerInView { get; private set; }
         public Transform LastNoticedPlayer { get; private set; }
 
@@ -22,8 +22,13 @@ namespace Infringed.AI
 
             if (IsPlayerInView)
             {
-                LastNoticedPlayer = noticedPlayer;              
+                LastNoticedPlayer = noticedPlayer;
             }
+        }
+
+        private void OnDisable()
+        {
+            IsPlayerInView = false;
         }
 
         private Transform _NoticePlayer()
