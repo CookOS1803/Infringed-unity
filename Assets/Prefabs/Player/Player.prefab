@@ -2964,6 +2964,10 @@ MonoBehaviour:
   _itemPickupRadius: 5
   _soundRadius: 6
   _menu: {fileID: 0}
+  _objectsToDisableOnHide:
+  - {fileID: 1083590654038140}
+  - {fileID: 1296139180673014}
+  - {fileID: 1012611793270388}
   _showMoveDirection: 0
   _moveDirectionColor: {r: 0, g: 0, b: 1, a: 1}
   _showItemPickupRadius: 0
@@ -3010,6 +3014,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f7d30330dd55b468101da54a2e1c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hideoutEnter: {fileID: 8300000, guid: d543fc18c22c66140b2ecb3106cc9f10, type: 3}
+  _hideoutExit: {fileID: 8300000, guid: aea37e4fc8436aa4a849dabb63418b30, type: 3}
 --- !u!114 &6904175499640428216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8663,11 +8669,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 30
-  _damageRadius: 0.5
-  _secondPoint: {x: 0, y: 0, z: 0}
+  _damageRadius: 0.11
+  _secondPoint: {x: 0, y: 0.005, z: 0}
   _reactingLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4031
+  _backstabDot: 0.5
+  _player: {fileID: 4065501370703234}
 --- !u!1 &1892690722996672
 GameObject:
   m_ObjectHideFlags: 0

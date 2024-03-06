@@ -22,6 +22,7 @@ namespace Infringed.Player
         [SerializeField, Min(0f)] private float _itemPickupRadius = 5f;
         [SerializeField, Min(0f)] private float _soundRadius = 6f;
         [SerializeField] private OnPlayerDeathActivator _menu;
+        [SerializeField] private GameObject[] _objectsToDisableOnHide;
         [Inject] private CustomAudio _customAudio;
         [Inject(Id = CustomLayer.Floor)] private LayerMask _floorMask;
         [Inject(Id = CustomLayer.Interactable)] private LayerMask _interactableMask;
@@ -69,7 +70,6 @@ namespace Infringed.Player
             
             _health.OnNegativeHealth -= _Die;
 
-            // maybe v OnDisable
             _input.actions["Fire"].performed -= _OnAttack;
             _input.actions["UseItem"].performed -= _OnUseItem;
             _input.actions["Interact"].performed -= _OnInteract;
@@ -139,9 +139,9 @@ namespace Infringed.Player
             CurrentHideout = null;
             _characterController.enabled = true;
 
-            foreach (Transform c in transform)
+            foreach (var toDisable in _objectsToDisableOnHide)
             {
-                c.gameObject.SetActive(true);
+                toDisable.SetActive(true);
             }
 
             OnExitHideout?.Invoke();
@@ -170,9 +170,9 @@ namespace Infringed.Player
             CurrentHideout = hideout;
             _characterController.enabled = false;
 
-            foreach (Transform c in transform)
+            foreach (var toDisable in _objectsToDisableOnHide)
             {
-                c.gameObject.SetActive(false);
+                toDisable.SetActive(false);
             }
 
             transform.position = CurrentHideout.transform.position;

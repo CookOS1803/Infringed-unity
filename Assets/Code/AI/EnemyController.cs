@@ -39,13 +39,13 @@ namespace Infringed.AI
         private void OnEnable()
         {
             _soundResponder.OnSound += _OnSound;
-            _health.OnNegativeHealth += _Die;
+            _health.OnNegativeHealth += Die;
         }
 
         private void OnDisable()
         {
             _soundResponder.OnSound -= _OnSound;
-            _health.OnNegativeHealth -= _Die;
+            _health.OnNegativeHealth -= Die;
         }
 
         private void Update()
@@ -150,21 +150,21 @@ namespace Infringed.AI
             Destroy(gameObject);
         }
 
-        private void _OnSound(Vector3 vector)
-        {
-            if (!IsAlarmed && _spotBySound)
-                return;
-
-            OnPlayerSpotted?.Invoke(this, vector);
-        }
-
-        private void _Die()
+        public void Die()
         {
             if (IsDying)
                 return;
             
             IsDying = true;
             OnDeathStarted?.Invoke(this);
+        }
+
+        private void _OnSound(Vector3 vector)
+        {
+            if (!IsAlarmed && _spotBySound)
+                return;
+
+            OnPlayerSpotted?.Invoke(this, vector);
         }
 
         public void OnAttackStartEvent()

@@ -22,6 +22,12 @@ namespace Infringed
             _player.OnPlayerDeathEnd -= _OnActivate;
         }
 
+        public void SwitchStatus()
+        {
+            _currentStatus = !_currentStatus;
+            _SetStatus(_currentStatus);
+        }
+
         private void _OnActivate()
         {
             _SetStatus(true);
@@ -33,12 +39,6 @@ namespace Infringed
             {
                 child.gameObject.SetActive(status);
             }
-        }
-
-        public void SwitchStatus()
-        {
-            _currentStatus = !_currentStatus;
-            _SetStatus(_currentStatus);
         }
     }
 }

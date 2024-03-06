@@ -456,18 +456,6 @@ PrefabInstance:
       propertyPath: _showItemPickupRadius
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1731810153, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
-      propertyPath: _damageRadius
-      value: 0.11
-      objectReference: {fileID: 0}
-    - target: {fileID: 1731810153, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
-      propertyPath: _secondPoint.y
-      value: 0.005
-      objectReference: {fileID: 0}
-    - target: {fileID: 1731810153, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
-      propertyPath: _reactingLayer.m_Bits
-      value: 4031
-      objectReference: {fileID: 0}
     - target: {fileID: 1742385099753426, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
       propertyPath: m_Name
       value: Player
