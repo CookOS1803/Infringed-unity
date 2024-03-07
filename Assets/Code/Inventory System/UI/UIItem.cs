@@ -37,9 +37,13 @@ namespace Infringed.InventorySystem.UI
             _image = GetComponent<Image>();
             _slot = GetComponentInParent<ItemSlot>();
             _itemDescription = GetComponentInChildren<ItemDescription>();
-            _itemDescription.gameObject.SetActive(false);
 
             _initialPosition = _rectTransform.anchoredPosition;
+        }
+
+        private void Start()
+        {
+            _itemDescription.gameObject.SetActive(false);
         }
 
         public void SetItem(ItemData data)

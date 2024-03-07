@@ -18,7 +18,7 @@ namespace Infringed.AI
         {
             _movement = GetComponent<MovementController>();
         }
-        
+
         public void GoToNextPoint()
         {
             _movement.SetDestination(CurrentPatrolPoint.position);

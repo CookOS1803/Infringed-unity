@@ -393,8 +393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662a1e627aee6b2418b97cb5739c8f72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Test
-  loading: {fileID: 1810140629}
+  _sceneName: Test
+  _loading: {fileID: 1810140629}
 --- !u!1 &308359124
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,7 +1301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b03a47c55c721584b88bfcbec8d109b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu: {fileID: 890059531}
+  _menu: {fileID: 890059531}
 --- !u!1 &1128010344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,7 +1871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b03a47c55c721584b88bfcbec8d109b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu: {fileID: 1633361825}
+  _menu: {fileID: 1633361825}
 --- !u!1 &1601234464
 GameObject:
   m_ObjectHideFlags: 0

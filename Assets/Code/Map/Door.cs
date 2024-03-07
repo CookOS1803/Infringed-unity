@@ -62,6 +62,12 @@ namespace Infringed.Map
             }
         }
 
+        public void OpenIndefinitely()
+        {
+            if (IsClosed)
+                _Open();
+        }
+
         private IEnumerator _StayingOpen()
         {
             float clock = 0f;

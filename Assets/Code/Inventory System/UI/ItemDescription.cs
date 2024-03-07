@@ -11,7 +11,7 @@ namespace Infringed.InventorySystem.UI
 
         private void Awake()
         {
-            _text = GetComponentInChildren<TMP_Text>();
+            _text = GetComponentInChildren<TMP_Text>(includeInactive: true);
         }
 
         public void UpdateInfo(string name, string description)
