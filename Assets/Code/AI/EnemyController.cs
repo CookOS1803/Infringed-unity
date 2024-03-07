@@ -126,7 +126,7 @@ namespace Infringed.AI
 
         public void AttackStarted()
         {
-            IsAttacking = true;
+            //IsAttacking = true;
         }
 
         public void AttackEnded()
@@ -137,7 +137,10 @@ namespace Infringed.AI
         public void Attack()
         {
             if (!IsAttacking)
+            {
+                IsAttacking = true;
                 OnAttackStart?.Invoke(this);
+            }
         }
 
         public bool IsPlayerInAttackRange()

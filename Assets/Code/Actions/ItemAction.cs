@@ -4,6 +4,10 @@ namespace Infringed.Actions
 {
     abstract public class ItemAction : ScriptableObject
     {
+        [field: SerializeField] public ActionCastMarker CastMarkerPrefab { get; private set; }
+
+        abstract public void Use(Context context);
+
         public struct Context
         {
             public Transform actor;
@@ -15,7 +19,5 @@ namespace Infringed.Actions
                 this.target = target;
             }
         }
-
-        abstract public void Use(Context context);
     }
 }

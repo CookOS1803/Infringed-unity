@@ -34,6 +34,7 @@ namespace Infringed.InventorySystem
                 OnChange?.Invoke();
             }
         }
+        public Item SelectedItem => _items[SelectedSlot];
 
         public Inventory()
         {

@@ -5,6 +5,7 @@ using Zenject;
 using Infringed.Combat;
 using Infringed.Map;
 using Infringed.InventorySystem;
+using Infringed.Actions;
 
 namespace Infringed.Player
 {
@@ -33,6 +34,7 @@ namespace Infringed.Player
         private float _verticalAcceleration = 0f;
         private bool _isDying = false;
         private bool _isCrouching = false;
+        private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
         public Inventory Inventory { get; private set; }
         public Vector3 MoveDirection { get; private set; }
@@ -57,26 +59,29 @@ namespace Infringed.Player
             _health.OnNegativeHealth += _Die;
 
             _input.actions["Fire"].performed += _OnAttack;
-            _input.actions["UseItem"].performed += _OnUseItem;
             _input.actions["Interact"].performed += _OnInteract;
             _input.actions["SelectItem"].performed += _OnSelectItem;
             _input.actions["SwitchItem"].performed += _OnSwitchItem;
             _input.actions["Crouch"].performed += _OnCrouchPerformed;
             _input.actions["Crouch"].canceled += _OnCrouchCanceled;
+            
+            _input.actions["UseItem"].performed += _OnUseItemPerformed;
+            _input.actions["UseItem"].canceled += _OnUseItemCanceled;
         }
 
         private void OnDisable()
         {
-            
             _health.OnNegativeHealth -= _Die;
 
             _input.actions["Fire"].performed -= _OnAttack;
-            _input.actions["UseItem"].performed -= _OnUseItem;
             _input.actions["Interact"].performed -= _OnInteract;
             _input.actions["SelectItem"].performed -= _OnSelectItem;
             _input.actions["SwitchItem"].performed -= _OnSwitchItem;
             _input.actions["Crouch"].performed -= _OnCrouchPerformed;
             _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
+
+            _input.actions["UseItem"].performed -= _OnUseItemPerformed;
+            _input.actions["UseItem"].canceled -= _OnUseItemCanceled;
         }
 
         private void OnDestroy()
@@ -196,12 +201,38 @@ namespace Infringed.Player
                 _Attack();
         }
 
-        private void _OnUseItem(InputAction.CallbackContext obj)
+        private void _OnUseItemPerformed(InputAction.CallbackContext context)
+        {
+            var item = Inventory.SelectedItem;
+
+            if (item == null)
+                return;
+
+            var castMarkerPrefab = item.Data.Action.CastMarkerPrefab;
+
+            if (castMarkerPrefab == null)
+                return;
+
+            _castMarker = Instantiate(castMarkerPrefab);
+
+            _castMarker.Actor = transform;
+            _castMarker.GetTargetPosition = () => {
+                Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
+
+                return floorHit.point;
+            };
+        }
+
+        private void _OnUseItemCanceled(InputAction.CallbackContext obj)
         {
             Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
 
             Inventory.UseItem(new(transform, floorHit.point));
+
+            Destroy(_castMarker?.gameObject);
+            _castMarker = null;
         }
 
         private void _OnExitHideout(InputAction.CallbackContext obj)

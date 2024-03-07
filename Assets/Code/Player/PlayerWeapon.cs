@@ -25,7 +25,7 @@ namespace Infringed.Combat
                 }
                 else
                 {
-                    enemy.Alarm();
+                    enemy.Alarm(_player.position);
                 }
 
             }

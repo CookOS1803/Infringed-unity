@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2a519485067144c9607a0eab571c23, type: 3}
   m_Name: ThrowBottleAction
   m_EditorClassIdentifier: 
+  <CastMarkerPrefab>k__BackingField: {fileID: 4937662360528435745, guid: 8c604150195efae4b8938de831e22db4, type: 3}
   _projectilePrefab: {fileID: 6902241515958572956, guid: d3158e0001028914d88d9ebcbfaefd49, type: 3}
   _audioClip: {fileID: 8300000, guid: 1120847b688d0614f9268772b0bd4cf1, type: 3}

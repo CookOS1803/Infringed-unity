@@ -112,11 +112,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 50
-  _speed: 4
+  _speed: 15
   _lifeTime: 5
   _stunTime: 2
   _soundRadius: 6
-  _spinningVelocity: {x: 0, y: 0, z: 360}
+  _spinningVelocity: {x: 0, y: 0, z: 720}
   _hitClip: {fileID: 8300000, guid: 79fd6157936028b44aaafe6d97726206, type: 3}
 --- !u!54 &5560422514016137845
 Rigidbody:
