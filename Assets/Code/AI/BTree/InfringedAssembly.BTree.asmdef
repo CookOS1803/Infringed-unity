@@ -1,0 +1,18 @@
+{
+    "name": "InfringedAssembly.BTree",
+    "rootNamespace": "",
+    "references": [
+        "GUID:221ebce248796cd4da39fc212fd6c044",
+        "GUID:e663252ae8cdac9448492a619a23dbb5",
+        "GUID:ad5418447332a784c844c02b739ce9fd"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

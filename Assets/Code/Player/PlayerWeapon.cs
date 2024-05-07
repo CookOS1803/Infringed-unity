@@ -1,9 +1,9 @@
 using UnityEngine;
 using Zenject;
-using Infringed.Player;
 using Infringed.AI;
+using Infringed.Combat;
 
-namespace Infringed.Combat
+namespace Infringed.Player
 {
     public class PlayerWeapon : Weapon
     {

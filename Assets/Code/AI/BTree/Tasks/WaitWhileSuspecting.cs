@@ -1,7 +1,5 @@
 using UnityEngine;
 using Bonsai;
-using Bonsai.Core;
-using Bonsai.Standard;
 using Bonsai.Core.User;
 
 namespace Infringed.AI.BTree

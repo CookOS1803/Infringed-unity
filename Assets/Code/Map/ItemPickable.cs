@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Infringed.Map;
+using Infringed.InventorySystem;
 using Infringed.Player;
 using UnityEngine;
 
-namespace Infringed.InventorySystem
+namespace Infringed.Map
 {
     public class ItemPickable : MonoBehaviour, IInteractable
     {

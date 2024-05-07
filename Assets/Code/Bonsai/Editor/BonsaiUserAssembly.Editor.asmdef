@@ -1,0 +1,20 @@
+{
+    "name": "BonsaiUserAssembly.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ad5418447332a784c844c02b739ce9fd",
+        "GUID:26b9a90400f071b48b1eeb2bce59af07",
+        "GUID:e663252ae8cdac9448492a619a23dbb5"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
