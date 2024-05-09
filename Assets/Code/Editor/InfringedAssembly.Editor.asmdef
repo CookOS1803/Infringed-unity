@@ -3,7 +3,8 @@
     "rootNamespace": "Infringed.Editor",
     "references": [
         "GUID:221ebce248796cd4da39fc212fd6c044",
-        "GUID:d0acddb179989574c8355991596bd3e6"
+        "GUID:d0acddb179989574c8355991596bd3e6",
+        "GUID:fc73ad6beff027d4b86bae50ed8703ff"
     ],
     "includePlatforms": [
         "Editor"
