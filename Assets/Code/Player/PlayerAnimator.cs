@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Combat;
 using UnityEngine;
 
 namespace Infringed.Player
@@ -8,24 +9,25 @@ namespace Infringed.Player
     {
         private Animator _animator;
         private PlayerController _player;
+        private Health _playerHealth;
 
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _player = GetComponent<PlayerController>();
-
+            _playerHealth = GetComponent<Health>();
         }
 
         private void OnEnable()
         {
             _player.OnPlayerAttackStart += _Attack;
-            _player.OnPlayerDeathStart += _Die;
+            _playerHealth.OnDeathStart += _Die;
         }
 
         private void OnDisable()
         {
             _player.OnPlayerAttackStart -= _Attack;
-            _player.OnPlayerDeathStart -= _Die;
+            _playerHealth.OnDeathStart -= _Die;
         }
 
         private void Update()

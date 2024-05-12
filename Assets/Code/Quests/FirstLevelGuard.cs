@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.AI;
@@ -24,13 +23,13 @@ namespace Infringed.Quests
 
         private void OnEnable()
         {
-            _enemyToKill.OnDeathEnded += _OnEnemyDeath;
+            _enemyToKill.OnEnemyDeathEnd += _OnEnemyDeath;
         }
 
         private void OnDisable()
         {
             if (_enemyToKill)
-                _enemyToKill.OnDeathEnded -= _OnEnemyDeath;
+                _enemyToKill.OnEnemyDeathEnd -= _OnEnemyDeath;
 
             if (_health)
                 _health.OnDamageTaken -= _OnDamage;
@@ -89,9 +88,9 @@ namespace Infringed.Quests
             _text.text = "Hey, i could open the door, if you'd help me. I need the guy in the storage room dead, 'cause he denounced my brother and got him hanged";
         }
 
-        private void _OnEnemyDeath(EnemyController controller)
+        private void _OnEnemyDeath(EnemyController sender)
         {
-            _enemyToKill.OnDeathEnded -= _OnEnemyDeath;
+            _enemyToKill.OnEnemyDeathEnd -= _OnEnemyDeath;
 
             _health = gameObject.AddComponent<Health>();
             _health.OnDamageTaken += _OnDamage;

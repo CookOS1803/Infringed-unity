@@ -1,7 +1,7 @@
 using UnityEngine;
 using Bonsai;
 using Bonsai.Core.User;
-using System;
+using Infringed.Combat;
 
 namespace Infringed.AI.BTree
 {
@@ -20,9 +20,8 @@ namespace Infringed.AI.BTree
         public override void OnEnter()
         {
             _movement.CanMove = false;
-            _enemy.OnDeathEnded += _OnDeath;
+            _enemy.OnEnemyDeathEnd += _OnDeath;
         }
-
 
         public override void OnExit()
         {
@@ -34,9 +33,9 @@ namespace Infringed.AI.BTree
             return Status.Running;
         }
 
-        private void _OnDeath(EnemyController controller)
+        private void _OnDeath(EnemyController sender)
         {
-            _enemy.OnDeathEnded -= _OnDeath;
+            _enemy.OnEnemyDeathEnd -= _OnDeath;
             _enemy.Dispose();
         }
         

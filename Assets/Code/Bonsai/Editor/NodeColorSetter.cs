@@ -35,7 +35,12 @@ namespace Bonsai.Designer.User
             else if (node.Behaviour is Core.ConditionalAbort)
             {
                 if (node.Behaviour is Core.User.ConditionalForFailables c && c.IsForFailables)
+                {
+                    if (c.Inverted)
+                        return _colors.ConditionalForFailablesInvertedColor;
+
                     return _colors.ConditionalForFailablesColor;
+                }
 
                 return BonsaiPreferences.Instance.conditionalColor;
             }

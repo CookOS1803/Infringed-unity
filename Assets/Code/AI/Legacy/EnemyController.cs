@@ -12,7 +12,7 @@ namespace Infringed.Legacy
 
     [System.Obsolete]
     [RequireComponent(typeof(Combat.Health), typeof(Combat.StunController), typeof(VisionController))]
-    public class EnemyController : MonoBehaviour, IAttacker, IMortal, ISoundListener
+    public class EnemyController : MonoBehaviour, IAttacker, ISoundListener
     {
         [SerializeField, Min(0f)] private float calmSpeed = 1.5f;
         [SerializeField, Min(0f)] private float alarmedSpeed = 3.5f;
@@ -77,7 +77,7 @@ namespace Infringed.Legacy
             playerSeeker.Initialize(this);
             soundResponder.Initialize(this);
 
-            health.OnNegativeHealth += Die;
+            health.OnDeathStart += Die;
         }
 
         void Start()
@@ -157,12 +157,12 @@ namespace Infringed.Legacy
             }
         }
 
-        public void AttackStarted()
+        public void AttackStateStarted()
         {
             CanMove = false;
         }
 
-        public void AttackEnded()
+        public void AttackStateEnded()
         {
             CanMove = true;
         }
@@ -298,13 +298,6 @@ namespace Infringed.Legacy
             {
                 SeekPlayer();
             }
-        }
-
-        public void OnDeathEnd()
-        {
-            if (droppedItem != null)
-                Instantiate(droppedItem.Prefab, transform.position + Vector3.up, Quaternion.identity);
-            Destroy(gameObject);
         }
 
         public void OnStep()

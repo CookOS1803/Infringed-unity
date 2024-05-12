@@ -13,7 +13,7 @@ namespace Infringed.Combat
 
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            animator.GetComponent<IMortal>().OnDeathEnd();
+            animator.GetComponent<Health>().DeathStateEnd();
         }
     }
 }

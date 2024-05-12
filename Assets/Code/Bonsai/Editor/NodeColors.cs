@@ -9,5 +9,6 @@ namespace Bonsai.Designer.User
     {
         [field: SerializeField] public Color FailableTaskColor { get; private set; }
         [field: SerializeField] public Color ConditionalForFailablesColor { get; private set; }
+        [field: SerializeField] public Color ConditionalForFailablesInvertedColor { get; private set; }
     }
 }

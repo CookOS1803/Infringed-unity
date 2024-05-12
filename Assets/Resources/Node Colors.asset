@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Node Colors
   m_EditorClassIdentifier: 
   <FailableTaskColor>k__BackingField: {r: 0.32649052, g: 0.5, b: 0.10566035, a: 1}
-  <ConditionalForFailablesColor>k__BackingField: {r: 0.08843001, g: 0.34051725, b: 0.6509434, a: 1}
+  <ConditionalForFailablesColor>k__BackingField: {r: 0.6509804, g: 0.09019608, b: 0.106321804, a: 1}
+  <ConditionalForFailablesInvertedColor>k__BackingField: {r: 0.09019608, g: 0.34117648, b: 0.6509804, a: 1}

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,14 +49,14 @@ namespace Infringed.AI
         private void _Subscribe(EnemyController enemy)
         {
             enemy.OnAlarm += _OnAlarm;
-            enemy.OnDeathEnded += _OnEnemyDeath;
+            enemy.OnEnemyDeathEnd += _OnEnemyDeath;
             enemy.OnPlayerSpotted += _OnPlayerSpotted;
         }
 
         private void _Unsubscribe(EnemyController enemy)
         {
             enemy.OnAlarm -= _OnAlarm;
-            enemy.OnDeathEnded -= _OnEnemyDeath;
+            enemy.OnEnemyDeathEnd -= _OnEnemyDeath;
             enemy.OnPlayerSpotted -= _OnPlayerSpotted;
         }
 

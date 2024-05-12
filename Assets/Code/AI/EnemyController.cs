@@ -6,14 +6,13 @@ using UnityEngine;
 
 namespace Infringed.AI
 {
-    public class EnemyController : MonoBehaviour, IMortal, IAttacker, IDisposable
+    public class EnemyController : MonoBehaviour, IAttacker, IDisposable
     {
         public event Action<EnemyController> OnAlarm;
         public event Action<EnemyController> OnUnalarm;
-        public event Action<EnemyController> OnDeathStarted;
-        public event Action<EnemyController> OnDeathEnded;
         public event Action<EnemyController, Vector3> OnPlayerSpotted;
         public event Action<EnemyController> OnAttackStart;
+        public event Action<EnemyController> OnEnemyDeathEnd;
 
         [SerializeField] private Weapon _weapon;
         [SerializeField, Min(0f)] private float _attackRange = 1f;
@@ -33,19 +32,22 @@ namespace Infringed.AI
         {
             _vision = GetComponent<VisionController>();
             _soundResponder = GetComponent<SoundResponder>();
+
             _health = GetComponent<Health>();
         }
 
         private void OnEnable()
         {
             _soundResponder.OnSound += _OnSound;
-            _health.OnNegativeHealth += Die;
+            _health.OnDeathStart += Die;
+            _health.OnDeathEnd += _DeathEnd;
         }
 
         private void OnDisable()
         {
             _soundResponder.OnSound -= _OnSound;
-            _health.OnNegativeHealth -= Die;
+            _health.OnDeathStart -= Die;
+            _health.OnDeathEnd -= _DeathEnd;
         }
 
         private void Update()
@@ -119,17 +121,12 @@ namespace Infringed.AI
             OnUnalarm?.Invoke(this);
         }
 
-        public void OnDeathEnd()
+        public void AttackStateStarted()
         {
-            OnDeathEnded?.Invoke(this);
+            // nothing
         }
 
-        public void AttackStarted()
-        {
-            //IsAttacking = true;
-        }
-
-        public void AttackEnded()
+        public void AttackStateEnded()
         {
             IsAttacking = false;
         }
@@ -159,7 +156,6 @@ namespace Infringed.AI
                 return;
             
             IsDying = true;
-            OnDeathStarted?.Invoke(this);
         }
 
         private void _OnSound(Vector3 vector)
@@ -168,6 +164,11 @@ namespace Infringed.AI
                 return;
 
             OnPlayerSpotted?.Invoke(this, vector);
+        }
+
+        private void _DeathEnd()
+        {
+            OnEnemyDeathEnd?.Invoke(this);
         }
 
         public void OnAttackStartEvent()

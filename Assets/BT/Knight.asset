@@ -34,10 +34,10 @@ MonoBehaviour:
   preOrderIndex: 15
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1604.5, y: 1083}
+  bonsaiNodePosition: {x: -1607, y: 1083}
   child: {fileID: 5815350272731241916}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 0
 --- !u!114 &-8015408827196766290
 MonoBehaviour:
@@ -57,7 +57,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: 277, y: 219}
   child: {fileID: -3637449477526331026}
   abortType: 0
-  _inverted: 0
+  <Inverted>k__BackingField: 0
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-7778207233135854304
 MonoBehaviour:
@@ -112,7 +112,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -2057, y: 1232}
   child: {fileID: -933701821409311763}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
   key: Sound Source
 --- !u!114 &-6829975922249475371
@@ -166,7 +166,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: 73, y: 507}
   child: {fileID: -1298324837236642530}
   abortType: 0
-  _inverted: 0
+  <Inverted>k__BackingField: 0
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-5140294515952439371
 MonoBehaviour:
@@ -203,7 +203,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -235, y: 1083}
   child: {fileID: 4060534016085110145}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-4816144672604350761
 MonoBehaviour:
@@ -258,7 +258,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -464.5, y: 219}
   child: {fileID: 281102627562199300}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-3139430814078707293
 MonoBehaviour:
@@ -313,7 +313,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -1048.5, y: 1239}
   child: {fileID: -7778207233135854304}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-1298324837236642530
 MonoBehaviour:
@@ -350,7 +350,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -269, y: 202.5}
   child: {fileID: 0}
   abortType: 0
-  _inverted: 0
+  <Inverted>k__BackingField: 0
   <IsForFailables>k__BackingField: 1
 --- !u!114 &-933701821409311763
 MonoBehaviour:
@@ -387,7 +387,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -419, y: 795}
   child: {fileID: 4307371343213848954}
   abortType: 0
-  _inverted: 0
+  <Inverted>k__BackingField: 0
   <IsForFailables>k__BackingField: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -442,8 +442,8 @@ MonoBehaviour:
   - {fileID: -3637449477526331026}
   blackboard: {fileID: 5235898080953198082}
   actor: {fileID: 0}
-  panPosition: {x: 304, y: -570}
-  zoomPosition: {x: 2.8507984, y: 2.8507984}
+  panPosition: {x: 1134, y: -1052}
+  zoomPosition: {x: 1.7371178, y: 1.7371178}
   unusedNodes: []
 --- !u!114 &281102627562199300
 MonoBehaviour:
@@ -570,7 +570,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -1016.5, y: 507}
   child: {fileID: 7453505272613512398}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
 --- !u!114 &5176383551032226981
 MonoBehaviour:
@@ -752,7 +752,7 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -2036.5, y: 1083}
   child: {fileID: -7321705894404650106}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1
 --- !u!114 &8224610821375609763
 MonoBehaviour:
@@ -788,5 +788,5 @@ MonoBehaviour:
   bonsaiNodePosition: {x: -1616.5, y: 795}
   child: {fileID: 6207842830735941220}
   abortType: 0
-  _inverted: 1
+  <Inverted>k__BackingField: 1
   <IsForFailables>k__BackingField: 1

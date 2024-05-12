@@ -5,10 +5,10 @@ namespace Infringed
         /// <summary>
         /// Called by AttackState
         /// </summary>
-        public void AttackStarted();
+        public void AttackStateStarted();
         /// <summary>
         /// Called by AttackState
         /// </summary>
-        public void AttackEnded();
+        public void AttackStateEnded();
     }
 }

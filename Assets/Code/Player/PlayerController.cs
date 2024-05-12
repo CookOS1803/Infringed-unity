@@ -10,12 +10,10 @@ using Infringed.Actions;
 namespace Infringed.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MonoBehaviour, IAttacker, IMortal
+    public class PlayerController : MonoBehaviour, IAttacker
     {
         public event Action OnHide;
         public event Action OnExitHideout;
-        public event Action OnPlayerDeathStart;
-        public event Action OnPlayerDeathEnd;
         public event Action OnPlayerAttackStart;
 
         [SerializeField] private float _speed = 5f;
@@ -56,7 +54,7 @@ namespace Infringed.Player
 
         private void OnEnable()
         {
-            _health.OnNegativeHealth += _Die;
+            _health.OnDeathStart += _Die;
 
             _input.actions["Fire"].performed += _OnAttack;
             _input.actions["Interact"].performed += _OnInteract;
@@ -71,7 +69,7 @@ namespace Infringed.Player
 
         private void OnDisable()
         {
-            _health.OnNegativeHealth -= _Die;
+            _health.OnDeathStart -= _Die;
 
             _input.actions["Fire"].performed -= _OnAttack;
             _input.actions["Interact"].performed -= _OnInteract;
@@ -152,13 +150,6 @@ namespace Infringed.Player
             OnExitHideout?.Invoke();
         }
 
-        public void OnDeathEnd()
-        {
-            OnPlayerDeathEnd?.Invoke();
-
-            enabled = false;
-        }
-
         public void PickItem(ItemPickable pickable)
         {
             // che eto za pizdec
@@ -185,12 +176,12 @@ namespace Infringed.Player
             OnHide?.Invoke();
         }
 
-        public void AttackStarted()
+        public void AttackStateStarted()
         {
             CanMove = false;
         }
 
-        public void AttackEnded()
+        public void AttackStateEnded()
         {
             CanMove = true;
         }
@@ -367,8 +358,6 @@ namespace Infringed.Player
             gameObject.layer = 0;
             _isDying = true;
             CanMove = false;
-
-            OnPlayerDeathStart?.Invoke();
         }
 
         public void OnAttackStartEvent()
