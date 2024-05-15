@@ -11,7 +11,7 @@ namespace Infringed.Math
         [field: SerializeField] public bool Cap { get; set; }
         [field: SerializeField] public List<Vector3> Nodes { get; set; } = new();
         [field: SerializeField, Min(1)] public int InterpolationModifier { get; set; } = 5;
-        public Vector3[] InterpolatedPoints { get; set; }
+        [field: SerializeField, HideInInspector] public Vector3[] InterpolatedPoints { get; set; }
 
         public Spline()
         {
