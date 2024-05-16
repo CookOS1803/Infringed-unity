@@ -16,7 +16,6 @@ namespace Infringed.InventorySystem.UI
         private void Awake()
         {
             _child = GetComponentInChildren<UIItem>();
-            _child.Inventory = _uiInventory.Inventory;
         }
 
         public void UnsetItem()

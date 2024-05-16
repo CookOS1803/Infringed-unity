@@ -11,8 +11,8 @@ namespace Infringed.InventorySystem.UI
     public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private ItemData _item;
+        [Inject] private PlayerController _player;
         private Canvas _canvas;
-        private Transform _player;
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
         private Image _image;
@@ -21,13 +21,6 @@ namespace Infringed.InventorySystem.UI
         private ItemDescription _itemDescription;
         public Transform Parent => _slot.transform;
         public int Index => _slot.Index;
-        public Inventory Inventory { get; set; }
-
-        [Inject]
-        private void _SetPlayer(PlayerController controller)
-        {
-            _player = controller.transform;
-        }
 
         private void Awake()
         {
@@ -85,20 +78,23 @@ namespace Infringed.InventorySystem.UI
             _rectTransform.anchoredPosition = _initialPosition;
             _canvasGroup.blocksRaycasts = true;
 
-            RaycastHit hit;
+
+            var position = _player.transform.position;
+            var up = _player.transform.up;
+            var forward = _player.transform.forward;
             Vector3 spawnPosition;
 
-            if (Physics.Raycast(_player.position + _player.up, _player.forward + _player.up, out hit, 1f))
+            if (Physics.Raycast(position + up, forward + up, out var hit, 1f))
             {
                 spawnPosition = hit.point;
             }
             else
             {
-                spawnPosition = _player.position + _player.forward + _player.up;
+                spawnPosition = position + forward + up;
             }
 
             Instantiate(_item.Prefab, spawnPosition, Quaternion.identity);
-            Inventory[Index] = null;
+            _player.Inventory[Index] = null;
 
         }
 
