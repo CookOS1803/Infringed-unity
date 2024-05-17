@@ -12,7 +12,6 @@ namespace Infringed.Combat
         [SerializeField, Min(0f)] protected float _stunTime = 2f;
         [SerializeField, Min(0f)] protected float _soundRadius = 6f;
         [SerializeField, Min(0f)] protected Vector3 _spinningVelocity;
-        [Zenject.Inject] protected CustomAudio _customAudio;
         [SerializeField] protected AudioClip _hitClip;
         protected float _lifeClock = 0f;
         protected Vector3 _target;

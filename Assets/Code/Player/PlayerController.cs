@@ -31,12 +31,12 @@ namespace Infringed.Player
         private Weapon _weapon;
         private float _verticalAcceleration = 0f;
         private bool _isDying = false;
-        private bool _isCrouching = false;
         private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
         public Inventory Inventory { get; private set; }
         public Vector3 MoveDirection { get; private set; }
         public bool CanMove { get; set; } = true;
+        public bool IsCrouching { get; private set; } = false;
 
         public bool IsHiding => CurrentHideout != null;
 
@@ -260,12 +260,12 @@ namespace Infringed.Player
 
         private void _OnCrouchPerformed(InputAction.CallbackContext obj)
         {
-            _isCrouching = true;
+            IsCrouching = true;
         }
 
         private void _OnCrouchCanceled(InputAction.CallbackContext obj)
         {
-            _isCrouching = false;
+            IsCrouching = false;
         }
 
         private void _OnMenu(InputAction.CallbackContext obj)
@@ -280,7 +280,7 @@ namespace Infringed.Player
 
             var movement = MoveDirection * _speed * Time.deltaTime;
 
-            if (_isCrouching)
+            if (IsCrouching)
             {
                 movement *= _crouchingSpeedFactor;
                 MoveDirection *= _crouchingSpeedFactor;

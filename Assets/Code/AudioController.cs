@@ -23,6 +23,9 @@ namespace Infringed
 
                 _audioSources[i] = sourceObject.AddComponent<AudioSource>();
                 _audioSources[i].spatialBlend = 1f;
+                _audioSources[i].rolloffMode = AudioRolloffMode.Linear;
+                _audioSources[i].minDistance = 0f;
+                _audioSources[i].maxDistance = 10f;
             }
         }
 

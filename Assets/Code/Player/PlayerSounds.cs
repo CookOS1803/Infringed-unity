@@ -36,7 +36,7 @@ namespace Infringed.Player
 
         public override void OnStepEvent(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
+            if (!_player.IsCrouching && animationEvent.animatorClipInfo.weight > 0.5f)
                 base.OnStepEvent(animationEvent);
         }
 

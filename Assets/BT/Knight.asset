@@ -34,7 +34,7 @@ MonoBehaviour:
   preOrderIndex: 15
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1607, y: 1083}
+  bonsaiNodePosition: {x: -1604.5, y: 1083}
   child: {fileID: 5815350272731241916}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -442,8 +442,8 @@ MonoBehaviour:
   - {fileID: -3637449477526331026}
   blackboard: {fileID: 5235898080953198082}
   actor: {fileID: 0}
-  panPosition: {x: 1134, y: -1052}
-  zoomPosition: {x: 1.7371178, y: 1.7371178}
+  panPosition: {x: 1251, y: -1369}
+  zoomPosition: {x: 1.44, y: 1.44}
   unusedNodes: []
 --- !u!114 &281102627562199300
 MonoBehaviour:

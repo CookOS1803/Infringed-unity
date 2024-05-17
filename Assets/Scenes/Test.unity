@@ -720,6 +720,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1597108631, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
+      propertyPath: _crouchingSpeedFactor
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1597108631, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
       propertyPath: _showItemPickupRadius
       value: 0
       objectReference: {fileID: 0}
@@ -6768,6 +6772,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.010662488
       objectReference: {fileID: 0}
+    - target: {fileID: 3053655821420651851, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
+      propertyPath: _itemPrefab
+      value: 
+      objectReference: {fileID: 110658, guid: a4cd3d5e9967248a69e6203d2ce67874, type: 3}
     - target: {fileID: 5167422267777969001, guid: 5b5b1958cdf88ce49989e326859b9572, type: 3}
       propertyPath: _patrolPoints.Array.data[0]
       value: 
