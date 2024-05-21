@@ -1,115 +1,152 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Infringed.Actions;
 using UnityEngine;
 
 namespace Infringed.InventorySystem
 {
-    public class Inventory : IEnumerable
+    [System.Serializable]
+    public class Inventory
     {
-        private Item[] _items;
-        private int _selectedSlot = 0;
-        public event Action OnChange;
-        public event Action OnSlotSelection;
+        public event Action<Item> OnItemAdd;
 
-        public int Size => _items.Length;
-        public int SelectedSlot
-        {
-            get => _selectedSlot;
-            set
-            {
-                _selectedSlot = value;
-
-                OnSlotSelection?.Invoke();
-            }
-        }
-        public Item this[int i]
-        {
-            get => _items[i];
-            set
-            {
-                _items[i] = value;
-
-                OnChange?.Invoke();
-            }
-        }
-        public Item SelectedItem => _items[SelectedSlot];
+        [field: SerializeField, Min(1)] public int Width { get; private set; } = 10;
+        [field: SerializeField, Min(1)] public int Height { get; private set; } = 10;
+        private HashSet<Item> _items = new();
+        private HashSet<Vector2Int> _freePositions;
 
         public Inventory()
         {
-            _items = new Item[10];
+            _freePositions = new(Width * Height);
+
+            var current = new Vector2Int(0, 0);
+
+            while (current.x < Width)
+            {
+                while (current.y < Height)
+                {
+                    _freePositions.Add(current);
+
+                    current.y++;
+                }
+
+                current.y = 0;
+                current.x++;
+            }
         }
 
-        public void Add(Item newItem)
+        public void AddItem(ItemData itemData)
         {
-            for (int i = 0; i < _items.Length; i++)
+            if (itemData.Width > Width || itemData.Height > Height)
             {
-                if (_items[i] == null)
-                {
-                    _items[i] = newItem;
-                    OnChange?.Invoke();
+                Debug.LogError("Item is bigger than the inventory");
+                return;
+            }
 
+            var bottomLeft = new Vector2Int(0, itemData.Height - 1);
+            var topRight = new Vector2Int(itemData.Width - 1, 0);
+
+            if (!_TryToFit(ref bottomLeft, ref topRight))
+            {
+                bottomLeft = new Vector2Int(0, itemData.Width - 1);
+                topRight = new Vector2Int(itemData.Height - 1, 0);
+
+                if (!_TryToFit(ref bottomLeft, ref topRight))
+                {
+                    Debug.LogError("Item doesn't fit in the inventory");
                     return;
                 }
             }
 
-            Debug.LogError("Inventory is full");
-        }
+            _Allocate(bottomLeft, topRight);
 
-        public void SwapSlots(int first, int second)
-        {
-            if (first == second)
-                return;
-
-            if (!HasIndex(first) || !HasIndex(second))
+            var newItem = new Item(itemData)
             {
-                Debug.LogError("Index is out of range");
-                return;
-            }
+                BottomLeftPosition = bottomLeft,
+                TopRightPosition = topRight
+            };
+            _items.Add(newItem);
 
-            Item tempItem = _items[first];
-            _items[first] = _items[second];
-            _items[second] = tempItem;
-
-            OnChange?.Invoke();
+            OnItemAdd?.Invoke(newItem);
         }
 
-        public IEnumerator GetEnumerator()
+        public void RemoveItem(Item item)
         {
-            foreach (Item i in _items)
+            _Deallocate(item.BottomLeftPosition, item.TopRightPosition);
+
+            _items.Remove(item);
+        }
+
+        private void _Allocate(Vector2Int bottomLeft, Vector2Int topRight)
+        {
+            _ActionForArea(bottomLeft, topRight, point => _freePositions.Remove(point));
+        }
+        
+        private void _Deallocate(Vector2Int bottomLeft, Vector2Int topRight)
+        {
+            _ActionForArea(bottomLeft, topRight, point => _freePositions.Add(point));
+        }
+
+        private void _ActionForArea(Vector2Int bottomLeft, Vector2Int topRight, Func<Vector2Int, bool> func)
+        {
+            var current = new Vector2Int(bottomLeft.x, topRight.y);
+
+            while (current.x <= topRight.x)
             {
-                yield return i;
-            }
-        }
+                while (current.y <= bottomLeft.y)
+                {
+                    func(current);
 
-        public bool HasIndex(int i)
-        {
-            return i >= 0 && i < _items.Length;
-        }
+                    current.y++;
+                }
 
-        public void UseItem(ItemAction.Context context)
-        {
-            if (_items[SelectedSlot] == null)
-                return;
-
-            var action = _items[SelectedSlot].Data.Action;
-
-            if (action != null)
-            {
-                action.Use(context);
-                _items[SelectedSlot] = null;
-
-                OnChange?.Invoke();
+                current.y = topRight.y;
+                current.x++;
             }
         }
 
-        public bool IsFull()
+        private bool _TryToFit(ref Vector2Int bottomLeft, ref Vector2Int topRight)
         {
-            foreach (var i in _items)
+            var initialLeftX = bottomLeft.x;
+            var initialRightX = topRight.x;
+
+            while (bottomLeft.y < Height)
             {
-                if (i == null)
-                    return false;
+                while (topRight.x < Width)
+                {
+                    if (_Fits(bottomLeft, topRight))
+                        return true;
+
+                    bottomLeft.x++;
+                    topRight.x++;
+                }
+
+                bottomLeft.x = initialLeftX;
+                topRight.x = initialRightX;
+
+                bottomLeft.y++;
+                topRight.y++;
+            }
+
+            return false;
+        }
+
+        private bool _Fits(Vector2Int bottomLeft, Vector2Int topRight)
+        {
+            var current = new Vector2Int(bottomLeft.x, topRight.y);
+
+            while (current.x <= topRight.x)
+            {
+                while (current.y <= bottomLeft.y)
+                {
+                    if (!_freePositions.Contains(current))
+                        return false;
+
+                    current.y++;
+                }
+
+                current.y = topRight.y;
+                current.x++;
             }
 
             return true;

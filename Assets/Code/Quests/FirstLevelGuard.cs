@@ -70,7 +70,7 @@ namespace Infringed.Quests
             }
 
             // player has key
-            foreach (Item i in player.Inventory)
+            foreach (Item i in player.Belt)
             {
                 if (i?.Data == _key)
                 {

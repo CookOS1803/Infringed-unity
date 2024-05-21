@@ -10,7 +10,7 @@ namespace Infringed.Injection
 {
     public class MainInstaller : MonoInstaller
     {
-        [SerializeField] private UIInventory _uiInventory;
+        [SerializeField] private UIBelt _uiInventory;
         [SerializeField] private PlayerController _player;
         [SerializeField] private CameraController _camera;
         [Space]

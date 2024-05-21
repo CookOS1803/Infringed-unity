@@ -22,7 +22,7 @@ namespace Infringed.Player
         [SerializeField, Min(0f)] private float _soundRadius = 6f;
         [SerializeField] private OnPlayerDeathActivator _menu;
         [SerializeField] private GameObject[] _objectsToDisableOnHide;
-        [Inject] private CustomAudio _customAudio;
+        [field: SerializeField] public Inventory Inventory { get; private set; }
         [Inject(Id = CustomLayer.Floor)] private LayerMask _floorMask;
         [Inject(Id = CustomLayer.Interactable)] private LayerMask _interactableMask;
         private CharacterController _characterController;
@@ -33,7 +33,7 @@ namespace Infringed.Player
         private bool _isDying = false;
         private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
-        public Inventory Inventory { get; private set; }
+        public Belt Belt { get; private set; }
         public Vector3 MoveDirection { get; private set; }
         public bool CanMove { get; set; } = true;
         public bool IsCrouching { get; private set; } = false;
@@ -42,7 +42,7 @@ namespace Infringed.Player
 
         private void Awake()
         {
-            Inventory = new Inventory();
+            Belt = new Belt();
 
             _input = GetComponent<PlayerInput>();
             _characterController = GetComponent<CharacterController>();
@@ -152,8 +152,9 @@ namespace Infringed.Player
 
         public void PickItem(ItemPickable pickable)
         {
-            // che eto za pizdec
-            Inventory.Add(pickable.GetItem());
+            //Belt.Add(pickable.GetItem());
+
+            Inventory.AddItem(pickable.GetItem());
             pickable.DestroySelf();
         }
 
@@ -194,7 +195,7 @@ namespace Infringed.Player
 
         private void _OnUseItemPerformed(InputAction.CallbackContext context)
         {
-            var item = Inventory.SelectedItem;
+            var item = Belt.SelectedItem;
 
             if (item == null)
                 return;
@@ -220,7 +221,7 @@ namespace Infringed.Player
             Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
 
-            Inventory.UseItem(new(transform, floorHit.point));
+            Belt.UseItem(new(transform, floorHit.point));
 
             Destroy(_castMarker?.gameObject);
             _castMarker = null;
@@ -241,7 +242,7 @@ namespace Infringed.Player
             int value = (int)obj.ReadValue<float>();
 
             if (value != 0)
-                Inventory.SelectedSlot = value - 1;
+                Belt.SelectedSlot = value - 1;
         }
 
         private void _OnSwitchItem(InputAction.CallbackContext obj)
@@ -250,11 +251,11 @@ namespace Infringed.Player
 
             if (value > 0)
             {
-                Inventory.SelectedSlot = (Inventory.SelectedSlot + 1) % Inventory.Size;
+                Belt.SelectedSlot = (Belt.SelectedSlot + 1) % Belt.Size;
             }
             else
             {
-                Inventory.SelectedSlot = (Inventory.Size + Inventory.SelectedSlot - 1) % Inventory.Size;
+                Belt.SelectedSlot = (Belt.Size + Belt.SelectedSlot - 1) % Belt.Size;
             }
         }
 

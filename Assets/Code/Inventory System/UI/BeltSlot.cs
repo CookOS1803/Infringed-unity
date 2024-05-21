@@ -6,16 +6,16 @@ using Zenject;
 
 namespace Infringed.InventorySystem.UI
 {
-    public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
+    public class BeltSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
-        [Inject] private UIInventory _uiInventory;
-        private UIItem _child;
+        [Inject] private UIBelt _uiInventory;
+        private UIBeltItem _child;
         private Vector2 _initialPosition;
         public int Index { get; set; }
 
         private void Awake()
         {
-            _child = GetComponentInChildren<UIItem>();
+            _child = GetComponentInChildren<UIBeltItem>();
         }
 
         public void UnsetItem()
@@ -30,15 +30,15 @@ namespace Infringed.InventorySystem.UI
 
         public void OnDrop(PointerEventData eventData)
         {
-            var item = eventData.pointerDrag.GetComponent<UIItem>();
+            var item = eventData.pointerDrag.GetComponent<UIBeltItem>();
 
             item.transform.SetParent(item.Parent);
-            _uiInventory.Inventory.SwapSlots(Index, item.Index);
+            _uiInventory.Belt.SwapSlots(Index, item.Index);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _uiInventory.Inventory.SelectedSlot = Index;
+            _uiInventory.Belt.SelectedSlot = Index;
         }
     }
 }

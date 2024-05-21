@@ -10,9 +10,9 @@ namespace Infringed.Map
     {
         [SerializeField] private ItemData _data;
 
-        public Item GetItem()
+        public ItemData GetItem()
         {
-            return new Item(_data);
+            return _data;
         }
 
         public void DestroySelf()

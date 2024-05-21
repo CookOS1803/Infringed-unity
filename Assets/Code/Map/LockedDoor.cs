@@ -12,7 +12,7 @@ namespace Infringed.Map
         {
             if (IsClosed)
             {
-                var inventory = user?.Inventory;
+                var inventory = user?.Belt;
 
                 if (inventory != null)
                 {
