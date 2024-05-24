@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Math;
 using UnityEngine;
 
 namespace Infringed.InventorySystem
@@ -35,121 +36,181 @@ namespace Infringed.InventorySystem
             }
         }
 
-        public void AddItem(ItemData itemData)
+        public bool AddItem(ItemData itemData)
         {
             if (itemData.Width > Width || itemData.Height > Height)
             {
-                Debug.LogError("Item is bigger than the inventory");
-                return;
+                Debug.LogWarning("Item is bigger than the inventory");
+                return false;
             }
 
-            var bottomLeft = new Vector2Int(0, itemData.Height - 1);
-            var topRight = new Vector2Int(itemData.Width - 1, 0);
-
-            if (!_TryToFit(ref bottomLeft, ref topRight))
+            var rectangle = new Rectangle()
             {
-                bottomLeft = new Vector2Int(0, itemData.Width - 1);
-                topRight = new Vector2Int(itemData.Height - 1, 0);
+                bottomLeft = new Vector2Int(0, itemData.Height - 1),
+                topRight = new Vector2Int(itemData.Width - 1, 0)
+            };
 
-                if (!_TryToFit(ref bottomLeft, ref topRight))
+            if (!_TryToFit(ref rectangle))
+            {
+                rectangle.bottomLeft = new Vector2Int(0, itemData.Width - 1);
+                rectangle.topRight = new Vector2Int(itemData.Height - 1, 0);
+
+                if (itemData.Width == itemData.Height || !_TryToFit(ref rectangle))
                 {
-                    Debug.LogError("Item doesn't fit in the inventory");
-                    return;
+                    Debug.LogWarning("Item doesn't fit in the inventory");
+                    return false;
                 }
             }
 
-            _Allocate(bottomLeft, topRight);
+            _Allocate(rectangle);
 
             var newItem = new Item(itemData)
             {
-                BottomLeftPosition = bottomLeft,
-                TopRightPosition = topRight
+                Rectangle = rectangle
             };
             _items.Add(newItem);
 
             OnItemAdd?.Invoke(newItem);
+
+            return true;
         }
 
-        public void RemoveItem(Item item)
+        public bool RemoveItem(Item item)
         {
-            _Deallocate(item.BottomLeftPosition, item.TopRightPosition);
-
-            _items.Remove(item);
-        }
-
-        private void _Allocate(Vector2Int bottomLeft, Vector2Int topRight)
-        {
-            _ActionForArea(bottomLeft, topRight, point => _freePositions.Remove(point));
-        }
-        
-        private void _Deallocate(Vector2Int bottomLeft, Vector2Int topRight)
-        {
-            _ActionForArea(bottomLeft, topRight, point => _freePositions.Add(point));
-        }
-
-        private void _ActionForArea(Vector2Int bottomLeft, Vector2Int topRight, Func<Vector2Int, bool> func)
-        {
-            var current = new Vector2Int(bottomLeft.x, topRight.y);
-
-            while (current.x <= topRight.x)
+            if (!_items.Contains(item))
             {
-                while (current.y <= bottomLeft.y)
-                {
-                    func(current);
-
-                    current.y++;
-                }
-
-                current.y = topRight.y;
-                current.x++;
+                Debug.LogError("Can't remove item because it's not in the inventory");
+                return false;
             }
+            
+            _Deallocate(item.Rectangle);
+
+            return _items.Remove(item);
         }
 
-        private bool _TryToFit(ref Vector2Int bottomLeft, ref Vector2Int topRight)
+        public bool MoveItem(Item item, Rectangle newRectangle)
         {
-            var initialLeftX = bottomLeft.x;
-            var initialRightX = topRight.x;
-
-            while (bottomLeft.y < Height)
+            if (!FitsExcluded(newRectangle, item.Rectangle))
             {
-                while (topRight.x < Width)
-                {
-                    if (_Fits(bottomLeft, topRight))
-                        return true;
-
-                    bottomLeft.x++;
-                    topRight.x++;
-                }
-
-                bottomLeft.x = initialLeftX;
-                topRight.x = initialRightX;
-
-                bottomLeft.y++;
-                topRight.y++;
+                Debug.Log("Item can't be moved in new position");
+                return false;
             }
 
-            return false;
+            _Deallocate(item.Rectangle);
+            _Allocate(newRectangle);
+
+            item.Rectangle = newRectangle;
+
+            return true;
         }
 
-        private bool _Fits(Vector2Int bottomLeft, Vector2Int topRight)
+        public bool Fits(Rectangle rectangle)
         {
-            var current = new Vector2Int(bottomLeft.x, topRight.y);
+            return _FitsIf(rectangle, point => _freePositions.Contains(point));
+        }
 
-            while (current.x <= topRight.x)
+        public bool FitsExcluded(Rectangle rectangle, Rectangle rectangleExcluded)
+        {
+            return _FitsIf(rectangle, point => _freePositions.Contains(point) || IsInside(point, rectangleExcluded));
+        }
+
+        public Rectangle GetNearestValidRectangle(Rectangle rectangle)
+        {
+            if (rectangle.bottomLeft.x < 0)
+                rectangle.MoveX(-rectangle.bottomLeft.x);
+            else if (rectangle.topRight.x >= Width)
+                rectangle.MoveX(Width - rectangle.topRight.x - 1);
+            
+            if (rectangle.bottomLeft.y >= Height)
+                rectangle.MoveY(Height - rectangle.bottomLeft.y - 1);
+            else if (rectangle.topRight.y < 0)
+                rectangle.MoveY(-rectangle.topRight.y);
+
+            return rectangle;
+        }
+
+        public static bool IsValid(Vector2Int point)
+        {
+            return point.x >= 0 && point.y >= 0;
+        }
+
+        public static bool IsInside(Vector2Int point, Rectangle rectangle)
+        {
+            return point.x >= rectangle.bottomLeft.x && point.y <= rectangle.bottomLeft.y &&
+                   point.x <= rectangle.topRight.x && point.y >= rectangle.topRight.y;
+        }
+
+        private static bool _FitsIf(Rectangle rectangle, Func<Vector2Int, bool> predicate)
+        {
+            var current = new Vector2Int(rectangle.bottomLeft.x, rectangle.topRight.y);
+
+            while (current.x <= rectangle.topRight.x)
             {
-                while (current.y <= bottomLeft.y)
+                while (current.y <= rectangle.bottomLeft.y)
                 {
-                    if (!_freePositions.Contains(current))
+                    if (!predicate(current))
                         return false;
 
                     current.y++;
                 }
 
-                current.y = topRight.y;
+                current.y = rectangle.topRight.y;
                 current.x++;
             }
 
             return true;
+        }
+
+        private void _Allocate(Rectangle area)
+        {
+            _ActionForArea(area, point => _freePositions.Remove(point));
+        }
+        
+        private void _Deallocate(Rectangle area)
+        {
+            _ActionForArea(area, point => _freePositions.Add(point));
+        }
+
+        private static void _ActionForArea(Rectangle area, Func<Vector2Int, bool> action)
+        {
+            var current = new Vector2Int(area.bottomLeft.x, area.topRight.y);
+
+            while (current.x <= area.topRight.x)
+            {
+                while (current.y <= area.bottomLeft.y)
+                {
+                    action(current);
+
+                    current.y++;
+                }
+
+                current.y = area.topRight.y;
+                current.x++;
+            }
+        }
+
+        private bool _TryToFit(ref Rectangle rectangle)
+        {
+            var initialLeftX = rectangle.bottomLeft.x;
+            var initialRightX = rectangle.topRight.x;
+
+            while (rectangle.bottomLeft.y < Height)
+            {
+                while (rectangle.topRight.x < Width)
+                {
+                    if (Fits(rectangle))
+                        return true;
+
+                    rectangle.MoveX(1);
+                }
+
+                rectangle.bottomLeft.x = initialLeftX;
+                rectangle.topRight.x = initialRightX;
+
+                rectangle.MoveY(1);
+            }
+
+            return false;
         }
     }
 }

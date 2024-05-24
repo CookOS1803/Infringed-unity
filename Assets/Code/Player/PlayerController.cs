@@ -154,8 +154,8 @@ namespace Infringed.Player
         {
             //Belt.Add(pickable.GetItem());
 
-            Inventory.AddItem(pickable.GetItem());
-            pickable.DestroySelf();
+            if (Inventory.AddItem(pickable.GetItem()))
+                pickable.DestroySelf();
         }
 
         public void Hide(Hideout hideout)

@@ -1076,6 +1076,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Inventory",
+            "id": "aa4ed422-e918-46ae-a478-f3554c660024",
+            "actions": [
+                {
+                    "name": "RotateItem",
+                    "type": "Button",
+                    "id": "c572e064-4b37-41d7-a0ab-7b9966a89273",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "059dc206-ce60-4c69-85d0-ea97dbba4677",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
