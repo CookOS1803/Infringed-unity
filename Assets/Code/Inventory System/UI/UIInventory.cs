@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Infringed.Math;
 using Infringed.Player;
 using UnityEngine;
@@ -18,17 +19,20 @@ namespace Infringed.InventorySystem.UI
         [SerializeField] private Vector2 _backgroundAdditionalSize;
         [Zenject.Inject] private UIItem.Factory _itemFactory;
         private PlayerInput _input;
+        private Graphic[] _graphics;
 
         private void Awake()
         {
             _input = GetComponent<PlayerInput>();
 
             _player.Inventory.OnItemAdd += _OnItemAdd;
+            _input.actions["OpenClose"].performed += _SwitchGraphicsStatus;
         }
 
         private void OnDestroy()
         {
             _player.Inventory.OnItemAdd -= _OnItemAdd;
+            _input.actions["OpenClose"].performed -= _SwitchGraphicsStatus;
         }
 
         private void Start()
@@ -36,6 +40,9 @@ namespace Infringed.InventorySystem.UI
             _itemGhost.gameObject.SetActive(false);
 
             _MakeGrid();
+
+            _graphics = GetComponentsInChildren<Graphic>(includeInactive: true);
+            _SwitchGraphicsStatus(default);
         }
 
         public Vector2 GetItemPosition(Rectangle rectangle)
@@ -70,6 +77,14 @@ namespace Infringed.InventorySystem.UI
 
             Instantiate(uIItem.Item.Data.Prefab, spawnPosition, Quaternion.identity);
             uIItem.Dispose();
+        }
+
+        private void _SwitchGraphicsStatus(InputAction.CallbackContext context)
+        {
+            foreach (var g in _graphics)
+            {
+                g.enabled = !g.enabled;
+            }
         }
 
         private void _MakeGrid()

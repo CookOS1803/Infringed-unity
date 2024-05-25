@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: 
   <Description>k__BackingField: 
+  <Type>k__BackingField: 0
   <InventorySprite>k__BackingField: {fileID: 21300000, guid: ad759983cefb20c488981808c1084f5a, type: 3}
   <BeltSprite>k__BackingField: {fileID: 21300000, guid: ad759983cefb20c488981808c1084f5a, type: 3}
   <Prefab>k__BackingField: {fileID: 173500, guid: fb5a9652227c545d98a413cd73b80b69, type: 3}
