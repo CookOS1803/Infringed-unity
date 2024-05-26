@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Player;
@@ -12,6 +13,7 @@ namespace Infringed.InventorySystem.UI
         [SerializeField] private PlayerController _player;
         [SerializeField] private Color _defaultSlotColor;
         [SerializeField] private Color _selectedSlotColor;
+        [SerializeField, Range(0f, 1f)] private float _emptyItemAlpha = 0.5f;
         private RawImage _selectedSlotImage;
 
         public Belt Belt => _player.Belt;
@@ -21,6 +23,8 @@ namespace Infringed.InventorySystem.UI
             _RefreshBelt();
             Belt.OnChange += _RefreshBelt;
             Belt.OnSlotSelection += _SelectSlot;
+            Belt.Inventory.OnItemAdd += _RefreshBeltWithItem;
+            Belt.Inventory.OnItemRemove += _RefreshBeltWithItem;
 
             for (int i = 0; i < Belt.Size; i++)
             {
@@ -33,11 +37,19 @@ namespace Infringed.InventorySystem.UI
             _selectedSlotImage.color = _selectedSlotColor;
         }
 
+        private void OnDestroy()
+        {
+            Belt.OnChange -= _RefreshBelt;
+            Belt.OnSlotSelection -= _SelectSlot;
+            Belt.Inventory.OnItemAdd -= _RefreshBeltWithItem;
+            Belt.Inventory.OnItemRemove -= _RefreshBeltWithItem;
+        }
+
         private void _RefreshBelt()
         {
             for (int i = 0; i < Belt.Size; i++)
             {
-                BeltSlot slot = transform.GetChild(i).GetComponent<BeltSlot>();
+                var slot = transform.GetChild(i).GetComponent<BeltSlot>();
 
                 if (Belt[i] == null)
                 {
@@ -45,9 +57,17 @@ namespace Infringed.InventorySystem.UI
                 }
                 else
                 {
-                    slot.SetItem(Belt[i].Data);
+                    slot.SetItem(Belt[i]);
+
+                    var alpha = Belt.HasItemsInInventoty(i) ? 1f : _emptyItemAlpha;
+                    slot.SetItemAlpha(alpha);
                 }
             }
+        }
+        
+        private void _RefreshBeltWithItem(Item item)
+        {
+            _RefreshBelt();
         }
 
         private void _SelectSlot()

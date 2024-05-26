@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,6 +18,8 @@ namespace Infringed.InventorySystem.UI
         private Canvas _canvas;
         private Rectangle _dragRectangle;
         private InventorySlot _slot;
+        private Vector2 _beforeDragPosition;
+        private Quaternion _beforeDragRotation;
         [field: SerializeField] public Image Image { get; private set; }
         public RectTransform RectTransform => transform as RectTransform;
         public Item Item
@@ -45,11 +45,20 @@ namespace Infringed.InventorySystem.UI
 
         public void OnInitializePotentialDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
             ItemGhost.Clone(this);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
+            _beforeDragPosition = RectTransform.anchoredPosition;
+            _beforeDragRotation = RectTransform.rotation;
+
             ItemGhost.gameObject.SetActive(true);
             _canvasGroup.blocksRaycasts = false;
             _dragRectangle = Item.Rectangle;
@@ -61,19 +70,44 @@ namespace Infringed.InventorySystem.UI
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
             RectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
 
-            _slot = eventData.hovered.Select(obj => obj.GetComponent<InventorySlot>())
-                                     .FirstOrDefault(slot => slot != null);
+            var beltSlot = eventData.hovered.FindComponent<BeltSlot>();
+
+            if (beltSlot != null)
+            {
+                ItemGhost.gameObject.SetActive(false);
+                return;
+            }
+
+            ItemGhost.gameObject.SetActive(true);
+
+            _slot = eventData.hovered.FindComponent<InventorySlot>();
 
             _CalculateItemGhostPosition();
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            Inventory.MoveItem(Item, ItemGhost.Rectangle);
-            RectTransform.rotation = ItemGhost.RectTransform.rotation;
-            RectTransform.anchoredPosition = ItemGhost.RectTransform.anchoredPosition;
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
+            var beltSlot = eventData.hovered.FindComponent<BeltSlot>();
+
+            if (beltSlot != null)
+            {
+                RectTransform.rotation = _beforeDragRotation;
+                RectTransform.anchoredPosition = _beforeDragPosition;
+            }
+            else
+            {
+                Inventory.MoveItem(Item, ItemGhost.Rectangle);
+                RectTransform.rotation = ItemGhost.RectTransform.rotation;
+                RectTransform.anchoredPosition = ItemGhost.RectTransform.anchoredPosition;
+            }
 
             ItemGhost.gameObject.SetActive(false);
             _canvasGroup.blocksRaycasts = true;
@@ -84,7 +118,7 @@ namespace Infringed.InventorySystem.UI
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!eventData.dragging && eventData.button == PointerEventData.InputButton.Right)
-                UIInventory.DropItem(this);
+                UIInventory.DropItem(Item);
         }
 
         private void _RotateItem(InputAction.CallbackContext context)
@@ -177,6 +211,10 @@ namespace Infringed.InventorySystem.UI
             Input = null;
             _slot = null;
             _dragRectangle = default;
+            _beforeDragPosition = default;
+            _beforeDragRotation = default;
+            RectTransform.anchoredPosition = Vector2.zero;
+            RectTransform.rotation = Quaternion.identity;
         }
 
         public void Dispose()

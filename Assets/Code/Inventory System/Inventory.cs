@@ -10,6 +10,7 @@ namespace Infringed.InventorySystem
     public class Inventory
     {
         public event Action<Item> OnItemAdd;
+        public event Action<Item> OnItemRemove;
 
         [field: SerializeField, Min(1)] public int Width { get; private set; } = 10;
         [field: SerializeField, Min(1)] public int Height { get; private set; } = 10;
@@ -75,24 +76,35 @@ namespace Infringed.InventorySystem
             return true;
         }
 
-        public bool RemoveItem(Item item)
+        public void RemoveItem(Item item)
         {
-            if (!_items.Contains(item))
-            {
-                Debug.LogError("Can't remove item because it's not in the inventory");
-                return false;
-            }
-            
             _Deallocate(item.Rectangle);
 
-            return _items.Remove(item);
+            _items.Remove(item);
+
+            OnItemRemove?.Invoke(item);
+        }
+
+        public bool Consume(ItemData consumedItem)
+        {
+            foreach (var item in _items)
+            {
+                if (item.Data != consumedItem)
+                    continue;
+                
+                RemoveItem(item);
+
+                return true;
+            }
+
+            return false;
         }
 
         public bool MoveItem(Item item, Rectangle newRectangle)
         {
             if (!FitsExcluded(newRectangle, item.Rectangle))
             {
-                Debug.Log("Item can't be moved in new position");
+                Debug.LogWarning("Item can't be moved in new position");
                 return false;
             }
 
@@ -102,6 +114,24 @@ namespace Infringed.InventorySystem
             item.Rectangle = newRectangle;
 
             return true;
+        }
+
+        public bool Contains(Item item)
+        {
+            return _items.Contains(item);
+        }
+
+        public bool ContainsData(ItemData itemData)
+        {
+            foreach (var item in _items)
+            {
+                if (item.Data != itemData)
+                    continue;
+                
+                return true;
+            }
+
+            return false;
         }
 
         public bool Fits(Rectangle rectangle)
@@ -140,7 +170,7 @@ namespace Infringed.InventorySystem
                    point.x <= rectangle.topRight.x && point.y >= rectangle.topRight.y;
         }
 
-        private static bool _FitsIf(Rectangle rectangle, Func<Vector2Int, bool> predicate)
+        private static bool _FitsIf(Rectangle rectangle, Predicate<Vector2Int> predicate)
         {
             var current = new Vector2Int(rectangle.bottomLeft.x, rectangle.topRight.y);
 
@@ -171,7 +201,7 @@ namespace Infringed.InventorySystem
             _ActionForArea(area, point => _freePositions.Add(point));
         }
 
-        private static void _ActionForArea(Rectangle area, Func<Vector2Int, bool> action)
+        private static void _ActionForArea(Rectangle area, Predicate<Vector2Int> action)
         {
             var current = new Vector2Int(area.bottomLeft.x, area.topRight.y);
 

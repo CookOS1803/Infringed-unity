@@ -5,6 +5,7 @@ using Infringed.Math;
 
 namespace Infringed.InventorySystem
 {
+    [System.Serializable]
     public class Item
     {
         public enum RotationStatus { NonRotated, Rotated, Square, Invalid }

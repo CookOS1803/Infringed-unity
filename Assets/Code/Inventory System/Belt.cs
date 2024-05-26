@@ -8,8 +8,9 @@ namespace Infringed.InventorySystem
 {
     public class Belt : IEnumerable
     {
-        private Item[] _items;
+        private ItemData[] _items;
         private int _selectedSlot = 0;
+        public Inventory Inventory { get; private set; }
         public event Action OnChange;
         public event Action OnSlotSelection;
 
@@ -24,7 +25,7 @@ namespace Infringed.InventorySystem
                 OnSlotSelection?.Invoke();
             }
         }
-        public Item this[int i]
+        public ItemData this[int i]
         {
             get => _items[i];
             set
@@ -34,29 +35,13 @@ namespace Infringed.InventorySystem
                 OnChange?.Invoke();
             }
         }
-        public Item SelectedItem => _items[SelectedSlot];
+        public ItemData SelectedItem => _items[SelectedSlot];
 
-        public Belt()
+        public Belt(Inventory inventory)
         {
-            _items = new Item[10];
-        }
+            _items = new ItemData[10];
 
-        public void Add(ItemData itemData)
-        {
-            var newItem = new Item(itemData);
-
-            for (int i = 0; i < _items.Length; i++)
-            {
-                if (_items[i] == null)
-                {
-                    _items[i] = newItem;
-                    OnChange?.Invoke();
-
-                    return;
-                }
-            }
-
-            Debug.LogError("Belt is full");
+            Inventory = inventory;
         }
 
         public void SwapSlots(int first, int second)
@@ -70,7 +55,7 @@ namespace Infringed.InventorySystem
                 return;
             }
 
-            Item tempItem = _items[first];
+            var tempItem = _items[first];
             _items[first] = _items[second];
             _items[second] = tempItem;
 
@@ -79,7 +64,7 @@ namespace Infringed.InventorySystem
 
         public IEnumerator GetEnumerator()
         {
-            foreach (Item i in _items)
+            foreach (var i in _items)
             {
                 yield return i;
             }
@@ -90,31 +75,31 @@ namespace Infringed.InventorySystem
             return i >= 0 && i < _items.Length;
         }
 
-        public void UseItem(ItemAction.Context context)
+        public bool HasItemsInInventoty(int index)
         {
-            if (_items[SelectedSlot] == null)
-                return;
-
-            var action = _items[SelectedSlot].Data.Action;
-
-            if (action != null)
-            {
-                action.Use(context);
-                _items[SelectedSlot] = null;
-
-                OnChange?.Invoke();
-            }
+            return !_items[index].IsInventoryItem() || Inventory.ContainsData(_items[index]);
         }
 
-        public bool IsFull()
+        public void UseItem(ItemAction.Context context)
         {
-            foreach (var i in _items)
-            {
-                if (i == null)
-                    return false;
-            }
+            if (SelectedItem == null)
+                return;
 
-            return true;
+            if (SelectedItem.Action != null)
+            {
+                if (SelectedItem.IsInventoryItem() && SelectedItem.Consumable)
+                {
+                    if (!Inventory.Consume(SelectedItem))
+                        return;
+
+                    SelectedItem.Action.Use(context);
+
+                    OnChange?.Invoke();
+                }
+                else
+                    SelectedItem.Action.Use(context);
+
+            }
         }
     }
 }

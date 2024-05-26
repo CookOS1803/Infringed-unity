@@ -20,18 +20,21 @@ namespace Infringed.InventorySystem.UI
         [Zenject.Inject] private UIItem.Factory _itemFactory;
         private PlayerInput _input;
         private Graphic[] _graphics;
+        private Dictionary<Item, UIItem> _spawnedItems = new();
 
         private void Awake()
         {
             _input = GetComponent<PlayerInput>();
 
             _player.Inventory.OnItemAdd += _OnItemAdd;
+            _player.Inventory.OnItemRemove += _OnItemRemove;
             _input.actions["OpenClose"].performed += _SwitchGraphicsStatus;
         }
 
         private void OnDestroy()
         {
             _player.Inventory.OnItemAdd -= _OnItemAdd;
+            _player.Inventory.OnItemRemove -= _OnItemRemove;
             _input.actions["OpenClose"].performed -= _SwitchGraphicsStatus;
         }
 
@@ -56,10 +59,13 @@ namespace Infringed.InventorySystem.UI
             return bottomLeft.anchoredPosition + diag.normalized * (diagLength / 2f);
         }
 
-        public void DropItem(UIItem uIItem)
+        public void DropItem(Item item)
         {
-            if (!_player.Inventory.RemoveItem(uIItem.Item))
+            if (!_player.Inventory.Contains(item))
+            {
+                Debug.LogError("Can't remove item because it's not in the inventory");
                 return;
+            }
 
             var position = _player.transform.position;
             var up = _player.transform.up;
@@ -75,8 +81,8 @@ namespace Infringed.InventorySystem.UI
                 spawnPosition = position + forward + up;
             }
 
-            Instantiate(uIItem.Item.Data.Prefab, spawnPosition, Quaternion.identity);
-            uIItem.Dispose();
+            Instantiate(item.Data.Prefab, spawnPosition, Quaternion.identity);
+            _player.Inventory.RemoveItem(item);
         }
 
         private void _SwitchGraphicsStatus(InputAction.CallbackContext context)
@@ -119,6 +125,8 @@ namespace Infringed.InventorySystem.UI
             uiItem.UIInventory = this;
             uiItem.Input = _input;
 
+            _spawnedItems.Add(item, uiItem);
+
             uiItem.RectTransform.anchoredPosition = GetItemPosition(item.Rectangle);
 
             var dx = item.Rectangle.DeltaX;
@@ -134,6 +142,20 @@ namespace Infringed.InventorySystem.UI
                 uiItem.RectTransform.rotation = Quaternion.Euler(0f, 0f, -90f);
                 uiItem.RectTransform.sizeDelta = new Vector2(size.y, size.x);
             }
+        }
+
+        private void _OnItemRemove(Item item)
+        {
+            if (!_spawnedItems.ContainsKey(item))
+            {
+                Debug.LogError("Failed to remove item from UIInventory");
+                return;
+            }
+
+            var uiItem = _spawnedItems[item];
+            _spawnedItems.Remove(item);
+            
+            uiItem.Dispose();
         }
 
         private RectTransform _GetGridChild(Vector2Int point)

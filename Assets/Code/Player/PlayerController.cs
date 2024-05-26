@@ -31,6 +31,7 @@ namespace Infringed.Player
         private Weapon _weapon;
         private float _verticalAcceleration = 0f;
         private bool _isDying = false;
+        private bool _dontUseItem = false;
         private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
         public Belt Belt { get; private set; }
@@ -42,7 +43,7 @@ namespace Infringed.Player
 
         private void Awake()
         {
-            Belt = new Belt();
+            Belt = new Belt(Inventory);
 
             _input = GetComponent<PlayerInput>();
             _characterController = GetComponent<CharacterController>();
@@ -195,15 +196,26 @@ namespace Infringed.Player
 
         private void _OnUseItemPerformed(InputAction.CallbackContext context)
         {
+            _dontUseItem = true;
+
+            if (UserRaycaster.IsBlockedByUI())
+                return;
+
             var item = Belt.SelectedItem;
 
             if (item == null)
                 return;
 
-            var castMarkerPrefab = item.Data.Action.CastMarkerPrefab;
+            if (!Belt.HasItemsInInventoty(Belt.SelectedSlot))
+                return;
+
+            var castMarkerPrefab = item.Action?.CastMarkerPrefab;
 
             if (castMarkerPrefab == null)
+            {
+                _dontUseItem = false;
                 return;
+            }
 
             _castMarker = Instantiate(castMarkerPrefab);
 
@@ -214,10 +226,18 @@ namespace Infringed.Player
 
                 return floorHit.point;
             };
+
+            _dontUseItem = false;
         }
 
         private void _OnUseItemCanceled(InputAction.CallbackContext obj)
         {
+            if (_dontUseItem)
+            {
+                _dontUseItem = false;
+                return;
+            }
+
             Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
 

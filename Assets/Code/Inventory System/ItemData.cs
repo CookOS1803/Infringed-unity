@@ -31,6 +31,9 @@ namespace Infringed.InventorySystem
         [field: SerializeField, ConditionalField(useMethod: true, nameof(IsInventoryItem))]
         public int Height { get; private set; } = 1;
 
+        [field: SerializeField, ConditionalField(useMethod: true, nameof(IsInventoryItem))]
+        public bool Consumable { get; private set; } = true;
+
         public bool IsInventoryItem()
         {
             return Type == ItemType.Inventory;

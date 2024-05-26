@@ -15,10 +15,10 @@ namespace Infringed.InventorySystem.UI
         private Canvas _canvas;
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
-        private Image _image;
         private Vector2 _initialPosition;
         private BeltSlot _slot;
         private ItemDescription _itemDescription;
+        public Image Image { get; private set; }
         public Transform Parent => _slot.transform;
         public int Index => _slot.Index;
 
@@ -27,7 +27,7 @@ namespace Infringed.InventorySystem.UI
             _canvas = GetComponentInParent<Canvas>();
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup = GetComponent<CanvasGroup>();
-            _image = GetComponent<Image>();
+            Image = GetComponent<Image>();
             _slot = GetComponentInParent<BeltSlot>();
             _itemDescription = GetComponentInChildren<ItemDescription>();
 
@@ -42,8 +42,8 @@ namespace Infringed.InventorySystem.UI
         public void SetItem(ItemData data)
         {
             _item = data;
-            _image.enabled = true;
-            _image.sprite = data.BeltSprite;
+            Image.enabled = true;
+            Image.sprite = data.BeltSprite;
 
             _itemDescription.UpdateInfo(data.Name, data.Description);
         }
@@ -51,50 +51,39 @@ namespace Infringed.InventorySystem.UI
         public void UnsetItem()
         {
             _item = null;
-            _image.enabled = false;
+            Image.enabled = false;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+            
             transform.SetParent(Parent.parent);
             _canvasGroup.blocksRaycasts = false;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
         }
 
+        // TTTTTTTTTTTTTTTT
         public void OnEndDrag(PointerEventData eventData)
         {
-            transform.SetParent(Parent);
-
-            if (UserRaycaster.IsBlockedByUI())
-            {
-                _canvasGroup.blocksRaycasts = true;
-                _rectTransform.anchoredPosition = _initialPosition;
+            if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-            }
-            _rectTransform.anchoredPosition = _initialPosition;
+
+            transform.SetParent(Parent);
+            
             _canvasGroup.blocksRaycasts = true;
+            _rectTransform.anchoredPosition = _initialPosition;
 
-
-            var position = _player.transform.position;
-            var up = _player.transform.up;
-            var forward = _player.transform.forward;
-            Vector3 spawnPosition;
-
-            if (Physics.Raycast(position + up, forward + up, out var hit, 1f))
-            {
-                spawnPosition = hit.point;
-            }
-            else
-            {
-                spawnPosition = position + forward + up;
-            }
-
-            Instantiate(_item.Prefab, spawnPosition, Quaternion.identity);
-            _player.Belt[Index] = null;
+            if (!UserRaycaster.IsBlockedByUI())
+                _player.Belt[Index] = null;
 
         }
 
