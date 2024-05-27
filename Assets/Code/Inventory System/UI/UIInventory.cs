@@ -15,37 +15,35 @@ namespace Infringed.InventorySystem.UI
         [SerializeField] private GridLayoutGroup _grid;
         [SerializeField] private GameObject _slotPrefab;
         [SerializeField] private ItemGhost _itemGhost;
-        [SerializeField] private RectTransform _background;
-        [SerializeField] private Vector2 _backgroundAdditionalSize;
+        [SerializeField] private GameObject _importantItemPrefab;
+        [SerializeField] private Transform _importantItemsParent;
         [Zenject.Inject] private UIItem.Factory _itemFactory;
         private PlayerInput _input;
-        private Graphic[] _graphics;
         private Dictionary<Item, UIItem> _spawnedItems = new();
 
         private void Awake()
         {
+            if (_player == null)
+                _player = FindObjectOfType<PlayerController>();
+
             _input = GetComponent<PlayerInput>();
 
-            _player.Inventory.OnItemAdd += _OnItemAdd;
-            _player.Inventory.OnItemRemove += _OnItemRemove;
-            _input.actions["OpenClose"].performed += _SwitchGraphicsStatus;
-        }
+            _MakeGrid();
 
+            _player.Inventory.OnItemAdd += _OnItemAdd;
+            _player.Inventory.OnImportantItemAdd += _OnImportantItemAdd;
+            _player.Inventory.OnItemRemove += _OnItemRemove;
+        }
         private void OnDestroy()
         {
             _player.Inventory.OnItemAdd -= _OnItemAdd;
+            _player.Inventory.OnImportantItemAdd -= _OnImportantItemAdd;
             _player.Inventory.OnItemRemove -= _OnItemRemove;
-            _input.actions["OpenClose"].performed -= _SwitchGraphicsStatus;
         }
 
         private void Start()
         {
             _itemGhost.gameObject.SetActive(false);
-
-            _MakeGrid();
-
-            _graphics = GetComponentsInChildren<Graphic>(includeInactive: true);
-            _SwitchGraphicsStatus(default);
         }
 
         public Vector2 GetItemPosition(Rectangle rectangle)
@@ -85,14 +83,6 @@ namespace Infringed.InventorySystem.UI
             _player.Inventory.RemoveItem(item);
         }
 
-        private void _SwitchGraphicsStatus(InputAction.CallbackContext context)
-        {
-            foreach (var g in _graphics)
-            {
-                g.enabled = !g.enabled;
-            }
-        }
-
         private void _MakeGrid()
         {
             _grid.constraintCount = _player.Inventory.Width;
@@ -109,11 +99,6 @@ namespace Infringed.InventorySystem.UI
                     slot.GridPosition = new Vector2Int(x, y);
                 }
             }
-
-            var size = _background.sizeDelta;
-            size.x = width * _grid.cellSize.x + (width - 1) * _grid.spacing.x + _backgroundAdditionalSize.x;
-            size.y = height * _grid.cellSize.y + (height - 1) * _grid.spacing.y + _backgroundAdditionalSize.y;
-            _background.sizeDelta = size;
         }
 
         private void _OnItemAdd(Item item)
@@ -142,6 +127,13 @@ namespace Infringed.InventorySystem.UI
                 uiItem.RectTransform.rotation = Quaternion.Euler(0f, 0f, -90f);
                 uiItem.RectTransform.sizeDelta = new Vector2(size.y, size.x);
             }
+        }
+
+        private void _OnImportantItemAdd(ItemData data)
+        {
+            var instance = Instantiate(_importantItemPrefab, _importantItemsParent).GetComponent<ImportantItem>();
+
+            instance.InitializeItem(data);
         }
 
         private void _OnItemRemove(Item item)

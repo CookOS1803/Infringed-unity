@@ -35,6 +35,7 @@ namespace Infringed.Player
         private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
         public Belt Belt { get; private set; }
+        public SkillSet SkillSet { get; private set; }
         public Vector3 MoveDirection { get; private set; }
         public bool CanMove { get; set; } = true;
         public bool IsCrouching { get; private set; } = false;
@@ -49,6 +50,7 @@ namespace Infringed.Player
             _characterController = GetComponent<CharacterController>();
             _health = GetComponent<Health>();
             _weapon = GetComponentInChildren<Weapon>();
+            SkillSet = GetComponent<SkillSet>();
 
             _input.actions["Menu"].performed += _OnMenu;
         }
@@ -72,12 +74,7 @@ namespace Infringed.Player
         {
             _health.OnDeathStart -= _Die;
 
-            _input.actions["Fire"].performed -= _OnAttack;
-            _input.actions["Interact"].performed -= _OnInteract;
-            _input.actions["SelectItem"].performed -= _OnSelectItem;
-            _input.actions["SwitchItem"].performed -= _OnSwitchItem;
-            _input.actions["Crouch"].performed -= _OnCrouchPerformed;
-            _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
+            _UnsubscribeOnDeath();
 
             _input.actions["UseItem"].performed -= _OnUseItemPerformed;
             _input.actions["UseItem"].canceled -= _OnUseItemCanceled;
@@ -369,7 +366,7 @@ namespace Infringed.Player
             }
             else
             {
-                _verticalAcceleration -= 9.81f * Time.deltaTime * Time.deltaTime;
+                _verticalAcceleration += Physics.gravity.y * Time.deltaTime * Time.deltaTime;
                 _characterController.Move(new Vector3(0f, _verticalAcceleration, 0f));
             }
         }
@@ -379,6 +376,18 @@ namespace Infringed.Player
             gameObject.layer = 0;
             _isDying = true;
             CanMove = false;
+
+            _UnsubscribeOnDeath();
+        }
+
+        private void _UnsubscribeOnDeath()
+        {
+            _input.actions["Fire"].performed -= _OnAttack;
+            _input.actions["Interact"].performed -= _OnInteract;
+            _input.actions["SelectItem"].performed -= _OnSelectItem;
+            _input.actions["SwitchItem"].performed -= _OnSwitchItem;
+            _input.actions["Crouch"].performed -= _OnCrouchPerformed;
+            _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
         }
 
         public void OnAttackStartEvent()

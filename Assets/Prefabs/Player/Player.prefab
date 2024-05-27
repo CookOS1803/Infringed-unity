@@ -2877,6 +2877,7 @@ GameObject:
   - component: {fileID: 95337640609337054}
   - component: {fileID: 1597108632}
   - component: {fileID: 1597108631}
+  - component: {fileID: 5516904656647511374}
   - component: {fileID: 383398072}
   - component: {fileID: 6255449248001389391}
   - component: {fileID: 5413599724967947389}
@@ -2970,7 +2971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
-  _crouchingSpeedFactor: 0.3
+  _crouchingSpeedFactor: 0.4
   _itemPickupRadius: 5
   _soundRadius: 6
   _menu: {fileID: 0}
@@ -2987,6 +2988,19 @@ MonoBehaviour:
   _itemPickupRadiusColor: {r: 0, g: 0, b: 1, a: 1}
   _showSoundRadius: 0
   _soundRadiusColor: {r: 1, g: 0, b: 1, a: 1}
+--- !u!114 &5516904656647511374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742385099753426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3bc6d07429c44478a003bbed4056ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skillsList: []
 --- !u!114 &383398072
 MonoBehaviour:
   m_ObjectHideFlags: 0

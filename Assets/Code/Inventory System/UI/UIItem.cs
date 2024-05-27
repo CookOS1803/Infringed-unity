@@ -9,19 +9,14 @@ using UnityEngine.InputSystem;
 
 namespace Infringed.InventorySystem.UI
 {
-    public class UIItem : MonoBehaviour, IPoolable<IMemoryPool>, System.IDisposable,
-                          IInitializePotentialDragHandler, IPointerClickHandler, IBeginDragHandler,
-                          IDragHandler, IEndDragHandler
+    public class UIItem : ItemDataDropper, IPoolable<IMemoryPool>, System.IDisposable,
+                          IInitializePotentialDragHandler, IPointerClickHandler
     {
         private Item _item;
         private CanvasGroup _canvasGroup;
-        private Canvas _canvas;
         private Rectangle _dragRectangle;
         private InventorySlot _slot;
-        private Vector2 _beforeDragPosition;
-        private Quaternion _beforeDragRotation;
         [field: SerializeField] public Image Image { get; private set; }
-        public RectTransform RectTransform => transform as RectTransform;
         public Item Item
         {
             get => _item;
@@ -37,8 +32,12 @@ namespace Infringed.InventorySystem.UI
         public UIInventory UIInventory { get; set; }
         public PlayerInput Input { get; set; }
 
-        private void Awake()
+        public override ItemData DroppedData => _item.Data;
+
+        protected override void Awake()
         {
+            base.Awake();
+
             _canvasGroup = GetComponent<CanvasGroup>();
             _canvas = GetComponentInParent<Canvas>();
         }
@@ -51,13 +50,12 @@ namespace Infringed.InventorySystem.UI
             ItemGhost.Clone(this);
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
+        public override void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            _beforeDragPosition = RectTransform.anchoredPosition;
-            _beforeDragRotation = RectTransform.rotation;
+            base.OnBeginDrag(eventData);
 
             ItemGhost.gameObject.SetActive(true);
             _canvasGroup.blocksRaycasts = false;
@@ -68,12 +66,12 @@ namespace Infringed.InventorySystem.UI
             Input.actions["RotateItem"].performed += _RotateItem;
         }
 
-        public void OnDrag(PointerEventData eventData)
+        public override void OnDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            RectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+            base.OnDrag(eventData);
 
             var beltSlot = eventData.hovered.FindComponent<BeltSlot>();
 
@@ -90,17 +88,16 @@ namespace Infringed.InventorySystem.UI
             _CalculateItemGhostPosition();
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        public override void OnEndDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-
+            
             var beltSlot = eventData.hovered.FindComponent<BeltSlot>();
 
             if (beltSlot != null)
             {
-                RectTransform.rotation = _beforeDragRotation;
-                RectTransform.anchoredPosition = _beforeDragPosition;
+                base.OnEndDrag(eventData);
             }
             else
             {
@@ -117,7 +114,7 @@ namespace Infringed.InventorySystem.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!eventData.dragging && eventData.button == PointerEventData.InputButton.Right)
+            if (!ItemGhost.gameObject.activeInHierarchy && eventData.button == PointerEventData.InputButton.Right)
                 UIInventory.DropItem(Item);
         }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Player;
@@ -23,12 +22,12 @@ namespace Infringed.InventorySystem.UI
             _RefreshBelt();
             Belt.OnChange += _RefreshBelt;
             Belt.OnSlotSelection += _SelectSlot;
-            Belt.Inventory.OnItemAdd += _RefreshBeltWithItem;
+            Belt.Inventory.OnItemAdd += _RefreshBeltWithAddedItem;
             Belt.Inventory.OnItemRemove += _RefreshBeltWithItem;
 
             for (int i = 0; i < Belt.Size; i++)
             {
-                Transform child = transform.GetChild(i);
+                var child = transform.GetChild(i);
                 child.GetComponent<BeltSlot>().Index = i;
                 child.GetComponent<RawImage>().color = _defaultSlotColor;
             }
@@ -41,7 +40,7 @@ namespace Infringed.InventorySystem.UI
         {
             Belt.OnChange -= _RefreshBelt;
             Belt.OnSlotSelection -= _SelectSlot;
-            Belt.Inventory.OnItemAdd -= _RefreshBeltWithItem;
+            Belt.Inventory.OnItemAdd -= _RefreshBeltWithAddedItem;
             Belt.Inventory.OnItemRemove -= _RefreshBeltWithItem;
         }
 
@@ -65,6 +64,23 @@ namespace Infringed.InventorySystem.UI
             }
         }
         
+
+        private void _RefreshBeltWithAddedItem(Item item)
+        {
+            if (!Belt.ContainsItem(item.Data))
+            {
+                var index = Belt.GetFirstNullIndex();
+
+                if (index >= 0)
+                {
+                    Belt[index] = item.Data;
+                    return;
+                }
+            }
+
+            _RefreshBelt();
+        }
+
         private void _RefreshBeltWithItem(Item item)
         {
             _RefreshBelt();

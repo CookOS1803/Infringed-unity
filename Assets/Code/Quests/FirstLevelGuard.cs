@@ -69,14 +69,10 @@ namespace Infringed.Quests
                 return;
             }
 
-            // player has key
-            foreach (Item i in player.Belt)
+            if (player.Inventory.ContainsImportantItem(_key))
             {
-                if (i?.Data == _key)
-                {
-                    _text.text = "Oh, so you've got the key...";
-                    return;
-                }
+                _text.text = "Oh, so you've got the key...";
+                return;
             }
 
             if (_enemyToKill == null)

@@ -12,18 +12,11 @@ namespace Infringed.Map
         {
             if (IsClosed)
             {
-                var inventory = user?.Belt;
+                var inventory = user?.Inventory;
 
-                if (inventory != null)
+                if (inventory != null && inventory.ContainsImportantItem(_key))
                 {
-                    foreach (Item i in inventory)
-                    {
-                        if (i?.Data == _key)
-                        {
-                            _Open();
-                            break;
-                        }
-                    }
+                    _Open();
                 }
             }
             else

@@ -111,7 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2859e46d3bbc8784ab8e7410817f5710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiItemPrefab: {fileID: 7672969575960363390, guid: bceed84fc9ba0e8429e9d7f40c417f2d, type: 3}
+  _uiItemPrefab: {fileID: 7672969575960363390, guid: bceed84fc9ba0e8429e9d7f40c417f2d, type: 3}
+  _uiItemParentPool: {fileID: 0}
+  _poolInitialSize: 25
 --- !u!1 &7889546728365355177
 GameObject:
   m_ObjectHideFlags: 0

@@ -80,6 +80,28 @@ namespace Infringed.InventorySystem
             return !_items[index].IsInventoryItem() || Inventory.ContainsData(_items[index]);
         }
 
+        public bool ContainsItem(ItemData data)
+        {
+            foreach (var item in _items)
+            {
+                if (item == data)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public int GetFirstNullIndex()
+        {
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] == null)
+                    return i;
+            }
+
+            return -1;
+        }
+
         public void UseItem(ItemAction.Context context)
         {
             if (SelectedItem == null)

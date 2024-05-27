@@ -10,11 +10,13 @@ namespace Infringed.InventorySystem
     public class Inventory
     {
         public event Action<Item> OnItemAdd;
+        public event Action<ItemData> OnImportantItemAdd;
         public event Action<Item> OnItemRemove;
 
         [field: SerializeField, Min(1)] public int Width { get; private set; } = 10;
         [field: SerializeField, Min(1)] public int Height { get; private set; } = 10;
         private HashSet<Item> _items = new();
+        private HashSet<ItemData> _importantItems = new();
         private HashSet<Vector2Int> _freePositions;
 
         public Inventory()
@@ -39,6 +41,12 @@ namespace Infringed.InventorySystem
 
         public bool AddItem(ItemData itemData)
         {
+            if (itemData.IsImportantItem())
+            {
+                _AddImportantItem(itemData);
+                return true;
+            }
+
             if (itemData.Width > Width || itemData.Height > Height)
             {
                 Debug.LogWarning("Item is bigger than the inventory");
@@ -134,6 +142,11 @@ namespace Infringed.InventorySystem
             return false;
         }
 
+        public bool ContainsImportantItem(ItemData important)
+        {
+            return _importantItems.Contains(important);
+        }
+
         public bool Fits(Rectangle rectangle)
         {
             return _FitsIf(rectangle, point => _freePositions.Contains(point));
@@ -142,6 +155,19 @@ namespace Infringed.InventorySystem
         public bool FitsExcluded(Rectangle rectangle, Rectangle rectangleExcluded)
         {
             return _FitsIf(rectangle, point => _freePositions.Contains(point) || IsInside(point, rectangleExcluded));
+        }
+
+        public int GetItemCount(ItemData data)
+        {
+            var count = 0;
+
+            foreach (var item in _items)
+            {
+                if (item.Data == data)
+                    count++;
+            }
+
+            return count;
         }
 
         public Rectangle GetNearestValidRectangle(Rectangle rectangle)
@@ -168,6 +194,12 @@ namespace Infringed.InventorySystem
         {
             return point.x >= rectangle.bottomLeft.x && point.y <= rectangle.bottomLeft.y &&
                    point.x <= rectangle.topRight.x && point.y >= rectangle.topRight.y;
+        }
+
+        private void _AddImportantItem(ItemData itemData)
+        {
+            if (_importantItems.Add(itemData))
+                OnImportantItemAdd?.Invoke(itemData);
         }
 
         private static bool _FitsIf(Rectangle rectangle, Predicate<Vector2Int> predicate)
