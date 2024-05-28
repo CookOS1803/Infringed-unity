@@ -9,5 +9,6 @@ namespace Infringed.Actions
     {
         public Transform Actor { get; set; }
         public Func<Vector3> GetTargetPosition;
+        public ItemAction Action { get; set; }
     }
 }

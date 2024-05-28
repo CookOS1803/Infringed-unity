@@ -11,6 +11,7 @@ namespace Infringed.InventorySystem.UI
     public class UIBeltItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private ItemData _item;
+        [SerializeField] private Image _cooldownImage;
         [Inject] private PlayerController _player;
         private Canvas _canvas;
         private RectTransform _rectTransform;
@@ -39,6 +40,16 @@ namespace Infringed.InventorySystem.UI
             _itemDescription.gameObject.SetActive(false);
         }
 
+        private void Update()
+        {
+            if (_item == null)
+                return;
+            
+            var normalizedCooldown = _item.CurrentCooldown / _item.Cooldown;
+
+            _cooldownImage.fillAmount = normalizedCooldown;
+        }
+
         public void SetItem(ItemData data)
         {
             _item = data;
@@ -52,13 +63,15 @@ namespace Infringed.InventorySystem.UI
         {
             _item = null;
             Image.enabled = false;
+
+            _itemDescription.UpdateInfo("", "");
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-            
+
             transform.SetParent(Parent.parent);
             _canvasGroup.blocksRaycasts = false;
         }
@@ -78,7 +91,7 @@ namespace Infringed.InventorySystem.UI
                 return;
 
             transform.SetParent(Parent);
-            
+
             _canvasGroup.blocksRaycasts = true;
             _rectTransform.anchoredPosition = _initialPosition;
 

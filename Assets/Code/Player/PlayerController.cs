@@ -217,6 +217,7 @@ namespace Infringed.Player
             _castMarker = Instantiate(castMarkerPrefab);
 
             _castMarker.Actor = transform;
+            _castMarker.Action = item.Action;
             _castMarker.GetTargetPosition = () => {
                 Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);

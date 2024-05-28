@@ -18,7 +18,8 @@ MonoBehaviour:
   <BeltSprite>k__BackingField: {fileID: 21300000, guid: b1f4bf27baef73845a53720a159f1572, type: 3}
   <InventorySprite>k__BackingField: {fileID: 0}
   <Prefab>k__BackingField: {fileID: 0}
-  <Action>k__BackingField: {fileID: 0}
+  <Action>k__BackingField: {fileID: 11400000, guid: 2535af2a3b3af314fb9e498b06e18483, type: 2}
   <Width>k__BackingField: 1
   <Height>k__BackingField: 1
   <Consumable>k__BackingField: 1
+  <Cooldown>k__BackingField: 1

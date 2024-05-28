@@ -109,6 +109,9 @@ namespace Infringed.InventorySystem
 
             if (SelectedItem.Action != null)
             {
+                if (SelectedItem.CurrentCooldown > 0)
+                    return;
+
                 if (SelectedItem.IsInventoryItem() && SelectedItem.Consumable)
                 {
                     if (!Inventory.Consume(SelectedItem))
@@ -121,6 +124,7 @@ namespace Infringed.InventorySystem
                 else
                     SelectedItem.Action.Use(context);
 
+                SelectedItem.LastUsedTime = Time.time;
             }
         }
     }
