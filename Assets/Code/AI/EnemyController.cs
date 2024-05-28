@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Combat;
+using Infringed.Map;
+using Infringed.Player;
 using UnityEngine;
 
 namespace Infringed.AI
@@ -17,6 +19,7 @@ namespace Infringed.AI
         [SerializeField] private Weapon _weapon;
         [SerializeField, Min(0f)] private float _attackRange = 1f;
         public Vector3 LastKnownPlayerPosition { get; set; }
+        public bool UnhidePlayer { get; set; }
         public bool SpottedPlayer { get; set; }
         public bool SpottedPlayerThisFrame { get; set; }
         public bool IsAlarmed { get; private set; }
@@ -72,6 +75,8 @@ namespace Infringed.AI
 
                 _spotBySound = true;
             }
+
+            _UnhidePlayer();
         }
 
         private void OnTriggerEnter(Collider collider)
@@ -140,9 +145,20 @@ namespace Infringed.AI
             }
         }
 
+        private Collider[] _colliders = new Collider[3];
         public bool IsPlayerInAttackRange()
         {
-            return Physics.OverlapSphere(transform.position, _attackRange, _playerLayer.value).Length != 0;
+            Physics.OverlapSphereNonAlloc(transform.position, _attackRange, _colliders, _playerLayer.value);
+
+            var player = _colliders[0];
+
+            if (player == null)
+                return false;
+
+
+            var wasHit = Physics.Linecast(transform.position + Vector3.up, player.transform.position, _playerLayer.value);
+
+            return wasHit;
         }
 
         public void Dispose()
@@ -154,8 +170,35 @@ namespace Infringed.AI
         {
             if (IsDying)
                 return;
-            
+
             IsDying = true;
+        }
+
+        private void _UnhidePlayer()
+        {
+            if (!UnhidePlayer)
+                return;
+
+            var colliders = Physics.OverlapSphere(transform.position, _attackRange, LayerMask.GetMask("Interactable"));
+
+            if (colliders.Length == 0)
+                return;
+
+            foreach (var c in colliders)
+            {
+                var hideout = c.GetComponent<Hideout>();
+
+                if (hideout == null)
+                    continue;
+
+                var player = _vision.LastNoticedPlayer.GetComponent<PlayerController>();
+
+                if (hideout == player.CurrentHideout)
+                {
+                    player.ExitHideout();
+                    break;
+                }
+            }
         }
 
         private void _OnSound(Vector3 vector)

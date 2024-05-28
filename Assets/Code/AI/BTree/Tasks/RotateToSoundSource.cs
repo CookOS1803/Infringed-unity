@@ -24,7 +24,7 @@ namespace Infringed.AI.BTree
 
         public override void OnEnter()
         {
-            if (Blackboard.IsSet("Sound Source"))
+            if (_suspicion.CanSuspect() && Blackboard.IsSet("Sound Source"))
             {
                 _hearClock = 0f;
                 _suspicion.Suspect(Blackboard.Get<Vector3>("Sound Source"));
@@ -69,8 +69,9 @@ namespace Infringed.AI.BTree
 
             if (angle < 45)
             {
-                actorToSource = actorToActualSource;
-                Blackboard.Set("Sound Source", actorToActualSource);
+                soundSource = _soundResponder.LastHeardSound;
+                Blackboard.Set("Sound Source", soundSource);
+                _suspicion.Suspect(soundSource);
             }
 
             var desiredRotation = Quaternion.FromToRotation(Vector3.forward, actorToSource);

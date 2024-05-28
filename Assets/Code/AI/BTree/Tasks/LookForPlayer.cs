@@ -33,10 +33,19 @@ namespace Infringed.AI.BTree
         
         private Vector3 _GetRandomPosition()
         {
-            var randomDirection = UnityEngine.Random.insideUnitSphere * _lookingRadius;
-            randomDirection += _enemy.LastKnownPlayerPosition;
+            Vector3 randomDirection;
+            NavMeshHit hit = default;
 
-            NavMesh.SamplePosition(randomDirection, out var hit, _lookingRadius * 2, 1);
+            var radius = _lookingRadius;
+
+            do
+            {
+                randomDirection = UnityEngine.Random.insideUnitSphere * radius;
+                randomDirection += _enemy.LastKnownPlayerPosition;
+
+                radius -= 0.5f;
+
+            } while (radius > 0f && !NavMesh.SamplePosition(randomDirection, out hit, _lookingRadius, 1));
 
             return hit.position;
         }

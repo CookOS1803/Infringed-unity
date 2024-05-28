@@ -39,7 +39,16 @@ namespace Infringed.AI.BTree
 
             if (!_enemy.IsDying)
             {
-                var playerPosition = Actor.transform.position + _stunController.StunSourceDirection * _stunSourceDirectionMultiplier;
+                var position = Actor.transform.position;
+                Vector3 playerPosition;
+
+                if (Physics.Raycast(position + Vector3.up, _stunController.StunSourceDirection, out var hit, _stunSourceDirectionMultiplier))
+                {
+                    playerPosition = hit.point - Vector3.up;
+                }
+                else
+                    playerPosition = position + _stunController.StunSourceDirection * _stunSourceDirectionMultiplier;
+                    
                 _enemy.Alarm(playerPosition);
             }
         }

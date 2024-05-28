@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Combat;
 using UnityEngine;
 
 namespace Infringed.AI
@@ -15,6 +16,7 @@ namespace Infringed.AI
         [SerializeField, Min(0f)] private float _unseeFactor = 0.5f;
         private VisionController _vision;
         private EnemyController _enemy;
+        private StunController _stunController;
 
         public float NoticeClock { get; private set; }
         public bool IsSuspecting { get; set; }
@@ -24,11 +26,12 @@ namespace Infringed.AI
         {
             _vision = GetComponent<VisionController>();
             _enemy = GetComponent<EnemyController>();
+            _stunController = GetComponent<StunController>();
         }
 
         private void Update()
         {
-            if (_enemy.IsAlarmed)
+            if (!CanSuspect())
             {
                 NoticeClock = 0f;
                 IsSuspecting = false;
@@ -43,6 +46,11 @@ namespace Infringed.AI
             {
                 NoticeClock = Mathf.MoveTowards(NoticeClock, 0, Time.deltaTime * _unseeFactor);
             }
+        }
+
+        public bool CanSuspect()
+        {
+            return !(_enemy.IsAlarmed || _enemy.IsDying || _stunController.IsStunned);
         }
 
         public void Suspect(Vector3 source)

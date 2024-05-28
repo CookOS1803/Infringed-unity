@@ -7,7 +7,7 @@ namespace Infringed.Player
 {
     public class PlayerWeapon : Weapon
     {
-        [SerializeField] private float _backstabDot = 0.5f;
+        [SerializeField, Range(0f, 180f)] private float _backstabAngle = 90f;
         [SerializeField] private Transform _player;
 
         protected override void _OnHit(Collider collider)
@@ -17,9 +17,10 @@ namespace Infringed.Player
             if (enemy != null)
             {
                 var isStunned = enemy.GetComponent<StunController>().IsStunned;
-                var dot = Vector3.Dot(enemy.transform.forward, enemy.transform.position - _player.position);
+                var to = (enemy.transform.position - _player.position).normalized;
+                var angle = Vector3.Angle(enemy.transform.forward, to);
 
-                if (isStunned || !enemy.SpottedPlayer && dot >= _backstabDot)
+                if (isStunned || !enemy.SpottedPlayer && angle < _backstabAngle / 2f)
                 {
                     enemy.Die();
                 }
@@ -27,7 +28,6 @@ namespace Infringed.Player
                 {
                     enemy.Alarm(_player.position);
                 }
-
             }
 
             base._OnHit(collider);

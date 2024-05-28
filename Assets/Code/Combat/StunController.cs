@@ -44,7 +44,10 @@ namespace Infringed.Combat
                 _currentStunTime = stunTime;
             }
 
-            StunSourceDirection = (stunSourcePosition - transform.position).normalized;
+            var position = transform.position;
+            position.y = stunSourcePosition.y;
+
+            StunSourceDirection = (stunSourcePosition - position).normalized;
         }
     }
 }

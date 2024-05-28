@@ -34,7 +34,7 @@ MonoBehaviour:
   preOrderIndex: 15
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1604.5, y: 1083}
+  bonsaiNodePosition: {x: -1664.5, y: 1083}
   child: {fileID: 5815350272731241916}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -51,10 +51,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0feb382b0ba20d4e916213c0f611ed6, type: 3}
   m_Name: IsDying
   m_EditorClassIdentifier: 
-  preOrderIndex: 36
+  preOrderIndex: 37
   title: 
   comment: 
-  bonsaiNodePosition: {x: 277, y: 219}
+  bonsaiNodePosition: {x: 289, y: 219}
   child: {fileID: -3637449477526331026}
   abortType: 0
   <Inverted>k__BackingField: 0
@@ -74,7 +74,7 @@ MonoBehaviour:
   preOrderIndex: 20
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1024, y: 1378.5}
+  bonsaiNodePosition: {x: -1084, y: 1378.5}
   children:
   - {fileID: -7746895767330067914}
   - {fileID: -6459459232388435126}
@@ -93,7 +93,7 @@ MonoBehaviour:
   preOrderIndex: 21
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1161.5, y: 1522.5}
+  bonsaiNodePosition: {x: -1209.5, y: 1522.5}
 --- !u!114 &-7321705894404650106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -109,7 +109,7 @@ MonoBehaviour:
   preOrderIndex: 9
   title: 
   comment: 
-  bonsaiNodePosition: {x: -2057, y: 1232}
+  bonsaiNodePosition: {x: -2105, y: 1232}
   child: {fileID: -933701821409311763}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -130,7 +130,7 @@ MonoBehaviour:
   preOrderIndex: 12
   title: 
   comment: 
-  bonsaiNodePosition: {x: -2286.5, y: 1654.5}
+  bonsaiNodePosition: {x: -2334.5, y: 1654.5}
 --- !u!114 &-6459459232388435126
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,7 +146,7 @@ MonoBehaviour:
   preOrderIndex: 22
   title: 
   comment: 
-  bonsaiNodePosition: {x: -950.5, y: 1522.5}
+  bonsaiNodePosition: {x: -1010.5, y: 1522.5}
   _time: 3
 --- !u!114 &-5159647974063366175
 MonoBehaviour:
@@ -160,10 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdfb57a2a70435f44acfc7c130246df6, type: 3}
   m_Name: IsStunned
   m_EditorClassIdentifier: 
-  preOrderIndex: 34
+  preOrderIndex: 35
   title: 
   comment: 
-  bonsaiNodePosition: {x: 73, y: 507}
+  bonsaiNodePosition: {x: 85, y: 507}
   child: {fileID: -1298324837236642530}
   abortType: 0
   <Inverted>k__BackingField: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3940e551e30c1924e892be9789274669, type: 3}
   m_Name: IsPlayerSpotted
   m_EditorClassIdentifier: 
-  preOrderIndex: 29
+  preOrderIndex: 30
   title: 
   comment: 
   bonsaiNodePosition: {x: -235, y: 1083}
@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f98e42124d794d24baddf03f67db4d0b, type: 3}
   m_Name: Sequence
   m_EditorClassIdentifier: 
-  preOrderIndex: 31
+  preOrderIndex: 32
   title: 
   comment: 
   bonsaiNodePosition: {x: -208, y: 1354.5}
@@ -236,10 +236,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f81206047c61442b04beaf308be358, type: 3}
   m_Name: Dying
   m_EditorClassIdentifier: 
-  preOrderIndex: 37
+  preOrderIndex: 38
   title: 
   comment: 
-  bonsaiNodePosition: {x: 311, y: 358.5}
+  bonsaiNodePosition: {x: 323, y: 358.5}
 --- !u!114 &-3380702356397923719
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -255,7 +255,7 @@ MonoBehaviour:
   preOrderIndex: 2
   title: 
   comment: 
-  bonsaiNodePosition: {x: -464.5, y: 219}
+  bonsaiNodePosition: {x: -476.5, y: 219}
   child: {fileID: 281102627562199300}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -275,7 +275,7 @@ MonoBehaviour:
   preOrderIndex: 18
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1365.5, y: 1234.5}
+  bonsaiNodePosition: {x: -1425.5, y: 1234.5}
 --- !u!114 &-2863761442149456222
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -293,7 +293,7 @@ MonoBehaviour:
   comment: 
   bonsaiNodePosition: {x: -580, y: 1210.5}
   children:
-  - {fileID: 6683203377301651146}
+  - {fileID: 3393168348309089645}
   - {fileID: 1839964764926825657}
 --- !u!114 &-2629496105523887481
 MonoBehaviour:
@@ -310,7 +310,7 @@ MonoBehaviour:
   preOrderIndex: 19
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1048.5, y: 1239}
+  bonsaiNodePosition: {x: -1108.5, y: 1239}
   child: {fileID: -7778207233135854304}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -327,10 +327,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bae4f32310398049a70c1f622a06677, type: 3}
   m_Name: BeStunned
   m_EditorClassIdentifier: 
-  preOrderIndex: 35
+  preOrderIndex: 36
   title: 
   comment: 
-  bonsaiNodePosition: {x: 86, y: 646.5}
+  bonsaiNodePosition: {x: 98, y: 646.5}
   _stunSourceDirectionMultiplier: 3
 --- !u!114 &-1151040039422382887
 MonoBehaviour:
@@ -367,7 +367,7 @@ MonoBehaviour:
   preOrderIndex: 10
   title: 
   comment: 
-  bonsaiNodePosition: {x: -2060.5, y: 1378.5}
+  bonsaiNodePosition: {x: -2108.5, y: 1378.5}
   child: {fileID: 5176383551032226981}
 --- !u!114 &-433607301185678896
 MonoBehaviour:
@@ -384,7 +384,7 @@ MonoBehaviour:
   preOrderIndex: 23
   title: 
   comment: 
-  bonsaiNodePosition: {x: -419, y: 795}
+  bonsaiNodePosition: {x: -407, y: 795}
   child: {fileID: 4307371343213848954}
   abortType: 0
   <Inverted>k__BackingField: 0
@@ -429,6 +429,7 @@ MonoBehaviour:
   - {fileID: 4307371343213848954}
   - {fileID: -5140294515952439371}
   - {fileID: -2863761442149456222}
+  - {fileID: 3393168348309089645}
   - {fileID: 6683203377301651146}
   - {fileID: 1839964764926825657}
   - {fileID: -4940868212543290148}
@@ -442,8 +443,8 @@ MonoBehaviour:
   - {fileID: -3637449477526331026}
   blackboard: {fileID: 5235898080953198082}
   actor: {fileID: 0}
-  panPosition: {x: 1251, y: -1369}
-  zoomPosition: {x: 1.44, y: 1.44}
+  panPosition: {x: 423, y: -1184}
+  zoomPosition: {x: 2.3638508, y: 2.3638508}
   unusedNodes: []
 --- !u!114 &281102627562199300
 MonoBehaviour:
@@ -460,7 +461,7 @@ MonoBehaviour:
   preOrderIndex: 3
   title: 
   comment: 
-  bonsaiNodePosition: {x: -443, y: 358.5}
+  bonsaiNodePosition: {x: -455, y: 358.5}
   children:
   - {fileID: 4461389343289776569}
   - {fileID: -5159647974063366175}
@@ -476,10 +477,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ddc973eec958864a83f17365fd1d579, type: 3}
   m_Name: LookForPlayer
   m_EditorClassIdentifier: 
-  preOrderIndex: 33
+  preOrderIndex: 34
   title: 
   comment: 
-  bonsaiNodePosition: {x: -145, y: 1498.5}
+  bonsaiNodePosition: {x: -133, y: 1498.5}
   _lookingRadius: 6
 --- !u!114 &1839964764926825657
 MonoBehaviour:
@@ -493,10 +494,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71d4bce6cf42e2d43acd386a9e2cd962, type: 3}
   m_Name: AttackPlayer
   m_EditorClassIdentifier: 
-  preOrderIndex: 28
+  preOrderIndex: 29
   title: 
   comment: 
   bonsaiNodePosition: {x: -487, y: 1366.5}
+--- !u!114 &3393168348309089645
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55473a87e63cd984a89b408728ba559d, type: 3}
+  m_Name: OnPlayerHideSetter
+  m_EditorClassIdentifier: 
+  preOrderIndex: 27
+  title: 
+  comment: 
+  bonsaiNodePosition: {x: -744, y: 1366.5}
+  child: {fileID: 6683203377301651146}
 --- !u!114 &4060534016085110145
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -509,7 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8476b8372ee87654bb16007e643395fc, type: 3}
   m_Name: UntilFailure
   m_EditorClassIdentifier: 
-  preOrderIndex: 30
+  preOrderIndex: 31
   title: 
   comment: 
   bonsaiNodePosition: {x: -216, y: 1222.5}
@@ -548,7 +566,7 @@ MonoBehaviour:
   preOrderIndex: 24
   title: Alarmed behaviour
   comment: 
-  bonsaiNodePosition: {x: -432.5, y: 934.5}
+  bonsaiNodePosition: {x: -420.5, y: 934.5}
   children:
   - {fileID: -5140294515952439371}
   - {fileID: -4940868212543290148}
@@ -567,7 +585,7 @@ MonoBehaviour:
   preOrderIndex: 4
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1016.5, y: 507}
+  bonsaiNodePosition: {x: -1040.5, y: 507}
   child: {fileID: 7453505272613512398}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -587,7 +605,7 @@ MonoBehaviour:
   preOrderIndex: 11
   title: Patroling
   comment: 
-  bonsaiNodePosition: {x: -2017, y: 1498.5}
+  bonsaiNodePosition: {x: -2065, y: 1498.5}
   children:
   - {fileID: -6829975922249475371}
   - {fileID: 8224610821375609763}
@@ -620,7 +638,7 @@ MonoBehaviour:
   preOrderIndex: 16
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1641, y: 1222.5}
+  bonsaiNodePosition: {x: -1701, y: 1222.5}
   _hearTime: 2
 --- !u!114 &6133775159362500902
 MonoBehaviour:
@@ -637,7 +655,7 @@ MonoBehaviour:
   preOrderIndex: 17
   title: Check suspect
   comment: 
-  bonsaiNodePosition: {x: -1210, y: 1090.5}
+  bonsaiNodePosition: {x: -1258, y: 1090.5}
   children:
   - {fileID: -3139430814078707293}
   - {fileID: -2629496105523887481}
@@ -656,7 +674,7 @@ MonoBehaviour:
   preOrderIndex: 7
   title: Unalarmed behaviour
   comment: 
-  bonsaiNodePosition: {x: -1641, y: 934.5}
+  bonsaiNodePosition: {x: -1701, y: 934.5}
   children:
   - {fileID: 7973439852064250731}
   - {fileID: -8205470143743138277}
@@ -676,7 +694,7 @@ MonoBehaviour:
   preOrderIndex: 14
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1792.5, y: 1654.5}
+  bonsaiNodePosition: {x: -1852.5, y: 1654.5}
   timer:
     interval: 3
     deviation: 0
@@ -692,10 +710,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce28893744ab2de47b71f3091f43659d, type: 3}
   m_Name: ChasePlayer
   m_EditorClassIdentifier: 
-  preOrderIndex: 27
+  preOrderIndex: 28
   title: 
   comment: 
-  bonsaiNodePosition: {x: -688.5, y: 1366.5}
+  bonsaiNodePosition: {x: -712.5, y: 1486.5}
 --- !u!114 &7453505272613512398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -711,7 +729,7 @@ MonoBehaviour:
   preOrderIndex: 5
   title: 
   comment: 
-  bonsaiNodePosition: {x: -995, y: 646.5}
+  bonsaiNodePosition: {x: -1019, y: 646.5}
   children:
   - {fileID: 9023502167327559726}
   - {fileID: -433607301185678896}
@@ -727,10 +745,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d2588ebc805cda4c983c49192f58ebd, type: 3}
   m_Name: Wait
   m_EditorClassIdentifier: 
-  preOrderIndex: 32
+  preOrderIndex: 33
   title: 
   comment: 
-  bonsaiNodePosition: {x: -292.5, y: 1498.5}
+  bonsaiNodePosition: {x: -280.5, y: 1498.5}
   timer:
     interval: 3
     deviation: 0
@@ -749,7 +767,7 @@ MonoBehaviour:
   preOrderIndex: 8
   title: 
   comment: 
-  bonsaiNodePosition: {x: -2036.5, y: 1083}
+  bonsaiNodePosition: {x: -2084.5, y: 1083}
   child: {fileID: -7321705894404650106}
   abortType: 0
   <Inverted>k__BackingField: 1
@@ -769,7 +787,7 @@ MonoBehaviour:
   preOrderIndex: 13
   title: 
   comment: 
-  bonsaiNodePosition: {x: -2005, y: 1654.5}
+  bonsaiNodePosition: {x: -2065, y: 1654.5}
 --- !u!114 &9023502167327559726
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -785,7 +803,7 @@ MonoBehaviour:
   preOrderIndex: 6
   title: 
   comment: 
-  bonsaiNodePosition: {x: -1616.5, y: 795}
+  bonsaiNodePosition: {x: -1676.5, y: 795}
   child: {fileID: 6207842830735941220}
   abortType: 0
   <Inverted>k__BackingField: 1

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Infringed.Player;
@@ -8,6 +9,8 @@ namespace Infringed.AI
 {
     public class VisionController : MonoBehaviour
     {
+        public event Action OnPlayerInView;
+
         [field: SerializeField, Min(0f)] public float DistanceOfView { get; private set; } = 10f;
         [field: SerializeField, Range(0f, 360f)] public float FieldOfView { get; private set; } = 90f;
         [Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
@@ -23,6 +26,7 @@ namespace Infringed.AI
             if (IsPlayerInView)
             {
                 LastNoticedPlayer = noticedPlayer;
+                OnPlayerInView?.Invoke();
             }
         }
 

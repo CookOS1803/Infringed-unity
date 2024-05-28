@@ -8719,7 +8719,7 @@ MonoBehaviour:
   _reactingLayer:
     serializedVersion: 2
     m_Bits: 4031
-  _backstabDot: 0.5
+  _backstabDot: 0.2
   _player: {fileID: 4065501370703234}
 --- !u!1 &1892690722996672
 GameObject:

@@ -14,6 +14,7 @@ namespace Infringed.AI
 
         public bool IsMoving => CanMove && Vector3.Distance(_agent.destination, _agent.transform.position) > _agent.stoppingDistance;
         public float AngularSpeed => _agent.angularSpeed;
+        public Vector3 Destination => _agent.destination;
         public bool CanMove
         {
             get => !_agent.isStopped;
