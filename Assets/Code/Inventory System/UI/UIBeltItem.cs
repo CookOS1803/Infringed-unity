@@ -10,7 +10,7 @@ namespace Infringed.InventorySystem.UI
 {
     public class UIBeltItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private ItemData _item;
+        [SerializeField] public ItemData Item;
         [SerializeField] private Image _cooldownImage;
         [Inject] private PlayerController _player;
         private Canvas _canvas;
@@ -42,17 +42,20 @@ namespace Infringed.InventorySystem.UI
 
         private void Update()
         {
-            if (_item == null)
+            if (Item == null)
+            {
+                Image.enabled = false;
                 return;
+            }
             
-            var normalizedCooldown = _item.CurrentCooldown / _item.Cooldown;
+            var normalizedCooldown = Item.CurrentCooldown / Item.Cooldown;
 
             _cooldownImage.fillAmount = normalizedCooldown;
         }
 
         public void SetItem(ItemData data)
         {
-            _item = data;
+            Item = data;
             Image.enabled = true;
             Image.sprite = data.BeltSprite;
 
@@ -61,7 +64,7 @@ namespace Infringed.InventorySystem.UI
 
         public void UnsetItem()
         {
-            _item = null;
+            Item = null;
             Image.enabled = false;
 
             _itemDescription.UpdateInfo("", "");

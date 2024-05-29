@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ namespace Infringed.AI
 {
     public class AIManager : MonoBehaviour
     {
+        public event Action OnAlarm;
+
         public bool Alarm { get; private set; }
         public float AlarmClock { get; private set; }
         [field: SerializeField, Min(0f)] public float AlarmTime { get; private set; } = 10f;
@@ -62,6 +65,9 @@ namespace Infringed.AI
 
         private void _OnAlarm(EnemyController sender)
         {
+            if (!Alarm)
+                OnAlarm?.Invoke();
+
             Alarm = true;
 
             foreach (var enemy in _enemies)

@@ -27,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8402343865107563357}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.5828324, y: 0, z: 0, w: 0.81259245}
   m_LocalPosition: {x: 0, y: 5.11, z: -1.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 71.3, y: 0, z: 0}
 --- !u!20 &8402343865107563359
 Camera:
@@ -49,9 +49,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -99,9 +107,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _smoothing: 5
+  _dialogSmoothing: 2
   _mouseFactor: 1
   _additionalMouseFactor: 10
   _offset: {x: 0, y: 5.11, z: -1.45}
+  _dialogOffset: {x: -2, y: 2, z: -2}
   _winPosition: {x: -13.5, y: 6.28, z: 2.36}
   _winEulerAngles: {x: 49.4, y: 45, z: 0}
 --- !u!114 &947319680

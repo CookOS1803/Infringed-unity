@@ -23,10 +23,17 @@ namespace Infringed.Map
         }
         protected readonly Quaternion _openingRotation = Quaternion.Euler(0f, 90f, 0f);
         protected readonly Quaternion _closingRotation = Quaternion.Euler(0f, -90f, 0f);
+        private Vector3 _forward;
 
         private void Start()
         {
             _obstacle = GetComponent<NavMeshObstacle>();
+            _forward = transform.forward;
+        }
+
+        private void Update()
+        {
+            transform.forward = Vector3.MoveTowards(transform.forward, _forward, Time.deltaTime * 25f);
         }
 
         public virtual void Interact(PlayerController user)
@@ -43,13 +50,13 @@ namespace Infringed.Map
 
         protected void _Open()
         {
-            transform.forward = _openingRotation * transform.forward;
+            _forward = _openingRotation * transform.forward;
             IsClosed = false;
         }
 
         protected void _Close()
         {
-            transform.forward = _closingRotation * transform.forward;
+            _forward = _closingRotation * transform.forward;
             IsClosed = true;
         }
 

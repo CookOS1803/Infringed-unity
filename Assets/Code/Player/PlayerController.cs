@@ -6,6 +6,7 @@ using Infringed.Combat;
 using Infringed.Map;
 using Infringed.InventorySystem;
 using Infringed.Actions;
+using Infringed.Quests;
 
 namespace Infringed.Player
 {
@@ -15,6 +16,7 @@ namespace Infringed.Player
         public event Action OnHide;
         public event Action OnExitHideout;
         public event Action OnPlayerAttackStart;
+        public event Action<DialogueGiver> OnInitiateDialogue;
 
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _crouchingSpeedFactor = 0.3f;
@@ -32,6 +34,7 @@ namespace Infringed.Player
         private float _verticalAcceleration = 0f;
         private bool _isDying = false;
         private bool _dontUseItem = false;
+        private DialogueGiver _giver;
         private ActionCastMarker _castMarker;
         public Hideout CurrentHideout { get; private set; }
         public Belt Belt { get; private set; }
@@ -59,25 +62,14 @@ namespace Infringed.Player
         {
             _health.OnDeathStart += _Die;
 
-            _input.actions["Fire"].performed += _OnAttack;
-            _input.actions["Interact"].performed += _OnInteract;
-            _input.actions["SelectItem"].performed += _OnSelectItem;
-            _input.actions["SwitchItem"].performed += _OnSwitchItem;
-            _input.actions["Crouch"].performed += _OnCrouchPerformed;
-            _input.actions["Crouch"].canceled += _OnCrouchCanceled;
-            
-            _input.actions["UseItem"].performed += _OnUseItemPerformed;
-            _input.actions["UseItem"].canceled += _OnUseItemCanceled;
+            _Subscribe();
         }
 
         private void OnDisable()
         {
             _health.OnDeathStart -= _Die;
 
-            _UnsubscribeOnDeath();
-
-            _input.actions["UseItem"].performed -= _OnUseItemPerformed;
-            _input.actions["UseItem"].canceled -= _OnUseItemCanceled;
+            _Unsubscribe();
         }
 
         private void OnDestroy()
@@ -91,7 +83,7 @@ namespace Infringed.Player
             {
                 _CalculateGravity();
 
-                if (CanMove && !_isDying)
+                if (CanMove && !_isDying && _giver == null)
                 {
                     _Move();
                     _Turn();
@@ -150,8 +142,6 @@ namespace Infringed.Player
 
         public void PickItem(ItemPickable pickable)
         {
-            //Belt.Add(pickable.GetItem());
-
             if (Inventory.AddItem(pickable.GetItem()))
                 pickable.DestroySelf();
         }
@@ -185,6 +175,24 @@ namespace Infringed.Player
             CanMove = true;
         }
 
+        public void InitiateDialogue(DialogueGiver giver)
+        {
+            giver.OnDialogueEnd += _OnDialogueEnd;
+            _giver = giver;
+
+            _Unsubscribe();
+
+            OnInitiateDialogue?.Invoke(giver);
+        }
+
+        private void _OnDialogueEnd(DialogueGiver giver)
+        {
+            giver.OnDialogueEnd -= _OnDialogueEnd;
+            _giver = null;
+
+            _Subscribe();
+        }
+        
         private void _OnAttack(InputAction.CallbackContext obj)
         {
             if (CanMove && !_isDying)
@@ -230,6 +238,9 @@ namespace Infringed.Player
 
         private void _OnUseItemCanceled(InputAction.CallbackContext obj)
         {
+            Destroy(_castMarker?.gameObject);
+            _castMarker = null;
+
             if (_dontUseItem)
             {
                 _dontUseItem = false;
@@ -240,9 +251,6 @@ namespace Infringed.Player
             Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
 
             Belt.UseItem(new(transform, floorHit.point));
-
-            Destroy(_castMarker?.gameObject);
-            _castMarker = null;
         }
 
         private void _OnExitHideout(InputAction.CallbackContext obj)
@@ -378,10 +386,22 @@ namespace Infringed.Player
             _isDying = true;
             CanMove = false;
 
-            _UnsubscribeOnDeath();
+            _Unsubscribe();
         }
 
-        private void _UnsubscribeOnDeath()
+        private void _Subscribe()
+        {
+            _input.actions["Fire"].performed += _OnAttack;
+            _input.actions["Interact"].performed += _OnInteract;
+            _input.actions["SelectItem"].performed += _OnSelectItem;
+            _input.actions["SwitchItem"].performed += _OnSwitchItem;
+            _input.actions["Crouch"].performed += _OnCrouchPerformed;
+            _input.actions["Crouch"].canceled += _OnCrouchCanceled;
+            _input.actions["UseItem"].performed += _OnUseItemPerformed;
+            _input.actions["UseItem"].canceled += _OnUseItemCanceled;
+        }
+
+        private void _Unsubscribe()
         {
             _input.actions["Fire"].performed -= _OnAttack;
             _input.actions["Interact"].performed -= _OnInteract;
@@ -389,6 +409,11 @@ namespace Infringed.Player
             _input.actions["SwitchItem"].performed -= _OnSwitchItem;
             _input.actions["Crouch"].performed -= _OnCrouchPerformed;
             _input.actions["Crouch"].canceled -= _OnCrouchCanceled;
+            _input.actions["UseItem"].performed -= _OnUseItemPerformed;
+            _input.actions["UseItem"].canceled -= _OnUseItemCanceled;
+
+            _dontUseItem = true;
+            _OnUseItemCanceled(default);
         }
 
         public void OnAttackStartEvent()

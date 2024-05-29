@@ -20,6 +20,11 @@ namespace Infringed.InventorySystem.UI
             _child = GetComponentInChildren<UIBeltItem>();
         }
 
+        private void Update()
+        {
+            _itemCountText.enabled = _child.Item != null && _child.Item.IsInventoryItem() && _child.Item.Consumable;
+        }
+
         public void UnsetItem()
         {
             _child.UnsetItem();

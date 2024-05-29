@@ -14,12 +14,36 @@ namespace Infringed.Quests
     {
         [SerializeField] private EnemyController _enemyToKill;
         [SerializeField] private Door _door;
-        [SerializeField] private ItemData _key;
-        [SerializeField] private GameObject _dialogueWindow;
-        [SerializeField] private TMP_Text _text;
-        [SerializeField, Min(0)] private float _playerTriggerRadius;
-        private bool _playerHitGuard;
         private Health _health;
+        private DialogueGiver _giver;
+        private bool _tookQuest;
+
+        private void Awake()
+        {
+            _giver = GetComponent<DialogueGiver>();
+        }
+
+        private void Start()
+        {
+            _giver.DialogueChoices[0].Options[0].OnClicked += choice =>
+            {
+                _giver.DialogueChoices[0].Text = "Приветствую. Разобрался с нашим общим знакомым?";
+                choice.Label = "Пока нет";
+
+                _giver.DialogueChoices[1].Text = "Не буду тебя торопить, но знай, что в долгу не останусь.";
+
+                choice.ClearCallback();
+
+                _tookQuest = true;
+
+                choice.OnClicked += choice =>
+                {
+                    _giver.DialogueChoices[1].Options[0].Label = "Хорошо";
+
+                    choice.ClearCallback();
+                };
+            };
+        }
 
         private void OnEnable()
         {
@@ -37,66 +61,51 @@ namespace Infringed.Quests
 
         private void Update()
         {
-            var colliders = Physics.OverlapSphere(transform.position, _playerTriggerRadius, LayerMask.GetMask("Player"));
 
-            if (colliders.Length == 0)
-            {
-                _dialogueWindow.SetActive(false);
-                return;
-            }
-
-            _dialogueWindow.SetActive(true);
-
-            var player = colliders[0].GetComponent<PlayerController>();
-
-            transform.LookAt(player.transform);
-
-            _CheckStatus(player);
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, _playerTriggerRadius);
-        }
-
-        private void _CheckStatus(PlayerController player)
-        {
-            if (_playerHitGuard)
-            {
-                _door.OpenIndefinitely();
-                _text.text = "Alright, you're free to go";
-                return;
-            }
-
-            if (player.Inventory.ContainsImportantItem(_key))
-            {
-                _text.text = "Oh, so you've got the key...";
-                return;
-            }
-
-            if (_enemyToKill == null)
-            {
-                _text.text = "Excellent! Now hit me with your knife so they'll think i fought you back";
-                return;
-            }
-
-            _text.text = "Hey, i could open the door, if you'd help me. I need the guy in the storage room dead, 'cause he denounced my brother and got him hanged";
-        }
 
         private void _OnEnemyDeath(EnemyController sender)
         {
             _enemyToKill.OnEnemyDeathEnd -= _OnEnemyDeath;
 
-            _health = gameObject.AddComponent<Health>();
-            _health.OnDamageTaken += _OnDamage;
+            if (!_tookQuest)
+            {
+                _giver.DialogueChoices[0].Options[0].ClearCallback();
+                _giver.DialogueChoices[0].Options[0].Label = "Уже";
+                _giver.DialogueChoices[1].Text = "Неужели? Тогда я готов помочь тебе. Прежде чем я тебя пропущу, ты должен ударить меня, чтобы меня не заподозрили в том, что я не сопротивлялся беглецу.";
+                
+            }
+            else
+            {
+                _giver.DialogueChoices[0].Options[0].Label = "Да";
+                _giver.DialogueChoices[1].Text = "Отлично! Прежде чем я тебя пропущу, ты должен ударить меня, чтобы меня не заподозрили в том, что я не сопротивлялся беглецу.";
+            }
+            _giver.DialogueChoices[1].Options[0].ClearCallback();
+            _giver.DialogueChoices[1].Options[0].Label = "Крепись";
+            _giver.DialogueChoices[1].Options[0].OnClicked += choice =>
+            {
+                _health = gameObject.AddComponent<Health>();
+                _health.OnDamageTaken += _OnDamage;
+                _giver.CurrentIndex = 1;
+
+                choice.ClearCallback();
+            };
         }
 
         private void _OnDamage()
         {
             _health.OnDamageTaken -= _OnDamage;
-            _playerHitGuard = true;
             Destroy(_health);
+
+            _giver.DialogueChoices[1].Text = "Шрам конечно останется, но свою часть сделки ты выполнил, теперь моя очередь. Можешь идти.";
+            _giver.DialogueChoices[1].Options[0].Label = "Может ещё увидимся";
+            _giver.DialogueChoices[1].Options[0].OnClicked += choice =>
+            {
+                _door.OpenIndefinitely();
+
+                choice.ClearCallback();
+            };
         }
     }
 }

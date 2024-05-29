@@ -1,6 +1,7 @@
 using UnityEngine;
 using Bonsai;
 using Bonsai.Core.User;
+using System;
 
 namespace Infringed.AI.BTree
 {
@@ -22,20 +23,30 @@ namespace Infringed.AI.BTree
 
         public override void OnEnter()
         {
+            _soundResponder.OnSound += _OnSound;
             _movement.SetDestination(_suspicion.SuspectPosition);
+        }
+
+        public override void OnExit()
+        {
+            _soundResponder.OnSound -= _OnSound;
         }
 
         protected override Status _FailableRun()
         {
             if (_movement.IsMoving)
             {
-                _suspicion.Suspect(_soundResponder.LastHeardSound);
                 _movement.SetDestination(_suspicion.SuspectPosition);
 
                 return Status.Running;
             }
 
             return Status.Success;
+        }
+
+        private void _OnSound(Vector3 vector)
+        {
+            _suspicion.Suspect(vector);
         }
         
     }
