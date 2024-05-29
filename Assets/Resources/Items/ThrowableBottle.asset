@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8c1b9b3016ece40969f597adea480a, type: 3}
   m_Name: ThrowableBottle
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Description>k__BackingField: 
+  <Name>k__BackingField: "\u0411\u0443\u0442\u044B\u043B\u043A\u0430"
+  <Description>k__BackingField: "\u041D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u044B\u0435
+    \u043B\u044E\u0434\u0438 \u0438\u0437"
   <Type>k__BackingField: 0
   <BeltSprite>k__BackingField: {fileID: 21300000, guid: 4c4c2bba94ec9a9469a8ba82ac80b6c3, type: 3}
   <InventorySprite>k__BackingField: {fileID: 21300000, guid: 4c4c2bba94ec9a9469a8ba82ac80b6c3, type: 3}
@@ -23,3 +24,4 @@ MonoBehaviour:
   <Height>k__BackingField: 2
   <Consumable>k__BackingField: 1
   <Cooldown>k__BackingField: 1
+  <IsLearned>k__BackingField: 0

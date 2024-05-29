@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8c1b9b3016ece40969f597adea480a, type: 3}
   m_Name: HealthPotion
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Description>k__BackingField: 
+  <Name>k__BackingField: "\u0418\u0441\u0446\u0435\u043B\u044F\u044E\u0449\u0435\u0435
+    \u0437\u0435\u043B\u044C\u0435"
+  <Description>k__BackingField: "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+    \u0447\u0430\u0441\u0442\u044C \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F"
   <Type>k__BackingField: 0
   <BeltSprite>k__BackingField: {fileID: 21300000, guid: ad759983cefb20c488981808c1084f5a, type: 3}
   <InventorySprite>k__BackingField: {fileID: 21300000, guid: ad759983cefb20c488981808c1084f5a, type: 3}
@@ -23,3 +25,4 @@ MonoBehaviour:
   <Height>k__BackingField: 2
   <Consumable>k__BackingField: 1
   <Cooldown>k__BackingField: 2
+  <IsLearned>k__BackingField: 0

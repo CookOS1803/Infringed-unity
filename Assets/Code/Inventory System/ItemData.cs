@@ -39,6 +39,9 @@ namespace Infringed.InventorySystem
 
         public float LastUsedTime { get; set; }
 
+        [field: SerializeField, ConditionalField(useMethod: true, nameof(IsSkill))]
+        public bool IsLearned { get; set; }
+
         public float CurrentCooldown
         {
             get
@@ -55,6 +58,7 @@ namespace Infringed.InventorySystem
         private void OnEnable()
         {
             LastUsedTime = 0f;
+            IsLearned = false;
         }
 
         public bool IsInventoryItem()

@@ -17,6 +17,7 @@ namespace Infringed.Player
         public event Action OnExitHideout;
         public event Action OnPlayerAttackStart;
         public event Action<DialogueGiver> OnInitiateDialogue;
+        public event Action OnEssentia;
 
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _crouchingSpeedFactor = 0.3f;
@@ -183,6 +184,11 @@ namespace Infringed.Player
             _Unsubscribe();
 
             OnInitiateDialogue?.Invoke(giver);
+        }
+
+        public void ConsumeEssentia()
+        {
+            OnEssentia?.Invoke();
         }
 
         private void _OnDialogueEnd(DialogueGiver giver)

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Blink
   m_EditorClassIdentifier: 
   <Name>k__BackingField: "\u041F\u0435\u0440\u0435\u043D\u043E\u0441"
-  <Description>k__BackingField: "\u0442\u0435\u043B\u0435\u0443\u043F\u0430\u0440\u0442\u0430\u0446\u044B\u044F"
+  <Description>k__BackingField: "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0438\u0440\u0443\u0435\u0442
+    \u043D\u0430 \u043D\u0435\u0431\u043E\u043B\u044C\u0448\u043E\u0435 \u0440\u0430\u0441\u0441\u0442\u043E\u044F\u043D\u0438\u0435"
   <Type>k__BackingField: 1
   <BeltSprite>k__BackingField: {fileID: 21300000, guid: b1f4bf27baef73845a53720a159f1572, type: 3}
   <InventorySprite>k__BackingField: {fileID: 0}
@@ -23,3 +24,4 @@ MonoBehaviour:
   <Height>k__BackingField: 1
   <Consumable>k__BackingField: 1
   <Cooldown>k__BackingField: 2
+  <IsLearned>k__BackingField: 1

@@ -28,8 +28,12 @@ namespace Infringed.InventorySystem
         {
             foreach (var skill in _skills)
             {
+
                 OnSkillAdd?.Invoke(skill);
 
+                if (!skill.IsLearned)
+                    return;
+                    
                 var i = _player.Belt.GetFirstNullIndex();
 
                 if (i >= 0)
