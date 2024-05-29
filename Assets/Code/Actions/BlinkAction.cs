@@ -16,6 +16,8 @@ namespace Infringed.Actions
             var newPosition = GetBlinkPosition(actor, context.target, MaxBlinkDistance);
 
             actor.GetComponent<CharacterController>().Move(newPosition - actor.position);
+
+            AudioSource.PlayClipAtPoint(_audioClip, actor.position);
         }
 
         public static Vector3 GetBlinkPosition(Transform actor, Vector3 target, float blinkDistane)

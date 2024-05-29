@@ -718,6 +718,10 @@ PrefabInstance:
       propertyPath: <SkillSet>k__BackingField._skillsList.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: fcacd3e01ad908b4eacb4bcfe285cfe2, type: 2}
+    - target: {fileID: 1783959238, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
+      propertyPath: t
+      value: 0.14
+      objectReference: {fileID: 0}
     - target: {fileID: 1742385099753426, guid: a29bc099939289b4ba9888d313c76b15, type: 3}
       propertyPath: m_Name
       value: Player
@@ -14830,7 +14834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7173513919536132042, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: 0.000031171006
       objectReference: {fileID: 0}
     - target: {fileID: 7209948350960100864, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -15258,7 +15262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8789936364062842486, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000008287287
       objectReference: {fileID: 0}
     - target: {fileID: 8877520966065139295, guid: 15a4d1188751fd1418eab1b445aed3b5, type: 3}
       propertyPath: m_AnchorMax.y

@@ -22,7 +22,7 @@ namespace Infringed.InventorySystem.UI
 
         private void Update()
         {
-            _itemCountText.enabled = _child.Item != null && _child.Item.IsInventoryItem() && _child.Item.Consumable;
+            _itemCountText.enabled = _child.Item != null && _child.Image.enabled && _child.Item.IsInventoryItem() && _child.Item.Consumable;
         }
 
         public void UnsetItem()

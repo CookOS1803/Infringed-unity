@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <CastMarkerPrefab>k__BackingField: {fileID: 1717622857634105900, guid: 8bb9aa44750123b4a8418a79be2c1905, type: 3}
   <MaxBlinkDistance>k__BackingField: 4
-  _audioClip: {fileID: 0}
+  _audioClip: {fileID: 8300000, guid: aa66f043685a31e4bb90d0b6128bc3e1, type: 3}
