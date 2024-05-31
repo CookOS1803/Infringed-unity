@@ -75,7 +75,7 @@ namespace Infringed.AI.BTree
             }
 
             var desiredRotation = Quaternion.FromToRotation(Vector3.forward, actorToSource);
-            Actor.transform.rotation = Quaternion.RotateTowards(Actor.transform.rotation, desiredRotation, _movement.AngularSpeed * Time.deltaTime);
+            Actor.transform.rotation = Quaternion.RotateTowards(Actor.transform.rotation, desiredRotation, _movement.AngularSpeed * Time.fixedDeltaTime);
         }
 
     }

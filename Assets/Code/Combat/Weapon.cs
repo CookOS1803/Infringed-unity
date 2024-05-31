@@ -11,16 +11,22 @@ namespace Infringed.Combat
         [SerializeField] private Vector3 _secondPoint;
         [SerializeField] private LayerMask _reactingLayer;
         private bool _isDamaging = false;
+        private Collider[] _nonAllocColliders;
 
-        private void Update()
+        private void Awake()
+        {
+            _nonAllocColliders = new Collider[1];
+        }
+
+        private void FixedUpdate()
         {
             if (_isDamaging)
             {
-                var cols = Physics.OverlapCapsule(transform.position, transform.TransformPoint(_secondPoint), _damageRadius, _reactingLayer);
+                var length = Physics.OverlapCapsuleNonAlloc(transform.position, transform.TransformPoint(_secondPoint), _damageRadius, _nonAllocColliders, _reactingLayer);
 
-                if (cols.Length != 0)
+                if (length != 0)
                 {
-                    _OnHit(cols[0]);
+                    _OnHit(_nonAllocColliders[0]);
 
                     StopDamaging();
                 }

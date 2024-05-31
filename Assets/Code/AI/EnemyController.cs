@@ -75,6 +75,12 @@ namespace Infringed.AI
 
                 _spotBySound = true;
             }
+        }
+
+        private void FixedUpdate()
+        {
+            if (!IsAlarmed || IsDying)
+                return;
 
             _UnhidePlayer();
         }

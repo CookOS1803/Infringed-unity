@@ -23,7 +23,7 @@ namespace Infringed.AI.BTree
 
             if (_patroler.transform.rotation != desiredRotation)
             {
-                _patroler.transform.rotation = Quaternion.RotateTowards(_patroler.transform.rotation, desiredRotation, _patroler.AngularSpeed * Time.deltaTime);
+                _patroler.transform.rotation = Quaternion.RotateTowards(_patroler.transform.rotation, desiredRotation, _patroler.AngularSpeed * Time.fixedDeltaTime);
 
                 return Status.Running;
             }

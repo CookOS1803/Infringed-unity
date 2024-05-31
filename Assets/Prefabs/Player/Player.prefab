@@ -2923,7 +2923,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: b40ab5da05f93df42b3865c15327682b, type: 3}
   m_Controller: {fileID: 9100000, guid: 1540840b2f1f77241a50cc1767a34129, type: 2}
   m_CullingMode: 1
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2955,7 +2955,7 @@ CharacterController:
   m_Radius: 0.21
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.0001
+  m_SkinWidth: 0.02
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!114 &1597108631
@@ -8719,7 +8719,7 @@ MonoBehaviour:
   _reactingLayer:
     serializedVersion: 2
     m_Bits: 4031
-  _backstabDot: 0.2
+  _backstabAngle: 90
   _player: {fileID: 4065501370703234}
 --- !u!1 &1892690722996672
 GameObject:

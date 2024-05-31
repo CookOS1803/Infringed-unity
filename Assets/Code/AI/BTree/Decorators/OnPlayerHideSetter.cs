@@ -55,6 +55,7 @@ namespace Infringed.AI.BTree
         private void _OnHide()
         {
             _enemy.UnhidePlayer = true;
+            _enemy.LastKnownPlayerPosition = _player.transform.position;
         }
 
         private void _OnExitHideout()

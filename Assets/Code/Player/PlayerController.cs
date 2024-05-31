@@ -92,6 +92,19 @@ namespace Infringed.Player
             }
         }
 
+        private void FixedUpdate()
+        {
+            if (IsHiding || !CanMove || _isDying || _giver != null)
+                return;
+
+            var inputValue = _input.actions["Move"].ReadValue<Vector2>();
+
+            if (inputValue != Vector2.zero && !IsCrouching)
+            {
+                SoundUtil.SpawnSound(transform.position, _soundRadius);
+            }
+        }
+
 #if UNITY_EDITOR
         [Header("Debug info")]
         [SerializeField] private bool _showMoveDirection;
@@ -198,7 +211,7 @@ namespace Infringed.Player
 
             _Subscribe();
         }
-        
+
         private void _OnAttack(InputAction.CallbackContext obj)
         {
             if (CanMove && !_isDying)
@@ -232,7 +245,8 @@ namespace Infringed.Player
 
             _castMarker.Actor = transform;
             _castMarker.Action = item.Action;
-            _castMarker.GetTargetPosition = () => {
+            _castMarker.GetTargetPosition = () =>
+            {
                 Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 Physics.Raycast(camRay, out var floorHit, Mathf.Infinity, _floorMask.value);
 
@@ -317,10 +331,6 @@ namespace Infringed.Player
             {
                 movement *= _crouchingSpeedFactor;
                 MoveDirection *= _crouchingSpeedFactor;
-            }
-            else if (movement != Vector3.zero)
-            {
-                SoundUtil.SpawnSound(transform.position, _soundRadius);
             }
 
             _characterController.Move(movement);

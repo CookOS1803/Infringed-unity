@@ -47,7 +47,7 @@ namespace Infringed.AI.BTree
             var clock = Blackboard.Get<float>("Suspicion Clock");
             if (clock < _time)
             {
-                Blackboard.Set("Suspicion Clock", clock += Time.deltaTime);
+                Blackboard.Set("Suspicion Clock", clock += Time.fixedDeltaTime);
 
                 return Status.Running;
             }
