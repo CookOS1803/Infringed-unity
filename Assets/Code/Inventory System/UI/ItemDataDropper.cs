@@ -8,7 +8,7 @@ namespace Infringed.InventorySystem.UI
     public abstract class ItemDataDropper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public RectTransform RectTransform => transform as RectTransform;
-        public abstract ItemData DroppedData { get; }
+        public abstract ItemInstance DroppedItem { get; }
         protected Canvas _canvas;
         protected Vector2 _beforeDragPosition;
         protected Quaternion _beforeDragRotation;

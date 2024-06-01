@@ -23,10 +23,10 @@ namespace Infringed.InventorySystem.UI
             SkillSet.OnSkillAdd -= _OnSkillAdd;
         }
 
-        private void _OnSkillAdd(ItemData data)
+        private void _OnSkillAdd(SkillInstance skill)
         {
             var instance = Instantiate(_skillPrefab, _skillsParent).GetComponent<UISkillSlot>();
-            instance.InitializeSkill(data, transform);
+            instance.InitializeSkill(skill, transform);
         }
     }
 }

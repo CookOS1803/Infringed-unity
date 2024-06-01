@@ -90,7 +90,7 @@ namespace Infringed.InventorySystem.UI
         }
 
 
-        private void _RefreshBeltWithAddedItem(Item item)
+        private void _RefreshBeltWithAddedItem(InventoryItemInstance item)
         {
             if (!Belt.ContainsItem(item.Data))
             {
@@ -98,7 +98,7 @@ namespace Infringed.InventorySystem.UI
 
                 if (index >= 0)
                 {
-                    Belt[index] = item.Data;
+                    Belt[index] = item;
                     return;
                 }
             }
@@ -106,7 +106,7 @@ namespace Infringed.InventorySystem.UI
             _RefreshBelt();
         }
 
-        private void _RefreshBeltWithItem(Item item)
+        private void _RefreshBeltWithItem(InventoryItemInstance item)
         {
             _RefreshBelt();
         }

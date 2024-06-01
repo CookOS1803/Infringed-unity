@@ -8,7 +8,7 @@ namespace Infringed.InventorySystem
 {
     public class Belt : IEnumerable
     {
-        private ItemData[] _items;
+        private ItemInstance[] _items;
         private int _selectedSlot = 0;
         public Inventory Inventory { get; private set; }
         public event Action OnChange;
@@ -25,7 +25,7 @@ namespace Infringed.InventorySystem
                 OnSlotSelection?.Invoke();
             }
         }
-        public ItemData this[int i]
+        public ItemInstance this[int i]
         {
             get => _items[i];
             set
@@ -35,11 +35,11 @@ namespace Infringed.InventorySystem
                 OnChange?.Invoke();
             }
         }
-        public ItemData SelectedItem => _items[SelectedSlot];
+        public ItemInstance SelectedItem => _items[SelectedSlot];
 
         public Belt(Inventory inventory)
         {
-            _items = new ItemData[10];
+            _items = new ItemInstance[10];
 
             Inventory = inventory;
         }
@@ -77,14 +77,14 @@ namespace Infringed.InventorySystem
 
         public bool HasItemsInInventoty(int index)
         {
-            return !_items[index].IsInventoryItem() || Inventory.ContainsData(_items[index]);
+            return !_items[index].Data.IsInventoryItem() || Inventory.ContainsData(_items[index].Data);
         }
 
         public bool ContainsItem(ItemData data)
         {
             foreach (var item in _items)
             {
-                if (item == data)
+                if (item?.Data == data)
                     return true;
             }
 
@@ -107,22 +107,22 @@ namespace Infringed.InventorySystem
             if (SelectedItem == null)
                 return;
 
-            if (SelectedItem.Action != null)
+            if (SelectedItem.Data.Action != null)
             {
                 if (SelectedItem.CurrentCooldown > 0)
                     return;
 
-                if (SelectedItem.IsInventoryItem() && SelectedItem.Consumable)
+                if (SelectedItem.Data.IsInventoryItem() && SelectedItem.Data.Consumable)
                 {
-                    if (!Inventory.Consume(SelectedItem))
+                    if (!Inventory.Consume(SelectedItem.Data))
                         return;
 
-                    SelectedItem.Action.Use(context);
+                    SelectedItem.Data.Action.Use(context);
 
                     OnChange?.Invoke();
                 }
                 else
-                    SelectedItem.Action.Use(context);
+                    SelectedItem.Data.Action.Use(context);
 
                 SelectedItem.LastUsedTime = Time.time;
             }

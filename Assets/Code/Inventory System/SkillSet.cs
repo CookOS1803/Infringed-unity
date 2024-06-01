@@ -9,17 +9,17 @@ namespace Infringed.InventorySystem
 {
     public class SkillSet : MonoBehaviour
     {
-        public event Action<ItemData> OnSkillAdd;
+        public event Action<SkillInstance> OnSkillAdd;
 
         [SerializeField] private List<ItemData> _skillsList;
-        private HashSet<ItemData> _skills;
+        private HashSet<SkillInstance> _skills;
         private PlayerController _player;
 
         private void Awake()
         {
             _player = GetComponent<PlayerController>();
 
-            _skills = _skillsList.ToHashSet();
+            _skills = _skillsList.Select(data => new SkillInstance(data)).ToHashSet();
             _skillsList.Clear();
             _skillsList = null;
         }
@@ -28,7 +28,6 @@ namespace Infringed.InventorySystem
         {
             foreach (var skill in _skills)
             {
-
                 OnSkillAdd?.Invoke(skill);
 
                 if (!skill.IsLearned)

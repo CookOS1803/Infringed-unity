@@ -22,7 +22,7 @@ namespace Infringed.InventorySystem.UI
 
         private void Update()
         {
-            _itemCountText.enabled = _child.Item != null && _child.Image.enabled && _child.Item.IsInventoryItem() && _child.Item.Consumable;
+            _itemCountText.enabled = _child.Item != null && _child.Image.enabled && _child.Item.Data.IsInventoryItem() && _child.Item.Data.Consumable;
         }
 
         public void UnsetItem()
@@ -31,13 +31,13 @@ namespace Infringed.InventorySystem.UI
             _itemCountText.enabled = false;
         }
 
-        public void SetItem(ItemData data)
+        public void SetItem(ItemInstance item)
         {
-            _child.SetItem(data);
+            _child.SetItem(item);
 
-            if (data.IsInventoryItem() && data.Consumable)
+            if (item.Data.IsInventoryItem() && item.Data.Consumable)
             {
-                var count = _uiBelt.Belt.Inventory.GetItemCount(data);
+                var count = _uiBelt.Belt.Inventory.GetItemCount(item.Data);
 
                 _itemCountText.enabled = count > 0;
                 _itemCountText.text = count.ToString();
@@ -79,7 +79,7 @@ namespace Infringed.InventorySystem.UI
 
         private void _OnDropper(ItemDataDropper dropper)
         {
-            _uiBelt.Belt[Index] = dropper.DroppedData;
+            _uiBelt.Belt[Index] = dropper.DroppedItem;
         }
 
         private void _OnBeltItem(UIBeltItem beltItem)

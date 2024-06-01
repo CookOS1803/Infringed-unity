@@ -19,7 +19,7 @@ namespace Infringed.InventorySystem.UI
         [SerializeField] private Transform _importantItemsParent;
         [Zenject.Inject] private UIItem.Factory _itemFactory;
         private PlayerInput _input;
-        private Dictionary<Item, UIItem> _spawnedItems = new();
+        private Dictionary<InventoryItemInstance, UIItem> _spawnedItems = new();
 
         private void Awake()
         {
@@ -57,7 +57,7 @@ namespace Infringed.InventorySystem.UI
             return bottomLeft.anchoredPosition + diag.normalized * (diagLength / 2f);
         }
 
-        public void DropItem(Item item)
+        public void DropItem(InventoryItemInstance item)
         {
             if (!_player.Inventory.Contains(item))
             {
@@ -101,7 +101,7 @@ namespace Infringed.InventorySystem.UI
             }
         }
 
-        private void _OnItemAdd(Item item)
+        private void _OnItemAdd(InventoryItemInstance item)
         {
             var uiItem = _itemFactory.Create();
             uiItem.Item = item;
@@ -136,7 +136,7 @@ namespace Infringed.InventorySystem.UI
             instance.InitializeItem(data);
         }
 
-        private void _OnItemRemove(Item item)
+        private void _OnItemRemove(InventoryItemInstance item)
         {
             if (!_spawnedItems.ContainsKey(item))
             {

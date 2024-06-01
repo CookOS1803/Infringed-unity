@@ -37,30 +37,6 @@ namespace Infringed.InventorySystem
         [field: SerializeField, ConditionalField(useMethod: true, nameof(IsImportantItem), inverse: true)]
         public float Cooldown { get; private set; } = 2f;
 
-        public float LastUsedTime { get; set; }
-
-        [field: SerializeField, ConditionalField(useMethod: true, nameof(IsSkill))]
-        public bool IsLearned { get; set; }
-
-        public float CurrentCooldown
-        {
-            get
-            {
-                var delta = (LastUsedTime + Cooldown) - Time.time;
-
-                if (delta < 0)
-                    return 0;
-
-                return delta;
-            }
-        }
-
-        private void OnEnable()
-        {
-            LastUsedTime = 0f;
-            IsLearned = false;
-        }
-
         public bool IsInventoryItem()
         {
             return Type == ItemType.Inventory;

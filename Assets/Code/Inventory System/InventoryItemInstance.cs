@@ -6,16 +6,14 @@ using Infringed.Math;
 namespace Infringed.InventorySystem
 {
     [System.Serializable]
-    public class Item
+    public class InventoryItemInstance : ItemInstance
     {
         public enum RotationStatus { NonRotated, Rotated, Square, Invalid }
 
-        public ItemData Data { get; private set; }
         public Rectangle Rectangle { get; set; }
 
-        public Item(ItemData newData)
+        public InventoryItemInstance(ItemData data) : base(data)
         {
-            Data = newData;
         }
 
         public bool IsRotated()

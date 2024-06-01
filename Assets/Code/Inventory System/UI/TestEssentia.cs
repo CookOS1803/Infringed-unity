@@ -5,7 +5,7 @@ using Infringed.Player;
 using TMPro;
 using UnityEngine;
 
-namespace Infringed.UI
+namespace Infringed.InventorySystem.UI
 {
     public class TestEssentia : MonoBehaviour
     {

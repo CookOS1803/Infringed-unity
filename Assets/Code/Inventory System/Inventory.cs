@@ -9,13 +9,13 @@ namespace Infringed.InventorySystem
     [System.Serializable]
     public class Inventory
     {
-        public event Action<Item> OnItemAdd;
+        public event Action<InventoryItemInstance> OnItemAdd;
         public event Action<ItemData> OnImportantItemAdd;
-        public event Action<Item> OnItemRemove;
+        public event Action<InventoryItemInstance> OnItemRemove;
 
         [field: SerializeField, Min(1)] public int Width { get; private set; } = 10;
         [field: SerializeField, Min(1)] public int Height { get; private set; } = 10;
-        private HashSet<Item> _items = new();
+        private HashSet<InventoryItemInstance> _items = new();
         private HashSet<ItemData> _importantItems = new();
         private HashSet<Vector2Int> _freePositions;
 
@@ -73,7 +73,7 @@ namespace Infringed.InventorySystem
 
             _Allocate(rectangle);
 
-            var newItem = new Item(itemData)
+            var newItem = new InventoryItemInstance(itemData)
             {
                 Rectangle = rectangle
             };
@@ -84,7 +84,7 @@ namespace Infringed.InventorySystem
             return true;
         }
 
-        public void RemoveItem(Item item)
+        public void RemoveItem(InventoryItemInstance item)
         {
             _Deallocate(item.Rectangle);
 
@@ -108,7 +108,7 @@ namespace Infringed.InventorySystem
             return false;
         }
 
-        public bool MoveItem(Item item, Rectangle newRectangle)
+        public bool MoveItem(InventoryItemInstance item, Rectangle newRectangle)
         {
             if (!FitsExcluded(newRectangle, item.Rectangle))
             {
@@ -124,7 +124,7 @@ namespace Infringed.InventorySystem
             return true;
         }
 
-        public bool Contains(Item item)
+        public bool Contains(InventoryItemInstance item)
         {
             return _items.Contains(item);
         }

@@ -12,12 +12,12 @@ namespace Infringed.InventorySystem.UI
     public class UIItem : ItemDataDropper, IPoolable<IMemoryPool>, System.IDisposable,
                           IInitializePotentialDragHandler, IPointerClickHandler
     {
-        private Item _item;
+        private InventoryItemInstance _item;
         private CanvasGroup _canvasGroup;
         private Rectangle _dragRectangle;
         private InventorySlot _slot;
         [field: SerializeField] public Image Image { get; private set; }
-        public Item Item
+        public InventoryItemInstance Item
         {
             get => _item;
             set
@@ -32,7 +32,7 @@ namespace Infringed.InventorySystem.UI
         public UIInventory UIInventory { get; set; }
         public PlayerInput Input { get; set; }
 
-        public override ItemData DroppedData => _item.Data;
+        public override ItemInstance DroppedItem => _item;
 
         protected override void Awake()
         {
@@ -122,19 +122,19 @@ namespace Infringed.InventorySystem.UI
         {
             var beforeDragStatus = Item.GetRotationStatus();
 
-            if (beforeDragStatus == Item.RotationStatus.Square)
+            if (beforeDragStatus == InventoryItemInstance.RotationStatus.Square)
                 return;
 
             var currentStatus = Item.GetRotationStatus(_dragRectangle);
 
-            if (currentStatus == Item.RotationStatus.Invalid)
+            if (currentStatus == InventoryItemInstance.RotationStatus.Invalid)
             {
                 Debug.LogError("Invalid rectangle");
 
                 return;
             }
 
-            if (currentStatus == Item.RotationStatus.NonRotated)
+            if (currentStatus == InventoryItemInstance.RotationStatus.NonRotated)
             {
                 var x = _dragRectangle.bottomLeft.x + Item.Data.Height - 1;
                 var y = _dragRectangle.bottomLeft.y - Item.Data.Width + 1;

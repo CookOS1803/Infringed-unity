@@ -20,12 +20,12 @@ namespace Infringed.InventorySystem.UI
             _graphicToMatch = transform.parent.GetComponentInParent<Graphic>();
         }
 
-        public void InitializeSkill(ItemData data, Transform onDragParent)
+        public void InitializeSkill(SkillInstance skill, Transform onDragParent)
         {
-            _title.text = data.Name;
-            _description.text = data.Description;
-            SkillImage.sprite = data.BeltSprite;
-            _skill.SetSkill(data);
+            _title.text = skill.Data.Name;
+            _description.text = skill.Data.Description;
+            SkillImage.sprite = skill.Data.BeltSprite;
+            _skill.SetSkill(skill);
             _skill.OnDragParent = onDragParent;
 
             var status = _graphicToMatch.enabled;

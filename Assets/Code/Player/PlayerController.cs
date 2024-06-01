@@ -233,7 +233,7 @@ namespace Infringed.Player
             if (!Belt.HasItemsInInventoty(Belt.SelectedSlot))
                 return;
 
-            var castMarkerPrefab = item.Action?.CastMarkerPrefab;
+            var castMarkerPrefab = item.Data.Action?.CastMarkerPrefab;
 
             if (castMarkerPrefab == null)
             {
@@ -244,7 +244,7 @@ namespace Infringed.Player
             _castMarker = Instantiate(castMarkerPrefab);
 
             _castMarker.Actor = transform;
-            _castMarker.Action = item.Action;
+            _castMarker.Action = item.Data.Action;
             _castMarker.GetTargetPosition = () =>
             {
                 Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);

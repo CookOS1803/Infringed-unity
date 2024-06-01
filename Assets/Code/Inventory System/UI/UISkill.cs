@@ -9,9 +9,9 @@ namespace Infringed.InventorySystem.UI
 {
     public class UISkill : ItemDataDropper
     {
-        public override ItemData DroppedData => _skill;
+        public override ItemInstance DroppedItem => _skill;
         public Transform OnDragParent { get; set; }
-        private ItemData _skill;
+        private SkillInstance _skill;
         private Transform _initialParent;
         private Image _image;
         private TestEssentia essentia;
@@ -31,7 +31,7 @@ namespace Infringed.InventorySystem.UI
 
         private void Update()
         {
-            if (!_skill)
+            if (_skill == null)
                 return;
 
             var color = UnityEngine.Color.white;
@@ -41,9 +41,9 @@ namespace Infringed.InventorySystem.UI
             _image.color = color;
         }
 
-        public void SetSkill(ItemData data)
+        public void SetSkill(SkillInstance skill)
         {
-            _skill = data;
+            _skill = skill;
         }
 
         public override void OnBeginDrag(PointerEventData eventData)

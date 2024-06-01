@@ -10,7 +10,7 @@ namespace Infringed.InventorySystem.UI
 {
     public class UIBeltItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] public ItemData Item;
+        public ItemInstance Item { get; private set; }
         [SerializeField] private Image _cooldownImage;
         [Inject] private PlayerController _player;
         private Canvas _canvas;
@@ -48,18 +48,18 @@ namespace Infringed.InventorySystem.UI
                 return;
             }
             
-            var normalizedCooldown = Item.CurrentCooldown / Item.Cooldown;
+            var normalizedCooldown = Item.CurrentCooldown / Item.Data.Cooldown;
 
             _cooldownImage.fillAmount = normalizedCooldown;
         }
 
-        public void SetItem(ItemData data)
+        public void SetItem(ItemInstance item)
         {
-            Item = data;
+            Item = item;
             Image.enabled = true;
-            Image.sprite = data.BeltSprite;
+            Image.sprite = item.Data.BeltSprite;
 
-            _itemDescription.UpdateInfo(data.Name, data.Description);
+            _itemDescription.UpdateInfo(item.Data.Name, item.Data.Description);
         }
 
         public void UnsetItem()
@@ -87,7 +87,6 @@ namespace Infringed.InventorySystem.UI
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
         }
 
-        // TTTTTTTTTTTTTTTT
         public void OnEndDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
