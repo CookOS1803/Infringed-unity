@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4672648740976036571}
   m_Layer: 10
   m_Name: Gate
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,6 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _openTime: 2
+  _openingSpeed: 20
 --- !u!208 &4672648740976036569
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -132,9 +133,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1 &4672658098893265558
 GameObject:
   m_ObjectHideFlags: 0

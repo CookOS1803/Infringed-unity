@@ -10,7 +10,7 @@ namespace Infringed.Map
 
         public override void Interact(PlayerController user)
         {
-            if (IsClosed)
+            if (_isClosed)
             {
                 var inventory = user?.Inventory;
 

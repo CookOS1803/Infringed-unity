@@ -8,37 +8,42 @@ namespace Infringed.Map
 {
     public class Door : MonoBehaviour, IInteractable
     {
-        [SerializeField] protected float _openTime = 2f;
+        [SerializeField, Min(0)] protected float _openTime = 2f;
+        [SerializeField, Min(0)] private float _openingSpeed = 25f;
         protected NavMeshObstacle _obstacle;
-        private bool _isClosed = true;
-        protected bool IsClosed
-        {
-            get => _isClosed;
-            set
-            {
-                _isClosed = value;
-
-                _obstacle.enabled = !value;
-            }
-        }
+        protected bool _isClosed = true;
         protected readonly Quaternion _openingRotation = Quaternion.Euler(0f, 90f, 0f);
         protected readonly Quaternion _closingRotation = Quaternion.Euler(0f, -90f, 0f);
         private Vector3 _forward;
+        private Collider[] _colliders;
+        private bool _changingState;
 
-        private void Start()
+        private void Awake()
         {
             _obstacle = GetComponent<NavMeshObstacle>();
+            _colliders = GetComponents<Collider>();
             _forward = transform.forward;
         }
 
         private void Update()
         {
-            transform.forward = Vector3.MoveTowards(transform.forward, _forward, Time.deltaTime * 25f);
+            var newForward = Vector3.MoveTowards(transform.forward, _forward, Time.deltaTime * _openingSpeed);
+
+            _changingState = transform.forward != newForward;
+
+            _obstacle.enabled = !_isClosed && !_changingState;
+
+            foreach (var c in _colliders)
+            {
+                c.enabled = !_changingState;
+            }
+
+            transform.forward = newForward;
         }
 
         public virtual void Interact(PlayerController user)
         {
-            if (IsClosed)
+            if (_isClosed)
             {
                 _Open();
             }
@@ -50,19 +55,21 @@ namespace Infringed.Map
 
         protected void _Open()
         {
-            _forward = _openingRotation * transform.forward;
-            IsClosed = false;
+            _forward = _openingRotation * _forward;
+            _isClosed = false;
+            _changingState = true;
         }
 
         protected void _Close()
         {
-            _forward = _closingRotation * transform.forward;
-            IsClosed = true;
+            _forward = _closingRotation * _forward;
+            _isClosed = true;
+            _changingState = true;
         }
 
         public void OpenTemporarily()
         {
-            if (IsClosed)
+            if (_isClosed)
             {
                 _Open();
                 StartCoroutine(_StayingOpen());
@@ -71,7 +78,7 @@ namespace Infringed.Map
 
         public void OpenIndefinitely()
         {
-            if (IsClosed)
+            if (_isClosed)
                 _Open();
         }
 
@@ -79,14 +86,14 @@ namespace Infringed.Map
         {
             float clock = 0f;
 
-            while (clock < _openTime && !IsClosed)
+            while (clock < _openTime && !_isClosed)
             {
                 clock += Time.deltaTime;
 
                 yield return new WaitForEndOfFrame();
             }
 
-            if (!IsClosed)
+            if (!_isClosed)
             {
                 _Close();
             }

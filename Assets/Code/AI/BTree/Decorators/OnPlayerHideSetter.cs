@@ -10,12 +10,14 @@ namespace Infringed.AI.BTree
     {
         private VisionController _vision;
         private EnemyController _enemy;
+        private SuspicionController _suspicion;
         private PlayerController _player;
 
         public override void OnStart()
         {
             _vision = Actor.GetComponent<VisionController>();
             _enemy = Actor.GetComponent<EnemyController>();
+            _suspicion = Actor.GetComponent<SuspicionController>();
         }
 
         public override void OnEnter()
@@ -56,6 +58,7 @@ namespace Infringed.AI.BTree
         {
             _enemy.UnhidePlayer = true;
             _enemy.LastKnownPlayerPosition = _player.transform.position;
+            _suspicion.Suspect(_player.transform.position);
         }
 
         private void _OnExitHideout()

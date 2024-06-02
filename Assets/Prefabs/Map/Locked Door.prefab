@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: -8981313301518074743}
   m_Layer: 10
   m_Name: Locked Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _openTime: 2
+  _openingSpeed: 25
   _key: {fileID: 11400000, guid: fcacd3e01ad908b4eacb4bcfe285cfe2, type: 2}
 --- !u!1 &8114934777065448901
 GameObject:

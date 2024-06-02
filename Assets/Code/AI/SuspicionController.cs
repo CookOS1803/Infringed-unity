@@ -76,10 +76,12 @@ namespace Infringed.AI
 
         private void _StartSuspecting()
         {
-            if (!IsSuspecting)
+            if (!IsSuspecting && CanSuspect())
+            {
                 OnSuspect?.Invoke();
 
-            IsSuspecting = true;
+                IsSuspecting = true;
+            }
         }
     }
 }

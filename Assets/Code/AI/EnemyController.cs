@@ -79,7 +79,7 @@ namespace Infringed.AI
 
         private void FixedUpdate()
         {
-            if (!IsAlarmed || IsDying)
+            if (IsDying)
                 return;
 
             _UnhidePlayer();
