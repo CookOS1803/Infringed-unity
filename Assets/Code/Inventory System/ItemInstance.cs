@@ -8,12 +8,13 @@ namespace Infringed.InventorySystem
     {
         public ItemData Data { get; protected set; }        
         public float LastUsedTime { get; set; }
-        
+        public float Cooldown { get; set; }
+
         public float CurrentCooldown
         {
             get
             {
-                var delta = (LastUsedTime + Data.Cooldown) - Time.time;
+                var delta = (LastUsedTime + Cooldown) - Time.time;
 
                 if (delta < 0)
                     return 0;
@@ -25,6 +26,7 @@ namespace Infringed.InventorySystem
         public ItemInstance(ItemData data)
         {
             Data = data;
+            Cooldown = Data.Cooldown;
         }
     }
 }

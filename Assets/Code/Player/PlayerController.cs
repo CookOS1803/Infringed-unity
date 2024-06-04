@@ -48,6 +48,9 @@ namespace Infringed.Player
 
         private void Awake()
         {
+            Inventory.AbilitySet = GetComponent<AbilitySet>();
+            Inventory.Awake();
+
             Belt = new Belt(Inventory);
 
             _input = GetComponent<PlayerInput>();
@@ -76,6 +79,8 @@ namespace Infringed.Player
         private void OnDestroy()
         {
             _input.actions["Menu"].performed -= _OnMenu;
+
+            Inventory.Dispose();
         }
 
         private void Update()
@@ -261,7 +266,7 @@ namespace Infringed.Player
             Destroy(_castMarker?.gameObject);
             _castMarker = null;
 
-            if (_dontUseItem)
+            if (_dontUseItem || IsHiding)
             {
                 _dontUseItem = false;
                 return;
@@ -373,7 +378,8 @@ namespace Infringed.Player
             {
                 if (col == hit.collider)
                 {
-                    if (!Physics.Linecast(transform.position + Vector3.up, hit.point, ~_interactableMask))
+                    if (Physics.Linecast(transform.position + Vector3.up, hit.point, out var secondHit, _interactableMask)
+                        && secondHit.collider == col)
                     {
                         hit.transform.GetComponent<IInteractable>().Interact(this);
                     }

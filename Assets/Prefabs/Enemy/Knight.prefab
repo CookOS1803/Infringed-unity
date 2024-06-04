@@ -5433,7 +5433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _calmSpeed: 1.5
-  _alarmedSpeed: 3.5
+  _alarmedSpeed: 4.5
 --- !u!114 &5004157682458856151
 MonoBehaviour:
   m_ObjectHideFlags: 0

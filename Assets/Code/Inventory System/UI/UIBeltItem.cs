@@ -48,7 +48,7 @@ namespace Infringed.InventorySystem.UI
                 return;
             }
             
-            var normalizedCooldown = Item.CurrentCooldown / Item.Data.Cooldown;
+            var normalizedCooldown = Item.CurrentCooldown / Item.Cooldown;
 
             _cooldownImage.fillAmount = normalizedCooldown;
         }

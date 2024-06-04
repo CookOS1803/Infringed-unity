@@ -37,10 +37,10 @@ namespace Infringed.UI
         {
             _loading.gameObject.SetActive(true);
 
-            foreach (Transform child in transform.parent)
+            var buttons = transform.parent.GetComponentsInChildren<Button>();
+            foreach (var button in buttons)
             {
-                if (child.TryGetComponent<Button>(out var b))
-                    _button.enabled = false;
+                button.interactable = false;
             }
 
             var task = SceneManager.LoadSceneAsync(_sceneName);

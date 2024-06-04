@@ -29,16 +29,29 @@ namespace Infringed.InventorySystem
             foreach (var skill in _skills)
             {
                 OnSkillAdd?.Invoke(skill);
+                
+                TryAddToBelt(skill);
+            }
+        }
 
-                if (!skill.IsLearned)
-                    return;
-                    
-                var i = _player.Belt.GetFirstNullIndex();
+        public void AddSkill(SkillInstance skill)
+        {
+            _skills.Add(skill);
+            OnSkillAdd?.Invoke(skill);
 
-                if (i >= 0)
-                {
-                    _player.Belt[i] = skill;
-                }
+            TryAddToBelt(skill);
+        }
+
+        private void TryAddToBelt(SkillInstance skill)
+        {
+            if (!skill.IsLearned)
+                return;
+
+            var i = _player.Belt.GetFirstNullIndex();
+
+            if (i >= 0)
+            {
+                _player.Belt[i] = skill;
             }
         }
     }

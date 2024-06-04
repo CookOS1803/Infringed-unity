@@ -33,12 +33,14 @@ namespace Infringed.InventorySystem.UI
             _player.Inventory.OnItemAdd += _OnItemAdd;
             _player.Inventory.OnImportantItemAdd += _OnImportantItemAdd;
             _player.Inventory.OnItemRemove += _OnItemRemove;
+            _player.Inventory.OnSizeChange += _MakeGrid;
         }
         private void OnDestroy()
         {
             _player.Inventory.OnItemAdd -= _OnItemAdd;
             _player.Inventory.OnImportantItemAdd -= _OnImportantItemAdd;
             _player.Inventory.OnItemRemove -= _OnItemRemove;
+            _player.Inventory.OnSizeChange -= _MakeGrid;
         }
 
         private void Start()
@@ -85,10 +87,15 @@ namespace Infringed.InventorySystem.UI
 
         private void _MakeGrid()
         {
-            _grid.constraintCount = _player.Inventory.Width;
+            foreach (Transform child in _grid.transform)
+            {
+                Destroy(child.gameObject);
+            }
 
             var height = _player.Inventory.Height;
             var width = _player.Inventory.Width;
+
+            _grid.constraintCount = width;
 
             for (int y = 0; y < height; y++)
             {
@@ -99,6 +106,14 @@ namespace Infringed.InventorySystem.UI
                     slot.GridPosition = new Vector2Int(x, y);
                 }
             }
+
+            this.DeferForNextFrame(() =>
+            {
+                foreach (var (_, item) in _spawnedItems)
+                {
+                    item.RectTransform.anchoredPosition = GetItemPosition(item.Item.Rectangle);
+                }
+            });
         }
 
         private void _OnItemAdd(InventoryItemInstance item)
@@ -146,7 +161,7 @@ namespace Infringed.InventorySystem.UI
 
             var uiItem = _spawnedItems[item];
             _spawnedItems.Remove(item);
-            
+
             uiItem.Dispose();
         }
 

@@ -9,9 +9,11 @@ namespace Infringed.InventorySystem.UI
 {
     public class TestEssentia : MonoBehaviour
     {
+        public event Action OnChange;
+
         [SerializeField] private TMP_Text _text;
         private PlayerController _player;
-        public int _essentia = 0;
+        public int Essentia { get; private set; } = 0;
 
         private void Awake()
         {
@@ -21,7 +23,7 @@ namespace Infringed.InventorySystem.UI
 
         private void Update()
         {
-            _text.text = "Эссенция: " + _essentia;
+            _text.text = "Эссенция: " + Essentia;
         }
 
         private void OnDestroy()
@@ -31,15 +33,18 @@ namespace Infringed.InventorySystem.UI
 
         private void OnEssentia()
         {
-            _essentia++;
+            Essentia++;
+            OnChange?.Invoke();
         }
 
-        public bool Consume()
+        public bool Consume(int cost)
         {
-            if (_essentia == 0)
+            var delta = Essentia - cost;
+
+            if (delta < 0)
                 return false;
-            
-            _essentia--;
+
+            Essentia = delta;
             return true;
         }
     }

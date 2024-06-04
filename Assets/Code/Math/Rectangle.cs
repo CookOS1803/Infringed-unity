@@ -18,6 +18,12 @@ namespace Infringed.Math
             this.topRight = topRight;
         }
 
+        public Rectangle(int blX, int blY, int trX, int trY)
+        {
+            this.bottomLeft = new Vector2Int(blX, blY);
+            this.topRight = new Vector2Int(trX, trY);
+        }
+
         public void MoveX(int dx)
         {
             bottomLeft.x += dx;

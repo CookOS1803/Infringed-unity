@@ -37,6 +37,12 @@ namespace Infringed.InventorySystem
         [field: SerializeField, ConditionalField(useMethod: true, nameof(IsImportantItem), inverse: true)]
         public float Cooldown { get; private set; } = 2f;
 
+        [field: SerializeField, ConditionalField(useMethod: true, nameof(IsImportantItem), inverse: true)]
+        public Ability CooldownAbility { get; private set; }
+
+        [field: SerializeField, ConditionalField(useMethod: true, nameof(IsImportantItem), inverse: true)]
+        public float EnhancedCooldown { get; private set; } = 1f;
+
         public bool IsInventoryItem()
         {
             return Type == ItemType.Inventory;

@@ -14,7 +14,6 @@ namespace Infringed.InventorySystem.UI
         private SkillInstance _skill;
         private Transform _initialParent;
         private Image _image;
-        private TestEssentia essentia;
 
         protected override void Awake()
         {
@@ -22,11 +21,6 @@ namespace Infringed.InventorySystem.UI
 
             _initialParent = transform.parent;
             _image = GetComponent<Image>();
-        }
-
-        private void Start()
-        {
-            essentia = FindObjectOfType<TestEssentia>();
         }
 
         private void Update()
@@ -77,12 +71,6 @@ namespace Infringed.InventorySystem.UI
                 transform.SetParent(_initialParent);
                 base.OnEndDrag(eventData);
             }
-        }
-
-        public void Learn()
-        {
-            if (essentia.Consume())
-                _skill.IsLearned = true;
         }
     }
 }

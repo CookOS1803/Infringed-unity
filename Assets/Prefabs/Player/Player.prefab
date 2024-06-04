@@ -2878,6 +2878,7 @@ GameObject:
   - component: {fileID: 1597108632}
   - component: {fileID: 1597108631}
   - component: {fileID: 5516904656647511374}
+  - component: {fileID: 7520858615910610091}
   - component: {fileID: 383398072}
   - component: {fileID: 6255449248001389391}
   - component: {fileID: 5413599724967947389}
@@ -2972,7 +2973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 5
   _crouchingSpeedFactor: 0.4
-  _itemPickupRadius: 5
+  _itemPickupRadius: 3
   _soundRadius: 6
   _menu: {fileID: 0}
   _objectsToDisableOnHide:
@@ -2980,8 +2981,11 @@ MonoBehaviour:
   - {fileID: 1296139180673014}
   - {fileID: 1012611793270388}
   <Inventory>k__BackingField:
-    <Width>k__BackingField: 5
-    <Height>k__BackingField: 5
+    <Width>k__BackingField: 3
+    <Height>k__BackingField: 3
+    <SizeAbility>k__BackingField: {fileID: 11400000, guid: a22c1687f138d6a4980aa625de0bece6, type: 2}
+    _enhancedWidth: 5
+    _enhancedHeight: 5
   _showMoveDirection: 0
   _moveDirectionColor: {r: 0, g: 0, b: 1, a: 1}
   _showItemPickupRadius: 0
@@ -3001,6 +3005,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skillsList: []
+--- !u!114 &7520858615910610091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742385099753426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28eaf35f43da4554ab5140800880a30f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityList: []
 --- !u!114 &383398072
 MonoBehaviour:
   m_ObjectHideFlags: 0

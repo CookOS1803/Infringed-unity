@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -5955407097956850513}
   - component: {fileID: -594642868602795575}
   - component: {fileID: 5560422514016137845}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Bottle_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,6 +122,7 @@ MonoBehaviour:
   _damage: 0
   _speed: 15
   _lifeTime: 5
+  <Stun>k__BackingField: 0
   _stunTime: 2
   _soundRadius: 6
   _spinningVelocity: {x: 0, y: 0, z: 720}
@@ -150,6 +151,6 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1

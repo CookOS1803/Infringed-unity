@@ -7,14 +7,19 @@ using UnityEngine;
 namespace Infringed.InventorySystem
 {
     [System.Serializable]
-    public class Inventory
+    public class Inventory : IDisposable
     {
         public event Action<InventoryItemInstance> OnItemAdd;
         public event Action<ItemData> OnImportantItemAdd;
         public event Action<InventoryItemInstance> OnItemRemove;
+        public event Action OnSizeChange;
 
+        public AbilitySet AbilitySet { get; set; }
         [field: SerializeField, Min(1)] public int Width { get; private set; } = 10;
         [field: SerializeField, Min(1)] public int Height { get; private set; } = 10;
+        [field: SerializeField] public Ability SizeAbility { get; private set; }
+        [SerializeField, Min(1)] private int _enhancedWidth = 5;
+        [SerializeField, Min(1)] private int _enhancedHeight = 5;
         private HashSet<InventoryItemInstance> _items = new();
         private HashSet<ItemData> _importantItems = new();
         private HashSet<Vector2Int> _freePositions;
@@ -23,20 +28,24 @@ namespace Infringed.InventorySystem
         {
             _freePositions = new(Width * Height);
 
-            var current = new Vector2Int(0, 0);
+            var rectangle = new Rectangle(0, Height - 1, Width - 1, 0);
 
-            while (current.x < Width)
+            _AddFreeRectangle(rectangle);
+        }
+
+        public void Awake()
+        {
+            if (_enhancedWidth < Width || _enhancedHeight < Height)
             {
-                while (current.y < Height)
-                {
-                    _freePositions.Add(current);
-
-                    current.y++;
-                }
-
-                current.y = 0;
-                current.x++;
+                Debug.LogError("Enhanced width or height smaller than initial are not supported");
             }
+
+            AbilitySet.OnLearned += _OnLearned;
+        }
+
+        public void Dispose()
+        {
+            AbilitySet.OnLearned -= _OnLearned;
         }
 
         public bool AddItem(ItemData itemData)
@@ -77,6 +86,11 @@ namespace Infringed.InventorySystem
             {
                 Rectangle = rectangle
             };
+
+            var cooldownAbility = AbilitySet.GetAbilityInstance(itemData.CooldownAbility);
+            if (cooldownAbility != null && cooldownAbility.IsLearned)
+                newItem.Cooldown = itemData.EnhancedCooldown;
+
             _items.Add(newItem);
 
             OnItemAdd?.Invoke(newItem);
@@ -99,7 +113,7 @@ namespace Infringed.InventorySystem
             {
                 if (item.Data != consumedItem)
                     continue;
-                
+
                 RemoveItem(item);
 
                 return true;
@@ -135,7 +149,7 @@ namespace Infringed.InventorySystem
             {
                 if (item.Data != itemData)
                     continue;
-                
+
                 return true;
             }
 
@@ -176,7 +190,7 @@ namespace Infringed.InventorySystem
                 rectangle.MoveX(-rectangle.bottomLeft.x);
             else if (rectangle.topRight.x >= Width)
                 rectangle.MoveX(Width - rectangle.topRight.x - 1);
-            
+
             if (rectangle.bottomLeft.y >= Height)
                 rectangle.MoveY(Height - rectangle.bottomLeft.y - 1);
             else if (rectangle.topRight.y < 0)
@@ -194,6 +208,49 @@ namespace Infringed.InventorySystem
         {
             return point.x >= rectangle.bottomLeft.x && point.y <= rectangle.bottomLeft.y &&
                    point.x <= rectangle.topRight.x && point.y >= rectangle.topRight.y;
+        }
+
+        private void _OnLearned(AbilityInstance instance)
+        {
+            if (instance.Ability == SizeAbility)
+            {
+                var rectangle = new Rectangle(0, _enhancedHeight - 1, _enhancedWidth - 1, Height);
+                _AddFreeRectangle(rectangle);
+
+                rectangle = new Rectangle(Width, Height - 1, _enhancedWidth - 1, 0);
+                _AddFreeRectangle(rectangle);
+
+                Width = _enhancedWidth;
+                Height = _enhancedHeight;
+
+                OnSizeChange?.Invoke();
+            }
+
+            foreach (var item in _items)
+            {
+                if (item.Data.CooldownAbility == instance.Ability)
+                    item.Cooldown = item.Data.EnhancedCooldown;
+            }
+        }
+
+        private void _AddFreeRectangle(Rectangle rectangle)
+        {
+            var initialX = rectangle.bottomLeft.x;
+            var initialY = rectangle.topRight.y;
+            var current = new Vector2Int(initialX, initialY);
+
+            while (current.x <= rectangle.topRight.x)
+            {
+                while (current.y <= rectangle.bottomLeft.y)
+                {
+                    _freePositions.Add(current);
+
+                    current.y++;
+                }
+
+                current.y = initialY;
+                current.x++;
+            }
         }
 
         private void _AddImportantItem(ItemData itemData)
@@ -227,7 +284,7 @@ namespace Infringed.InventorySystem
         {
             _ActionForArea(area, point => _freePositions.Remove(point));
         }
-        
+
         private void _Deallocate(Rectangle area)
         {
             _ActionForArea(area, point => _freePositions.Add(point));

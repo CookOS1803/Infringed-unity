@@ -7,10 +7,11 @@ namespace Infringed
     public class FollowTransform : MonoBehaviour
     {
         [SerializeField] private Transform _followed;
+        [SerializeField] private Vector3 _offset;
         
         private void Update()
         {
-            transform.position = _followed.position;
+            transform.position = _followed.position + _offset;
         }
     }
 }

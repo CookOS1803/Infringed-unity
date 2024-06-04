@@ -15,3 +15,4 @@ MonoBehaviour:
   <CastMarkerPrefab>k__BackingField: {fileID: 4937662360528435745, guid: 8c604150195efae4b8938de831e22db4, type: 3}
   _projectilePrefab: {fileID: 6902241515958572956, guid: 99412bc79a25d6d40bec31ff898147d3, type: 3}
   _audioClip: {fileID: 8300000, guid: 1120847b688d0614f9268772b0bd4cf1, type: 3}
+  StunAbility: {fileID: 11400000, guid: 63a46b0ac9b44004f8098b1742a220dd, type: 2}

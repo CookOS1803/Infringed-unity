@@ -26,3 +26,5 @@ MonoBehaviour:
   <Height>k__BackingField: 2
   <Consumable>k__BackingField: 1
   <Cooldown>k__BackingField: 1
+  <CooldownAbility>k__BackingField: {fileID: 11400000, guid: 63a46b0ac9b44004f8098b1742a220dd, type: 2}
+  <EnhancedCooldown>k__BackingField: 0.5

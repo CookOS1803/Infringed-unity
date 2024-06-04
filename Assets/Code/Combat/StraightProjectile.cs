@@ -17,7 +17,7 @@ namespace Infringed.Combat
 
         protected override void _Move()
         {
-            transform.position += _direction * _speed * Time.deltaTime;
+            _rigidbody.MovePosition(transform.position + _direction * _speed * Time.fixedDeltaTime);
         }
     }
 }
