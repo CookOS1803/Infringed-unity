@@ -1,36 +1,36 @@
 using UnityEngine;
 using Zenject;
+using Infringed.AI;
+using Infringed.Combat;
 
-public class PlayerWeapon : Weapon
+namespace Infringed.Player
 {
-    [SerializeField] private float backstabDot = 0.5f;
-    [Inject] private AIManager aiManager;
-    private Transform player;
-
-    [Inject]
-    void SetPlayer(PlayerController controller)
+    public class PlayerWeapon : Weapon
     {
-        player = controller.transform;
-    }
+        [SerializeField, Range(0f, 180f)] private float _backstabAngle = 90f;
+        [SerializeField] private Transform _player;
 
-    protected override void OnHit(Collider collider)
-    {
-        var enemy = collider.GetComponent<EnemyController>();
-
-        if (enemy != null)
+        protected override void _OnHit(Collider collider)
         {
-            if (enemy.stunController.isStunned || aiManager.player == null &&
-                Vector3.Dot(enemy.transform.forward, enemy.transform.position - player.position) >= backstabDot)
+            var enemy = collider.GetComponent<EnemyController>();
+
+            if (enemy != null)
             {
-                enemy.Die();
-            }
-            else
-            {
-                enemy.Alert();
+                var isStunned = enemy.GetComponent<StunController>().IsStunned;
+                var to = (enemy.transform.position - _player.position).normalized;
+                var angle = Vector3.Angle(enemy.transform.forward, to);
+
+                if (isStunned || !enemy.SpottedPlayer && angle < _backstabAngle / 2f)
+                {
+                    enemy.Die();
+                }
+                else
+                {
+                    enemy.Alarm(_player.position);
+                }
             }
 
+            base._OnHit(collider);
         }
-        
-        base.OnHit(collider);
-    }    
+    }
 }

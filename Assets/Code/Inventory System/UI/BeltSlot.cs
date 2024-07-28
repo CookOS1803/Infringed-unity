@@ -1,0 +1,91 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using Zenject;
+
+namespace Infringed.InventorySystem.UI
+{
+    public class BeltSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
+    {
+        [SerializeField] private TMP_Text _itemCountText;
+        [Inject] private UIBelt _uiBelt;
+        private UIBeltItem _child;
+        private Vector2 _initialPosition;
+        public int Index { get; set; }
+
+        private void Awake()
+        {
+            _child = GetComponentInChildren<UIBeltItem>();
+        }
+
+        private void Update()
+        {
+            _itemCountText.enabled = _child.Item != null && _child.Image.enabled && _child.Item.Data.IsInventoryItem() && _child.Item.Data.Consumable;
+        }
+
+        public void UnsetItem()
+        {
+            _child.UnsetItem();
+            _itemCountText.enabled = false;
+        }
+
+        public void SetItem(ItemInstance item)
+        {
+            _child.SetItem(item);
+
+            if (item.Data.IsInventoryItem() && item.Data.Consumable)
+            {
+                var count = _uiBelt.Belt.Inventory.GetItemCount(item.Data);
+
+                _itemCountText.enabled = count > 0;
+                _itemCountText.text = count.ToString();
+            }
+            else
+            {
+                _itemCountText.enabled = false;
+            }
+        }
+
+        public void SetItemAlpha(float alpha)
+        {
+            var color = _child.Image.color;
+            color.a = alpha;
+            _child.Image.color = color;
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            var dropper = eventData.pointerDrag.GetComponent<ItemDataDropper>();
+
+            if (dropper != null)
+            {
+                _OnDropper(dropper);
+                return;
+            }
+
+            var beltItem = eventData.pointerDrag.GetComponent<UIBeltItem>();
+
+            if (beltItem != null)
+                _OnBeltItem(beltItem);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
+                _uiBelt.Belt.SelectedSlot = Index;
+        }
+
+        private void _OnDropper(ItemDataDropper dropper)
+        {
+            _uiBelt.Belt[Index] = dropper.DroppedItem;
+        }
+
+        private void _OnBeltItem(UIBeltItem beltItem)
+        {
+            beltItem.transform.SetParent(beltItem.Parent);
+            _uiBelt.Belt.SwapSlots(Index, beltItem.Index);
+        }
+    }
+}

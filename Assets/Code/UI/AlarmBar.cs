@@ -4,39 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Zenject;
+using Infringed.AI;
 
-public class AlarmBar : MonoBehaviour
+namespace Infringed.UI
 {
-    [Inject] private AIManager aiManager;
-    private TMP_Text text;
-    private Image image;
-
-    void Start()
+    public class AlarmBar : MonoBehaviour
     {
-        text = GetComponent<TMP_Text>();
-        image = GetComponentInChildren<Image>();
+        [SerializeField] private AIManager _aiManager;
+        private TMP_Text _text;
+        private Image _image;
 
-        DisableBar();
+        private void Awake()
+        {
+            _text = GetComponent<TMP_Text>();
+            _image = GetComponentInChildren<Image>();
+        }
 
-        aiManager.onAlarmEnable += EnableBar;
-        aiManager.onAlarmDisable += DisableBar;
-        aiManager.onAlarmClockChange += UpdateBar;
-    }
+        private void Update()
+        {
+            _text.enabled = _aiManager.Alarm;
+            _image.enabled = _aiManager.Alarm;
 
-    void EnableBar()
-    {
-        text.enabled = true;
-        image.enabled = true;
-    }
-
-    void DisableBar()
-    {
-        text.enabled = false;
-        image.enabled = false;
-    }
-
-    void UpdateBar()
-    {
-        image.fillAmount = aiManager.normalizedAlarmClock;
+            _image.fillAmount = _aiManager.AlarmClock / _aiManager.AlarmTime;
+        }
     }
 }

@@ -1,72 +1,32 @@
-using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-[System.Serializable]
-public class Patroler
+namespace Infringed.AI
 {
-    [SerializeField, Min(0f)] private float waitTime = 2f;
-    [SerializeField] private Transform[] patrolPoints;
-    private int currentPoint;
-    private EnemyController enemy;
-    private NavMeshAgent agent;
-    private float waitClock = 0f;
-
-    public void Initialize(EnemyController enemy)
+    public class Patroler : MonoBehaviour
     {
-        this.enemy = enemy;
-        agent = enemy.GetComponent<NavMeshAgent>();
-    }
+        [SerializeField] private Transform[] _patrolPoints;
+        private int _currentPoint = 0;
+        private MovementController _movement;
 
-    public IEnumerator Patroling()
-    {
-        waitClock = 0f;
+        public bool IsOnTheWay => _movement.IsMoving;
+        public float AngularSpeed => _movement.AngularSpeed;
+        public Transform CurrentPatrolPoint => _patrolPoints[_currentPoint];
 
-        while (true)
+        private void Awake()
         {
-            yield return GoingToPatrolPoint();
-
-            currentPoint = (currentPoint + 1) % patrolPoints.Length;
-
-            if (patrolPoints.Length == 1)
-                yield return new WaitForEndOfFrame();
-            else
-            {
-                while (waitClock < waitTime)
-                {
-                    waitClock += Time.deltaTime;
-
-                    yield return new WaitForEndOfFrame();
-                }
-
-                waitClock = 0f;
-            }
+            _movement = GetComponent<MovementController>();
         }
-    }
 
-    private IEnumerator GoingToPatrolPoint()
-    {
-        yield return GoingToPoint(patrolPoints[currentPoint].position);
-        yield return RotatingTowards(patrolPoints[currentPoint].rotation);
-    }
-
-    private IEnumerator GoingToPoint(Vector3 destination)
-    {
-        agent.SetDestination(destination);
-
-        yield return new WaitWhile(() => agent.velocity.sqrMagnitude < 0.01f);
-        yield return new WaitUntil(
-            () => Vector3.Distance(agent.destination, enemy.transform.position) <= agent.stoppingDistance
-        );
-    }
-
-    private IEnumerator RotatingTowards(Quaternion desiredRotation)
-    {
-        while (enemy.transform.rotation != desiredRotation)
+        public void GoToNextPoint()
         {
-            enemy.transform.rotation = Quaternion.RotateTowards(enemy.transform.rotation, desiredRotation, agent.angularSpeed * Time.deltaTime);
+            _movement.SetDestination(CurrentPatrolPoint.position);
+        }
 
-            yield return new WaitForEndOfFrame();
+        public void ChangePoint()
+        {
+            _currentPoint = (_currentPoint + 1) % _patrolPoints.Length;
         }
     }
 }

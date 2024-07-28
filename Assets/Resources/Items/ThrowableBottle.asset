@@ -12,8 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8c1b9b3016ece40969f597adea480a, type: 3}
   m_Name: ThrowableBottle
   m_EditorClassIdentifier: 
-  <name>k__BackingField: Bottle
-  <description>k__BackingField: Throws bottle
-  <sprite>k__BackingField: {fileID: 21300000, guid: 4c4c2bba94ec9a9469a8ba82ac80b6c3, type: 3}
-  <prefab>k__BackingField: {fileID: 110658, guid: 628783d17026fa94393788a86effc462, type: 3}
-  <action>k__BackingField: {fileID: 11400000, guid: 4879b1bc389eea24a98c110acdc8c9b1, type: 2}
+  <Name>k__BackingField: "\u0411\u0443\u0442\u044B\u043B\u043A\u0430"
+  <Description>k__BackingField: "\u041D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u044B\u0435
+    \u043B\u044E\u0434\u0438 \u0438\u0437 \u043D\u0435\u0451 \u043F\u044C\u044E\u0442"
+  <Type>k__BackingField: 0
+  <BeltSprite>k__BackingField: {fileID: 21300000, guid: 4c4c2bba94ec9a9469a8ba82ac80b6c3, type: 3}
+  <InventorySprite>k__BackingField: {fileID: 21300000, guid: 4c4c2bba94ec9a9469a8ba82ac80b6c3, type: 3}
+  <Prefab>k__BackingField: {fileID: 110658, guid: 628783d17026fa94393788a86effc462, type: 3}
+  <Action>k__BackingField: {fileID: 11400000, guid: 4879b1bc389eea24a98c110acdc8c9b1, type: 2}
+  <Width>k__BackingField: 1
+  <Height>k__BackingField: 2
+  <Consumable>k__BackingField: 1
+  <Cooldown>k__BackingField: 1
+  <CooldownAbility>k__BackingField: {fileID: 11400000, guid: 63a46b0ac9b44004f8098b1742a220dd, type: 2}
+  <EnhancedCooldown>k__BackingField: 0.5

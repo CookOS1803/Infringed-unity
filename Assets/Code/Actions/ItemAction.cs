@@ -1,18 +1,23 @@
 using UnityEngine;
 
-abstract public class ItemAction : ScriptableObject
+namespace Infringed.Actions
 {
-    public struct Context
+    abstract public class ItemAction : ScriptableObject
     {
-        public Transform actor;
-        public Vector3 target;
+        [field: SerializeField] public ActionCastMarker CastMarkerPrefab { get; private set; }
 
-        public Context(Transform actor, Vector3 target)
+        abstract public void Use(Context context);
+
+        public struct Context
         {
-            this.actor = actor;
-            this.target = target;
+            public Transform actor;
+            public Vector3 target;
+
+            public Context(Transform actor, Vector3 target)
+            {
+                this.actor = actor;
+                this.target = target;
+            }
         }
     }
-
-    abstract public void Use(Context context);
 }

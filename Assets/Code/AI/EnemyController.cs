@@ -1,298 +1,233 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Infringed.Combat;
+using Infringed.Map;
+using Infringed.Player;
 using UnityEngine;
-using UnityEngine.AI;
-using Zenject;
 
-[System.Serializable]
-public enum EnemyState
+namespace Infringed.AI
 {
-    Patroling, LookingAtPlayer, HearingSound, RespondingToSound, ChasingPlayer, SeekingPlayer
-}
-
-[RequireComponent(typeof(Health), typeof(StunController), typeof(VisionController))]
-public class EnemyController : MonoBehaviour, IMoveable, IMortal, ISoundListener
-{
-    [SerializeField, Min(0f)] private float calmSpeed = 1.5f;
-    [SerializeField, Min(0f)] private float alarmedSpeed = 3.5f;
-    [SerializeField, Min(0f)] private float attackRange = 1f;
-    [SerializeField] private ItemData droppedItem;
-    [SerializeField] private Patroler patroler;
-    [SerializeField] private PlayerSeeker playerSeeker;
-    [SerializeField] private SoundResponder soundResponder;
-    [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
-    [Inject(Id = CustomLayer.Interactable)] private LayerMask hideoutLayer;
-    [Inject] private PlayerController playerRef;
-    [Inject] private CustomAudio customAudio;
-    private EnemyState _enemyState;
-    private NavMeshAgent agent;
-    private Animator animator;
-    private Health health;
-    private Weapon weapon;
-    private bool isDying = false;
-    
-    [Inject] public AIManager aiManager { get; private set; }
-    public EnemyState enemyState
+    public class EnemyController : MonoBehaviour, IAttacker, IDisposable
     {
-        get => _enemyState;
-        set
-        {
-            _enemyState = value;
+        public event Action<EnemyController> OnAlarm;
+        public event Action<EnemyController> OnUnalarm;
+        public event Action<EnemyController, Vector3> OnPlayerSpotted;
+        public event Action<EnemyController> OnAttackStart;
+        public event Action<EnemyController> OnEnemyDeathEnd;
 
-            onStateChange?.Invoke();
+        [SerializeField] private Weapon _weapon;
+        [SerializeField, Min(0f)] private float _attackRange = 1f;
+        public Vector3 LastKnownPlayerPosition { get; set; }
+        public bool UnhidePlayer { get; set; }
+        public bool SpottedPlayer { get; set; }
+        public bool SpottedPlayerThisFrame { get; set; }
+        public bool IsAlarmed { get; private set; }
+        public bool IsAttacking { get; private set; }
+        public bool IsDying { get; private set; }
+        [Zenject.Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
+        private VisionController _vision;
+        private SoundResponder _soundResponder;
+        private Health _health;
+        private bool _spotBySound;
+
+        private void Awake()
+        {
+            _vision = GetComponent<VisionController>();
+            _soundResponder = GetComponent<SoundResponder>();
+
+            _health = GetComponent<Health>();
         }
-    }
-    public StunController stunController { get; private set; }
-    public VisionController visionController { get; private set; }
-    public bool canMove { get => !agent.isStopped; set => agent.isStopped = !value; }
 
-    public event System.Action onStateChange;
-
-    void Awake()
-    {
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        health = GetComponent<Health>();
-        visionController = GetComponent<VisionController>();
-
-        stunController = GetComponent<StunController>();
-        stunController.onStunStart += () => {
-            canMove = false;
-            animator.SetBool("isStunned", true);
-            StopBehavior();
-            visionController.StopWatching();
-        };
-        stunController.onStunEnd += () => {
-            canMove = true;
-            animator.SetBool("isStunned", false);
-            visionController.StartWatching();
-            Alert();
-        };
-
-        weapon = GetComponentInChildren<Weapon>();
-        patroler.Initialize(this);
-        playerSeeker.Initialize(this);
-        soundResponder.Initialize(this);
-
-        health.onDeath += Die;
-    }
-
-    void Start()
-    {
-        aiManager.enemies.Add(this);
-
-        agent.speed = calmSpeed;
-
-        visionController.StartWatching();
-
-        Patrol();
-    }
-
-    void Update()
-    {
-        if (stunController.isStunned || isDying)
-            return;
-
-        AttackPlayer();
-        Move();
-        UnhidePlayer();
-    }
-
-    private void UnhidePlayer()
-    {
-        if (visionController.hasSeenPlayerHiding)
+        private void OnEnable()
         {
-            var cols = Physics.OverlapSphere(transform.position, attackRange, hideoutLayer.value);
-            
-            if (cols.Length != 0)
+            _soundResponder.OnSound += _OnSound;
+            _health.OnDeathStart += Die;
+            _health.OnDeathEnd += _DeathEnd;
+        }
+
+        private void OnDisable()
+        {
+            _soundResponder.OnSound -= _OnSound;
+            _health.OnDeathStart -= Die;
+            _health.OnDeathEnd -= _DeathEnd;
+        }
+
+        private void Update()
+        {
+            if (!IsAlarmed || IsDying)
             {
-                foreach (var h in cols)
+                SpottedPlayer = false;
+                return;
+            }
+
+            if (_vision.IsPlayerInView)
+            {
+                _spotBySound = false;
+                OnPlayerSpotted?.Invoke(this, _vision.LastNoticedPlayer.position);
+            }
+            else
+            {
+                if (SpottedPlayerThisFrame)
+                    SpottedPlayerThisFrame = false;
+                else
+                    SpottedPlayer = false;
+
+                _spotBySound = true;
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (IsDying)
+                return;
+
+            _UnhidePlayer();
+        }
+
+        private void OnTriggerEnter(Collider collider)
+        {
+            var door = collider.GetComponent<Map.Door>();
+
+            door?.OpenTemporarily();
+        }
+
+#if UNITY_EDITOR
+        [Header("Debug info")]
+        [SerializeField] private bool _showAttackRange;
+        [SerializeField] private Color _attackRangeColor;
+
+        private void OnDrawGizmos()
+        {
+            if (_showAttackRange)
+            {
+                Gizmos.color = _attackRangeColor;
+                Gizmos.DrawWireSphere(transform.position, _attackRange);
+            }
+        }
+#endif
+
+        public void Alarm()
+        {
+            if (IsAlarmed)
+                return;
+
+            IsAlarmed = true;
+            OnAlarm?.Invoke(this);
+        }
+
+        public void Alarm(Vector3 playerPosition)
+        {
+            Alarm();
+
+            OnPlayerSpotted?.Invoke(this, playerPosition);
+        }
+
+        public void Unalarm()
+        {
+            if (!IsAlarmed)
+                return;
+
+            IsAlarmed = false;
+            OnUnalarm?.Invoke(this);
+        }
+
+        public void AttackStateStarted()
+        {
+            // nothing
+        }
+
+        public void AttackStateEnded()
+        {
+            IsAttacking = false;
+        }
+
+        public void Attack()
+        {
+            if (!IsAttacking)
+            {
+                IsAttacking = true;
+                OnAttackStart?.Invoke(this);
+            }
+        }
+
+        private Collider[] _colliders = new Collider[3];
+        public bool IsPlayerInAttackRange()
+        {
+            Physics.OverlapSphereNonAlloc(transform.position, _attackRange, _colliders, _playerLayer.value);
+
+            var player = _colliders[0];
+
+            if (player == null)
+                return false;
+
+
+            var wasHit = Physics.Linecast(transform.position + Vector3.up, player.transform.position, _playerLayer.value);
+
+            return wasHit;
+        }
+
+        public void Dispose()
+        {
+            Destroy(gameObject);
+        }
+
+        public void Die()
+        {
+            if (IsDying)
+                return;
+
+            IsDying = true;
+        }
+
+        private void _UnhidePlayer()
+        {
+            if (!UnhidePlayer)
+                return;
+
+            var colliders = Physics.OverlapSphere(transform.position, _attackRange, LayerMask.GetMask("Interactable"));
+
+            if (colliders.Length == 0)
+                return;
+
+            foreach (var c in colliders)
+            {
+                var hideout = c.GetComponent<Hideout>();
+
+                if (hideout == null)
+                    continue;
+
+                var player = _vision.LastNoticedPlayer.GetComponent<PlayerController>();
+
+                if (hideout == player.CurrentHideout)
                 {
-                    if (h.GetComponent<Hideout>() == playerRef.currentHideout)
-                    {
-                        playerRef.ExitHideout();
-                        visionController.hasSeenPlayerHiding = false;
-                    }
+                    player.ExitHideout();
+                    break;
                 }
             }
         }
-    }
 
-    private void Move()
-    {
-        if (aiManager.player != null)
-            agent.SetDestination(aiManager.playerLastKnownPosition);
-
-        animator.SetBool("isMoving", agent.velocity != Vector3.zero);
-    }
-    
-    private void AttackPlayer()
-    {
-        if (aiManager.player != null && canMove && Physics.OverlapSphere(transform.position, attackRange, playerLayer.value).Length != 0)
+        private void _OnSound(Vector3 vector)
         {
-            transform.LookAt(aiManager.player);
-            animator.SetTrigger("attack");
-        }
-    }
+            if (!IsAlarmed && _spotBySound)
+                return;
 
-    public void SeekPlayer()
-    {
-        StopBehavior();
-        StartCoroutine(playerSeeker.FindingPlayer());
-        enemyState = EnemyState.SeekingPlayer;
-    }
-
-    public void Patrol()
-    {
-        StopBehavior();
-        StartCoroutine(patroler.Patroling());
-        enemyState = EnemyState.Patroling;
-    }    
-
-    public void SetAlarmedState()
-    {
-        if (!aiManager.alarm)
-        {
-            StopBehavior();
-
-            visionController.ResetNoticeClock();
-
-            if (!stunController.isStunned && !isDying)
-                agent.isStopped = false;
-
-            agent.speed = alarmedSpeed;
-            animator.SetBool("isAlarmed", true);
+            OnPlayerSpotted?.Invoke(this, vector);
         }
 
-        enemyState = EnemyState.ChasingPlayer;
-    }
-
-    public void UnsetAlarmedState()
-    {
-        StopBehavior();
-
-        agent.speed = calmSpeed;
-        animator.SetBool("isAlarmed", false);
-    }
-
-    public void OnSwingEvent()
-    {
-        AudioSource.PlayClipAtPoint(customAudio.weaponSwing, transform.position);
-    }
-
-    public void OnAttackStartEvent()
-    {
-        weapon.StartDamaging();
-    }
-
-    public void OnAttackEndEvent()
-    {
-        weapon.StopDamaging();
-    }
-
-    public void Die()
-    {
-        if (isDying)
-            return;
-
-        canMove = false;
-        isDying = true;
-
-        StopBehavior();
-        visionController.StopWatching();
-
-        animator.SetTrigger("death");
-    }
-
-    public void Alert()
-    {
-        if (isDying)
-            return;
-
-        visionController.player = playerRef.transform;
-        visionController.forgetClock = 0f;
-        aiManager.SoundTheAlarm();
-    }
-
-    public void RespondToSound(Vector3 source)
-    {
-        if (isDying)
-            return;
-
-        soundResponder.soundSource = source;
-
-        if (!aiManager.alarm)
+        private void _DeathEnd()
         {
-            if (enemyState != EnemyState.LookingAtPlayer &&
-                enemyState != EnemyState.HearingSound &&
-                enemyState != EnemyState.RespondingToSound)
-            {
-                StopBehavior();
-
-                StartCoroutine(soundResponder.HearingSound(() => {
-                    StopBehavior();
-
-                    StartCoroutine(soundResponder.RespondingToSound());
-                    enemyState = EnemyState.RespondingToSound;
-                }));
-                enemyState = EnemyState.HearingSound;
-            }
-            else if (enemyState == EnemyState.RespondingToSound)
-            {
-                StopBehavior();
-
-                StartCoroutine(soundResponder.RespondingToSound());
-            }
+            OnEnemyDeathEnd?.Invoke(this);
         }
-        else if (aiManager.lookingForPlayer)
+
+        public void OnAttackStartEvent()
         {
-            agent.SetDestination(source);
+            _weapon.StartDamaging();
         }
-    }
 
-    public void StopBehavior()
-    {
-        StopAllCoroutines();
-    }
-
-    public void ResumeBehavior()
-    {
-        if (!aiManager.alarm)
+        public void OnAttackEndEvent()
         {
-            Patrol();
+            _weapon.StopDamaging();
         }
-        else if (aiManager.lookingForPlayer)
-        {
-            SeekPlayer();
-        }
-    }
-
-    void OnDestroy()
-    {
-        aiManager.enemies.Remove(this);
-    }
-
-    void OnTriggerEnter(Collider collider)
-    {
-        var door = collider.GetComponent<Door>();
-
-        door?.OpenTemporarily();
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
-
-    public void OnDeath()
-    {
-        if (droppedItem != null)
-            Instantiate(droppedItem.prefab, transform.position + Vector3.up, Quaternion.identity);
-        Destroy(gameObject);
-    }
-
-    public void OnStep()
-    {
-        AudioSource.PlayClipAtPoint(customAudio.GetRandomStep(), transform.position);
     }
 }

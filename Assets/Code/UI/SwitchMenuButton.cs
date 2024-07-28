@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchMenuButton : MonoBehaviour
+namespace Infringed.UI
 {
-    [SerializeField] private GameObject menu;
-
-    private void Awake()
+    public class SwitchMenuButton : MonoBehaviour
     {
-        GetComponent<Button>().onClick.AddListener(SwitchMenu);
-    }
+        [SerializeField] private GameObject _menu;
 
-    private void SwitchMenu()
-    {
-        transform.parent.gameObject.SetActive(false);
-        menu.SetActive(true);
+        private void Awake()
+        {
+            GetComponent<Button>().onClick.AddListener(_SwitchMenu);
+        }
+
+        private void _SwitchMenu()
+        {
+            transform.parent.gameObject.SetActive(false);
+            _menu.SetActive(true);
+        }
     }
 }

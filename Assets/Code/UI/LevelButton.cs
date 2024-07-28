@@ -4,50 +4,53 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class LevelButton : MonoBehaviour
+namespace Infringed.UI
 {
-    [SerializeField] private string sceneName;
-    [SerializeField] private Transform loading;
-    private Button button;
-    private bool isLoading = false;
-
-    private void Awake()
+    public class LevelButton : MonoBehaviour
     {
-        button = GetComponent<Button>();
+        [SerializeField] private string _sceneName;
+        [SerializeField] private Transform _loading;
+        private Button _button;
+        private bool _isLoading = false;
 
-        button.onClick.AddListener(LoadLevel);
-    }
-
-    private void LoadLevel()
-    {
-        StartCoroutine(LoadingScene());
-    }
-
-    private void Update()
-    {
-        if (!isLoading)
-            return;
-
-        loading.eulerAngles += Vector3.forward * 360 * Time.deltaTime;
-    }
-
-    private IEnumerator LoadingScene()
-    {
-        loading.gameObject.SetActive(true);
-
-        foreach (Transform child in transform.parent)
+        private void Awake()
         {
-            if (child.TryGetComponent<Button>(out var b))
-                button.enabled = false;
+            _button = GetComponent<Button>();
+
+            _button.onClick.AddListener(_LoadLevel);
         }
 
-        var task = SceneManager.LoadSceneAsync(sceneName);
-        isLoading = true;
-
-        while (!task.isDone)
+        private void Update()
         {
-            yield return null;
+            if (!_isLoading)
+                return;
+
+            _loading.eulerAngles += Vector3.forward * 360 * Time.deltaTime;
         }
 
+        private void _LoadLevel()
+        {
+            StartCoroutine(_LoadingScene());
+        }
+
+        private IEnumerator _LoadingScene()
+        {
+            _loading.gameObject.SetActive(true);
+
+            var buttons = transform.parent.GetComponentsInChildren<Button>();
+            foreach (var button in buttons)
+            {
+                button.interactable = false;
+            }
+
+            var task = SceneManager.LoadSceneAsync(_sceneName);
+            _isLoading = true;
+
+            while (!task.isDone)
+            {
+                yield return null;
+            }
+
+        }
     }
 }

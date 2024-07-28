@@ -2,67 +2,69 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FOVRenderer : MonoBehaviour
+namespace Infringed.AI
 {
-    [SerializeField, Min(2)] private int rayCount = 2;
-    private Mesh mesh;
-    private VisionController enemy;
-    private float angleInc => enemy.fieldOfView / rayCount;
-    private float scaleFactor => 1f / transform.parent.localScale.z;
-
-    void Start()
+    public class FOVRenderer : MonoBehaviour
     {
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        [SerializeField, Min(2)] private int _rayCount = 2;
+        private Mesh _mesh;
+        private VisionController _vision;
+        private float _angleInc => _vision.FieldOfView / _rayCount;
+        private float _scaleFactor => 1f / transform.parent.localScale.z;
 
-        enemy = GetComponentInParent<VisionController>();
-    }
-
-    void Update()
-    {
-        Vector3[] vertices = new Vector3[rayCount + 2];
-        int[] triangles = new int[rayCount * 3];
-        float angle = -enemy.fieldOfView / 2 - transform.eulerAngles.y;
-
-        vertices[0] = Vector3.zero;        
-        vertices[1] = ApplyObstacle(GetVertex(angle));
-
-        angle += angleInc;
-
-        int vertexIndex = 2;
-        int triangleIndex = 0;
-
-        for (int i = 1; i <= rayCount; i++)
+        private void Start()
         {
-            vertices[vertexIndex] = ApplyObstacle(GetVertex(angle));
+            _mesh = new Mesh();
+            GetComponent<MeshFilter>().mesh = _mesh;
 
-            triangles[triangleIndex++] = 0;
-            triangles[triangleIndex++] = vertexIndex - 1;
-            triangles[triangleIndex++] = vertexIndex;
-
-            vertexIndex++;
-            angle += angleInc;
+            _vision = GetComponentInParent<VisionController>();
         }
 
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-
-        mesh.RecalculateBounds();
-    }
-
-    private Vector3 GetVertex(float angle)
-    {
-        return Quaternion.Euler(0f, angle, 0f) * transform.forward * enemy.distanceOfView * scaleFactor;
-    }
-
-    private Vector3 ApplyObstacle(Vector3 vertex)
-    {
-        RaycastHit hit;
-        if (Physics.Linecast(transform.position, transform.position + transform.parent.TransformDirection(vertex / scaleFactor), out hit))
+        private void Update()
         {
-            vertex *= Vector3.Distance(transform.position, hit.point) / enemy.distanceOfView;
+            var vertices = new Vector3[_rayCount + 2];
+            var triangles = new int[_rayCount * 3];
+            var angle = -_vision.FieldOfView / 2 - transform.eulerAngles.y;
+
+            vertices[0] = Vector3.zero;
+            vertices[1] = _ApplyObstacle(_GetVertex(angle));
+
+            angle += _angleInc;
+
+            var vertexIndex = 2;
+            var triangleIndex = 0;
+
+            for (int i = 1; i <= _rayCount; i++)
+            {
+                vertices[vertexIndex] = _ApplyObstacle(_GetVertex(angle));
+
+                triangles[triangleIndex++] = 0;
+                triangles[triangleIndex++] = vertexIndex - 1;
+                triangles[triangleIndex++] = vertexIndex;
+
+                vertexIndex++;
+                angle += _angleInc;
+            }
+
+            _mesh.vertices = vertices;
+            _mesh.triangles = triangles;
+
+            _mesh.RecalculateBounds();
         }
 
-        return vertex;
+        private Vector3 _GetVertex(float angle)
+        {
+            return Quaternion.Euler(0f, angle, 0f) * transform.forward * _vision.DistanceOfView * _scaleFactor;
+        }
+
+        private Vector3 _ApplyObstacle(Vector3 vertex)
+        {
+            if (Physics.Linecast(transform.position, transform.position + transform.parent.TransformDirection(vertex / _scaleFactor), out var hit))
+            {
+                vertex *= Vector3.Distance(transform.position, hit.point) / _vision.DistanceOfView;
+            }
+
+            return vertex;
+        }
     }
 }

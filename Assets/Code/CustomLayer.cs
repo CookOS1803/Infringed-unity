@@ -1,4 +1,7 @@
-public enum CustomLayer
+namespace Infringed
 {
-    Player, Floor, Interactable, Enemy
+    public enum CustomLayer
+    {
+        Player, Floor, Interactable, Enemy
+    }
 }

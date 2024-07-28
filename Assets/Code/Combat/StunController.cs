@@ -2,45 +2,52 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class StunController : MonoBehaviour
+namespace Infringed.Combat
 {
-    public bool isStunned { get; private set; } = false;
-    private float stunClock = 0f;
-    private float currentStunTime = 0f;
-
-    public event Action onStunStart;
-    public event Action onStunEnd;
-
-    public void Stun(float stunTime)
+    public class StunController : MonoBehaviour
     {
-        if (!isStunned)
+        public bool IsStunned { get; private set; } = false;
+        public Vector3 StunSourceDirection { get; private set; }
+        private float _stunClock = 0f;
+        private float _currentStunTime = 0f;
+
+        public event Action OnStunStart;
+        public event Action OnStunEnd;
+
+        private void Update()
         {
-            currentStunTime = stunTime;            
-            isStunned = true;
+            if (!IsStunned)
+                return;
 
-            StartCoroutine(StunRoutine());
-        }
-        else if (stunTime >= currentStunTime - stunClock)
-        {
-            stunClock = 0f;
-            currentStunTime = stunTime;
-        }
-    }
+            _stunClock += Time.deltaTime;
 
-    private IEnumerator StunRoutine()
-    {
-        onStunStart?.Invoke();
-
-        while (stunClock < currentStunTime)
-        {
-            stunClock += Time.deltaTime;
-
-            yield return new WaitForEndOfFrame();
+            if (_stunClock >= _currentStunTime)
+            {
+                _stunClock = 0f;
+                IsStunned = false;    
+                OnStunEnd?.Invoke();
+            }
         }
 
-        stunClock = 0f;
-        isStunned = false;
-        
-        onStunEnd?.Invoke();
+        public void Stun(float stunTime, Vector3 stunSourcePosition)
+        {
+            if (!IsStunned)
+            {
+                _currentStunTime = stunTime;
+
+                IsStunned = true;
+                OnStunStart?.Invoke();
+            }
+            else if (stunTime >= _currentStunTime - _stunClock)
+            {
+                _stunClock = 0f;
+                _currentStunTime = stunTime;
+            }
+
+            var position = transform.position;
+            position.y = stunSourcePosition.y;
+
+            StunSourceDirection = (stunSourcePosition - position).normalized;
+        }
     }
 }

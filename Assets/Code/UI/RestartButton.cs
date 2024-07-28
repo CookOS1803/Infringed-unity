@@ -2,15 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class RestartButton : MonoBehaviour
+namespace Infringed.UI
 {
-    private void Awake()
+    public class RestartButton : MonoBehaviour
     {
-        GetComponent<Button>().onClick.AddListener(RestartGame);
-    }
+        private void Awake()
+        {
+            GetComponent<Button>().onClick.AddListener(_RestartGame);
+        }
 
-    private void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        private void _RestartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }

@@ -1,22 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using Zenject;
 
-public class WinTrigger : MonoBehaviour
+namespace Infringed.Map
 {
-    [SerializeField] private GameObject restartButton;
-    [Inject] private new CameraController camera;
-
-    void OnTriggerEnter(Collider other)
+    public class WinTrigger : MonoBehaviour
     {
-        var player = other.GetComponent<PlayerController>();
+        [SerializeField] private GameObject _restartButton;
+        [Inject] private CameraController _camera;
 
-        if (player != null)
+        private void OnTriggerEnter(Collider other)
         {
-            Destroy(player.gameObject);
-            camera.OnWin();
-            restartButton.SetActive(true);
+            var player = other.GetComponent<PlayerController>();
+
+            if (player != null)
+            {
+                Destroy(player.gameObject);
+                _camera.OnWin();
+                _restartButton.SetActive(true);
+            }
         }
     }
 }

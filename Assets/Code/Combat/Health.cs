@@ -3,37 +3,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+namespace Infringed.Combat
 {
-    public event Action onChange;
-    public event Action onDeath;
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int currentHealth;
-
-    public float normalizedHealth => (float)currentHealth / maxHealth;
-
-    void Start()
+    public class Health : MonoBehaviour
     {
-        currentHealth = maxHealth;
-    }
+        public event Action OnChange;
+        public event Action OnDeathStart;
+        public event Action OnDeathEnd;
+        public event Action OnDamageTaken;
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
+        [SerializeField] private int _maxHealth = 100;
+        [SerializeField] private int _currentHealth;
 
-        onChange?.Invoke();
+        public float NormalizedHealth => (float)_currentHealth / _maxHealth;
 
-        if (currentHealth <= 0)
+        private void Start()
         {
-            onDeath?.Invoke();
-            enabled = false;
+            _currentHealth = _maxHealth;
         }
-    }
 
-    public void TakeHealing(int healing)
-    {
-        currentHealth = Mathf.Clamp(currentHealth + healing, currentHealth, maxHealth);
+        public void TakeDamage(int damage)
+        {
+            if (_currentHealth <= 0)
+                return;
 
-        onChange?.Invoke();
+            _currentHealth -= damage;
+
+            OnChange?.Invoke();
+            OnDamageTaken?.Invoke();
+
+            if (_currentHealth <= 0)
+            {
+                OnDeathStart?.Invoke();
+            }
+        }
+
+        public void TakeHealing(int healing)
+        {
+            if (_currentHealth <= 0)
+                return;
+
+            _currentHealth = Mathf.Clamp(_currentHealth + healing, _currentHealth, _maxHealth);
+
+            OnChange?.Invoke();
+        }
+
+        /// <summary>
+        /// Called by DeathState
+        /// </summary>
+        public void DeathStateEnd()
+        {
+            OnDeathEnd?.Invoke();
+        }
     }
 }

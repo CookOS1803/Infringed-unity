@@ -1,30 +1,28 @@
+using Infringed.InventorySystem;
+using Infringed.Player;
 using UnityEngine;
 
-public class LockedDoor : Door
+namespace Infringed.Map
 {
-    [SerializeField] private ItemData key;
-
-    public override void Interact(PlayerController user)
+    public class LockedDoor : Door
     {
-        if (isClosed)
-        {
-            var inventory = user?.inventory;
+        [SerializeField] private ItemData _key;
 
-            if (inventory != null)
+        public override void Interact(PlayerController user)
+        {
+            if (_isClosed)
             {
-                foreach (Item i in inventory)
+                var inventory = user?.Inventory;
+
+                if (inventory != null && inventory.ContainsImportantItem(_key))
                 {
-                    if (i?.data == key)
-                    {
-                        Open();
-                        break;
-                    }
+                    _Open();
                 }
             }
-        }
-        else
-        {
-            Close();
+            else
+            {
+                _Close();
+            }
         }
     }
 }

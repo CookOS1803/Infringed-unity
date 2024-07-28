@@ -1,188 +1,69 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 using Zenject;
 
-public class VisionController : MonoBehaviour
+namespace Infringed.AI
 {
-    [SerializeField, Min(0f)] private float _distanceOfView = 10f;
-    [SerializeField, Range(0f, 360f)] private float _fieldOfView = 90f;    
-    [SerializeField, Min(0f)] private float noticeTime = 2f;
-    [SerializeField, Min(0f)] private float forgetTime = 1f;
-    [SerializeField, Min(0f)] private float unseeFactor = 0.5f;
-    [Inject(Id = CustomLayer.Player)] private LayerMask playerLayer;
-    [Inject] private AIManager aiManager;
-    [Inject] private PlayerController playerRef;
-    private EnemyController enemyController;
-    private float _noticeClock = 0f;
-    private bool _isSeeingPlayer = false;
-    public float noticeClock
+    public class VisionController : MonoBehaviour
     {
-        get => _noticeClock;
-        set
-        {
-            _noticeClock = value;
+        public event Action OnPlayerInView;
 
-            onNoticeClockChange?.Invoke();
+        [field: SerializeField, Min(0f)] public float DistanceOfView { get; private set; } = 10f;
+        [field: SerializeField, Range(0f, 360f)] public float FieldOfView { get; private set; } = 90f;
+        [Inject(Id = CustomLayer.Player)] private LayerMask _playerLayer;
+        private Collider[] _nonAllocColliders;
+
+        public bool IsPlayerInView { get; private set; }
+        public Transform LastNoticedPlayer { get; private set; }
+
+        private void Awake()
+        {
+            _nonAllocColliders = new Collider[1];
         }
-    }
 
-    public Transform player { get; set; }
-    public bool hasSeenPlayerHiding { get; set; } = false;
-    public float forgetClock { get; set; } = 0f;
-    public float distanceOfView => _distanceOfView;
-    public float fieldOfView => _fieldOfView;
-    public bool isSeeingPlayer => _isSeeingPlayer;
-    public float normalizedNoticeClock => noticeClock / noticeTime;
-
-    public event Action onNoticeClockChange;
-    public event Action onNoticeClockReset;
-
-    private void Awake()
-    {
-        enemyController = GetComponent<EnemyController>();
-    }
-
-    private void Update()
-    {
-        _isSeeingPlayer = NoticePlayer();
-
-        if (aiManager.alarm && player != null)
+        private void FixedUpdate()
         {
-            if (forgetClock < forgetTime)
-                forgetClock += Time.deltaTime;
-            else
+            var noticedPlayer = _NoticePlayer();
+            IsPlayerInView = noticedPlayer != null;
+
+            if (IsPlayerInView)
             {
-                if (player != null)
-                {
-                    playerRef.onHide -= OnPlayerHide;
-                    playerRef.onExitHideout -= OnPlayerExitHideout;
-                }
-                player = null;
-                _isSeeingPlayer = false;
+                LastNoticedPlayer = noticedPlayer;
+                OnPlayerInView?.Invoke();
             }
         }
-    }
 
-    public void ResetNoticeClock()
-    {
-        noticeClock = 0f;
-
-        onNoticeClockReset?.Invoke();
-    }
-    
-    private bool NoticePlayer()
-    {
-        var cols = Physics.OverlapSphere(transform.position, distanceOfView, playerLayer.value);
-
-        // Player is too far
-        if (cols.Length == 0)
-            return false;
-
-        float angle = Vector3.Angle(transform.forward, cols[0].transform.position - transform.position);
-
-        // Player is not in field of view
-        if (angle > fieldOfView * 0.5f)
-            return false;
-
-        Physics.Linecast(transform.position + Vector3.up, cols[0].transform.position + Vector3.up, out var hit);
-
-        return hit.collider != null && hit.collider.GetComponent<PlayerController>() != null;
-    }
-
-    public void StartWatching()
-    {
-        StopAllCoroutines();
-        StartCoroutine(Watching());
-    }
-
-    public void StopWatching()
-    {
-        StopAllCoroutines();
-    }
-
-    private IEnumerator Watching()
-    {
-        while (true)
+        private void OnDisable()
         {
-            yield return new WaitUntil(() => isSeeingPlayer);
-
-            enemyController.StopBehavior();
-
-            yield return LookingAtPlayer();
-            yield return UnseeingPlayer();    
-
-            enemyController.ResumeBehavior();
+            IsPlayerInView = false;
         }
-    }
 
-    private IEnumerator LookingAtPlayer()
-    {
-        while (isSeeingPlayer)
+        private Transform _NoticePlayer()
         {
-            if (!aiManager.alarm && noticeClock < noticeTime)
-            {
-                enemyController.canMove = false;
-                enemyController.enemyState = EnemyState.LookingAtPlayer;
-                transform.LookAt(playerRef.transform);
+            var length = Physics.OverlapSphereNonAlloc(transform.position, DistanceOfView, _nonAllocColliders, _playerLayer.value);
 
-                noticeClock += Time.deltaTime * (distanceOfView / Vector3.Distance(transform.position, playerRef.transform.position));
-            }
-            else
-            {
-                if (player == null)
-                {
-                    playerRef.onHide += OnPlayerHide;
-                    playerRef.onExitHideout += OnPlayerExitHideout;
-                }
-                player = playerRef.transform;
-                forgetClock = 0f;
-                aiManager.SoundTheAlarm();
-            }
+            // Player is too far
+            if (length == 0)
+                return null;
 
-            yield return new WaitForEndOfFrame();
+            var first = _nonAllocColliders[0];
+
+            var angle = Vector3.Angle(transform.forward, first.transform.position - transform.position);
+
+            // Player is not in field of view
+            if (angle > FieldOfView * 0.5f)
+                return null;
+
+            Physics.Linecast(transform.position + Vector3.up, first.transform.position + Vector3.up, out var hit);
+
+            // View is blocked
+            if (hit.collider == null || hit.collider.GetComponent<PlayerController>() == null)
+                return null;
+
+            return hit.transform;
         }
-    }
-
-    private IEnumerator UnseeingPlayer()
-    {
-        if (!aiManager.alarm)
-        {
-            while (noticeClock > 0f && !isSeeingPlayer)
-            {
-                noticeClock -= Time.deltaTime * unseeFactor;
-
-                yield return new WaitForEndOfFrame();
-            }
-
-            if (!isSeeingPlayer)
-            {
-                ResetNoticeClock();
-                enemyController.canMove = true;
-            }
-        }
-    }
-
-    private void OnPlayerHide()
-    {
-        hasSeenPlayerHiding = true;
-    }
-
-    private void OnPlayerExitHideout()
-    {
-        hasSeenPlayerHiding = false;
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-
-        Gizmos.DrawWireSphere(transform.position, distanceOfView);
-
-        Gizmos.color = Color.red;
-
-        Gizmos.DrawRay(transform.position, Quaternion.Euler(0f, fieldOfView / 2f, 0f)  * (transform.forward) * distanceOfView);
-        Gizmos.DrawRay(transform.position, Quaternion.Euler(0f, -fieldOfView / 2f, 0f) * (transform.forward) * distanceOfView);
     }
 }

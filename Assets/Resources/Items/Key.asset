@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8c1b9b3016ece40969f597adea480a, type: 3}
   m_Name: Key
   m_EditorClassIdentifier: 
-  <name>k__BackingField: Key
-  <description>k__BackingField: Allows to open certain locked door
-  <sprite>k__BackingField: {fileID: 21300000, guid: c6edb678edf3c1f43a0eb5a5a01d93b5, type: 3}
-  <prefab>k__BackingField: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
-  <action>k__BackingField: {fileID: 0}
+  <Name>k__BackingField: "\u041A\u043B\u044E\u0447 \u043E\u0442 \u0442\u0435\u043C\u043D\u0438\u0446\u044B"
+  <Description>k__BackingField: "\u0417\u0430\u043F\u0430\u0441\u043D\u043E\u0439
+    \u043A\u043B\u044E\u0447 \u043E\u0442 \u0434\u0432\u0435\u0440\u0438 \u0432 \u0442\u0435\u043C\u043D\u0438\u0446\u0443.
+    \u0427\u0442\u043E \u043E\u043D \u0437\u0430\u0431\u044B\u043B \u043D\u0430 \u0441\u043B\u0443\u0447\u0430\u0439\u043D\u043E\u0439
+    \u043F\u043E\u043B\u043A\u0435, \u043D\u0435 \u044F\u0441\u043D\u043E."
+  <Type>k__BackingField: 2
+  <BeltSprite>k__BackingField: {fileID: 21300000, guid: c6edb678edf3c1f43a0eb5a5a01d93b5, type: 3}
+  <InventorySprite>k__BackingField: {fileID: 21300000, guid: c6edb678edf3c1f43a0eb5a5a01d93b5, type: 3}
+  <Prefab>k__BackingField: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
+  <Action>k__BackingField: {fileID: 0}
+  <Width>k__BackingField: 1
+  <Height>k__BackingField: 1
+  <Consumable>k__BackingField: 1

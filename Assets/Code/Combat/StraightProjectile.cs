@@ -1,9 +1,23 @@
 using UnityEngine;
 
-public class StraightProjectile : Projectile
+namespace Infringed.Combat
 {
-    protected override void Move()
+    public class StraightProjectile : Projectile
     {
-        transform.position += (target - transform.position).normalized * speed * Time.deltaTime;
+        private Vector3 _direction;
+
+        public override void SetTarget(Vector3 target)
+        {
+            base.SetTarget(target);
+
+            _direction = (Target - transform.position);
+            _direction.y = 0f;
+            _direction.Normalize();
+        }
+
+        protected override void _Move()
+        {
+            _rigidbody.MovePosition(transform.position + _direction * _speed * Time.fixedDeltaTime);
+        }
     }
 }

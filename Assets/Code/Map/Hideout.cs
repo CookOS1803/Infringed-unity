@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Infringed.Player;
 using UnityEngine;
 
-public class Hideout : MonoBehaviour, IInteractable
+namespace Infringed.Map
 {
-    public void Interact(PlayerController user)
+    public class Hideout : MonoBehaviour, IInteractable
     {
-        user.Hide(this);
+        public void Interact(PlayerController user)
+        {
+            user.Hide(this);
+        }
     }
 }

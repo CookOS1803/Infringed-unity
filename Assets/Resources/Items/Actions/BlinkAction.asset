@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121d64a0c8f2809478ae8c30f64940d0, type: 3}
+  m_Name: BlinkAction
+  m_EditorClassIdentifier: 
+  <CastMarkerPrefab>k__BackingField: {fileID: 1717622857634105900, guid: 8bb9aa44750123b4a8418a79be2c1905, type: 3}
+  <MaxBlinkDistance>k__BackingField: 4
+  _audioClip: {fileID: 8300000, guid: aa66f043685a31e4bb90d0b6128bc3e1, type: 3}

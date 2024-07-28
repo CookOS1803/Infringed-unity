@@ -2,69 +2,76 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+namespace Infringed.Combat
 {
-    [SerializeField] private int damage = 30;
-    [SerializeField] private float damageRadius = 0.5f;
-    [SerializeField] private Vector3 secondPoint;
-    [SerializeField] private LayerMask reactingLayer;
-    [Zenject.Inject] private CustomAudio customAudio;
-    private bool isDamaging = false;
-
-    public void StartDamaging()
+    public class Weapon : MonoBehaviour
     {
-        isDamaging = true;
-    }
+        [SerializeField] private int _damage = 30;
+        [SerializeField] private float _damageRadius = 0.5f;
+        [SerializeField] private Vector3 _secondPoint;
+        [SerializeField] private LayerMask _reactingLayer;
+        private bool _isDamaging = false;
+        private Collider[] _nonAllocColliders;
 
-    public void StopDamaging()
-    {
-        isDamaging = false;
-    }
-
-    void Update()
-    {
-        if (isDamaging)
+        private void Awake()
         {
-            var cols = Physics.OverlapCapsule(transform.position, transform.TransformPoint(secondPoint), damageRadius, reactingLayer);
+            _nonAllocColliders = new Collider[1];
+        }
 
-            if (cols.Length != 0)
+        private void FixedUpdate()
+        {
+            if (_isDamaging)
             {
-                OnHit(cols[0]);
+                var length = Physics.OverlapCapsuleNonAlloc(transform.position, transform.TransformPoint(_secondPoint), _damageRadius, _nonAllocColliders, _reactingLayer);
 
-                StopDamaging();
+                if (length != 0)
+                {
+                    _OnHit(_nonAllocColliders[0]);
+
+                    StopDamaging();
+                }
             }
         }
-    }
 
-    protected virtual void OnHit(Collider collider)
-    {
-        if (collider.TryGetComponent<Health>(out var health))
+        protected virtual void OnDrawGizmos()
         {
-            AudioSource.PlayClipAtPoint(customAudio.weaponHit, transform.position);
-            health.TakeDamage(damage);
+            Gizmos.color = _isDamaging ? Color.green : Color.red;
+
+            Vector3 center = transform.TransformPoint(_secondPoint);
+            Gizmos.DrawWireSphere(transform.position, _damageRadius);
+            Gizmos.DrawWireSphere(center, _damageRadius);
+
+            Vector3 vector31 = Vector3.Cross(transform.right, transform.position - center).normalized * _damageRadius;
+            Vector3 vector32 = Vector3.Cross(transform.forward, transform.position - center).normalized * _damageRadius;
+            Gizmos.DrawLine(transform.position + vector31, center + vector31);
+            Gizmos.DrawLine(transform.position + -vector31, center + -vector31);
+            Gizmos.DrawLine(transform.position + vector32, center + vector32);
+            Gizmos.DrawLine(transform.position + -vector32, center + -vector32);
+        }
+        
+        public void StartDamaging()
+        {
+            _isDamaging = true;
         }
 
-        var particles = collider.GetComponent<ParticleSystem>();
-
-        if (particles != null)
+        public void StopDamaging()
         {
-            particles.Emit(6);
-        }    
-    }
+            _isDamaging = false;
+        }
 
-    protected virtual void OnDrawGizmos()
-    {
-        Gizmos.color = isDamaging ? Color.green : Color.red;
+        protected virtual void _OnHit(Collider collider)
+        {
+            if (collider.TryGetComponent<Health>(out var health))
+            {
+                health.TakeDamage(_damage);
+            }
 
-        Vector3 center = transform.TransformPoint(secondPoint);
-        Gizmos.DrawWireSphere(transform.position, damageRadius);
-        Gizmos.DrawWireSphere(center, damageRadius);
+            var particles = collider.GetComponent<ParticleSystem>();
 
-        Vector3 vector31 = Vector3.Cross(transform.right, transform.position - center).normalized * damageRadius;
-        Vector3 vector32 = Vector3.Cross(transform.forward, transform.position - center).normalized * damageRadius;
-        Gizmos.DrawLine(transform.position + vector31, center + vector31);
-        Gizmos.DrawLine(transform.position + -vector31, center + -vector31);
-        Gizmos.DrawLine(transform.position + vector32, center + vector32);
-        Gizmos.DrawLine(transform.position + -vector32, center + -vector32);
+            if (particles != null)
+            {
+                particles.Emit(6);
+            }
+        }
     }
 }
