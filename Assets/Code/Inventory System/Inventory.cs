@@ -11,6 +11,7 @@ namespace Infringed.InventorySystem
     {
         public event Action<InventoryItemInstance> OnItemAdd;
         public event Action<ItemData> OnImportantItemAdd;
+        public event Action<ItemData> OnItemAddFailure;
         public event Action<InventoryItemInstance> OnItemRemove;
         public event Action OnSizeChange;
 
@@ -58,7 +59,7 @@ namespace Infringed.InventorySystem
 
             if (itemData.Width > Width || itemData.Height > Height)
             {
-                Debug.LogWarning("Item is bigger than the inventory");
+                OnItemAddFailure?.Invoke(itemData);
                 return false;
             }
 
@@ -75,7 +76,7 @@ namespace Infringed.InventorySystem
 
                 if (itemData.Width == itemData.Height || !_TryToFit(ref rectangle))
                 {
-                    Debug.LogWarning("Item doesn't fit in the inventory");
+                    OnItemAddFailure?.Invoke(itemData);
                     return false;
                 }
             }

@@ -11,6 +11,7 @@ namespace Infringed.AI
     public class EnemyController : MonoBehaviour, IAttacker, IDisposable
     {
         public event Action<EnemyController> OnAlarm;
+        public event Action<EnemyController> OnFirstAlarm;
         public event Action<EnemyController> OnUnalarm;
         public event Action<EnemyController, Vector3> OnPlayerSpotted;
         public event Action<EnemyController> OnAttackStart;
@@ -107,13 +108,16 @@ namespace Infringed.AI
         }
 #endif
 
-        public void Alarm()
+        public void Alarm(bool firstAlarmed = true)
         {
             if (IsAlarmed)
                 return;
 
             IsAlarmed = true;
             OnAlarm?.Invoke(this);
+
+            if (firstAlarmed)
+                OnFirstAlarm?.Invoke(this);
         }
 
         public void Alarm(Vector3 playerPosition)

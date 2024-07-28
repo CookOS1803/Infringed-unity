@@ -25,6 +25,14 @@ namespace Infringed.Quests
         {
             AIManager.OnAlarm -= EndDialogue;
             OnDialogueEnd = null;
+
+            foreach (var choice in DialogueChoices)
+            {
+                foreach (var i in choice.Options)
+                {
+                    i.ClearCallback();
+                }
+            }
         }
 
         public void EndDialogue()

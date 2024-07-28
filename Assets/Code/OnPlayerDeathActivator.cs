@@ -19,7 +19,7 @@ namespace Infringed
 
         private void Awake()
         {
-            _SetStatus(false);
+            SetStatus(false);
 
             _playerHealth.OnDeathEnd += _OnActivate;
         }
@@ -32,20 +32,20 @@ namespace Infringed
         public void SwitchStatus()
         {
             _currentStatus = !_currentStatus;
-            _SetStatus(_currentStatus);
+            SetStatus(_currentStatus);
         }
 
-        private void _OnActivate()
-        {
-            _SetStatus(true);
-        }
-
-        private void _SetStatus(bool status)
+        public void SetStatus(bool status)
         {
             foreach (Transform child in transform)
             {
                 child.gameObject.SetActive(status);
             }
+        }
+
+        private void _OnActivate()
+        {
+            SetStatus(true);
         }
     }
 }

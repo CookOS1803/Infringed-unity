@@ -16,11 +16,13 @@ namespace Infringed.Quests
         [SerializeField] private Door _door;
         private Health _health;
         private DialogueGiver _giver;
+        private FirstLevelGuardsSounds _sound;
         private bool _tookQuest;
 
         private void Awake()
         {
             _giver = GetComponent<DialogueGiver>();
+            _sound = GetComponent<FirstLevelGuardsSounds>();
         }
 
         private void Start()
@@ -59,12 +61,6 @@ namespace Infringed.Quests
                 _health.OnDamageTaken -= _OnDamage;
         }
 
-        private void Update()
-        {
-
-        }
-
-
         private void _OnEnemyDeath(EnemyController sender)
         {
             _enemyToKill.OnEnemyDeathEnd -= _OnEnemyDeath;
@@ -87,6 +83,7 @@ namespace Infringed.Quests
             {
                 _health = gameObject.AddComponent<Health>();
                 _health.OnDamageTaken += _OnDamage;
+                _sound.Initialize(_health);
                 _giver.CurrentIndex = 1;
 
                 choice.ClearCallback();
@@ -96,7 +93,6 @@ namespace Infringed.Quests
         private void _OnDamage()
         {
             _health.OnDamageTaken -= _OnDamage;
-            Destroy(_health);
 
             _giver.DialogueChoices[1].Text = "Шрам конечно останется, но свою часть сделки ты выполнил, теперь моя очередь. Можешь идти.";
             _giver.DialogueChoices[1].Options[0].Label = "Может ещё увидимся";

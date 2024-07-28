@@ -73,7 +73,7 @@ namespace Infringed.AI
             foreach (var enemy in _enemies)
             {
                 enemy.OnAlarm -= _OnAlarm;
-                enemy.Alarm();
+                enemy.Alarm(firstAlarmed: false);
             }
         }
 

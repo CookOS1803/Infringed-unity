@@ -12,7 +12,7 @@ namespace Infringed.Quests
         [SerializeField] private List<Quest> _questList;
         private HashSet<Quest> _quests = new();
 
-        private void Awake()
+        private void Start()
         {
             _questList.ForEach(quest => AddQuest(quest));
             _questList.Clear();

@@ -14,12 +14,12 @@ namespace Infringed.Combat
         public event Action OnStunStart;
         public event Action OnStunEnd;
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (!IsStunned)
                 return;
 
-            _stunClock += Time.deltaTime;
+            _stunClock += Time.fixedDeltaTime;
 
             if (_stunClock >= _currentStunTime)
             {

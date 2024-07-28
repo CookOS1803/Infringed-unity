@@ -5514,6 +5514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _suspicionClip: {fileID: 8300000, guid: 33ad0e3d94364e741b8be6cb8167f227, type: 3}
+  _alarmClip: {fileID: 8300000, guid: 651600d991bdd764b8a556a56624ccfa, type: 3}
 --- !u!114 &8068100594877465602
 MonoBehaviour:
   m_ObjectHideFlags: 0

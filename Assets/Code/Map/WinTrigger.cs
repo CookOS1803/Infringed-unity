@@ -8,7 +8,7 @@ namespace Infringed.Map
 {
     public class WinTrigger : MonoBehaviour
     {
-        [SerializeField] private GameObject _restartButton;
+        [SerializeField] private OnPlayerDeathActivator _menu;
         [Inject] private CameraController _camera;
 
         private void OnTriggerEnter(Collider other)
@@ -19,7 +19,7 @@ namespace Infringed.Map
             {
                 Destroy(player.gameObject);
                 _camera.OnWin();
-                _restartButton.SetActive(true);
+                _menu.SetStatus(true);
             }
         }
     }

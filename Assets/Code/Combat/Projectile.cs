@@ -47,8 +47,12 @@ namespace Infringed.Combat
                 health.TakeDamage(_damage);
             }
 
-            if (Stun && other.TryGetComponent<StunController>(out var stunner))
-                stunner.Stun(_stunTime, transform.position);
+            if (other.TryGetComponent<StunController>(out var stunner))
+            {
+                var time = Stun ? _stunTime : 0.1f;
+
+                stunner.Stun(time, transform.position);
+            }
 
             if (other.TryGetComponent<ParticleSystem>(out var particles))
                 particles.Emit(6);

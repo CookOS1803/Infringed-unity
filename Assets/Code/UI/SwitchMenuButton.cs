@@ -7,7 +7,8 @@ namespace Infringed.UI
 {
     public class SwitchMenuButton : MonoBehaviour
     {
-        [SerializeField] private GameObject _menu;
+        [SerializeField] private GameObject _currentMenu;
+        [SerializeField] private GameObject _nextMenu;
 
         private void Awake()
         {
@@ -16,8 +17,8 @@ namespace Infringed.UI
 
         private void _SwitchMenu()
         {
-            transform.parent.gameObject.SetActive(false);
-            _menu.SetActive(true);
+            _currentMenu.SetActive(false);
+            _nextMenu.SetActive(true);
         }
     }
 }
