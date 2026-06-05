@@ -7,4 +7,4 @@ A stealth game prototype
 
 ### Gameplay video:
 
-https://youtu.be/218IpTREGTc
+https://youtu.be/23HDtJvR_I8
